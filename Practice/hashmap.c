@@ -14,7 +14,7 @@
 typedef struct Person {
     char name[MAX_NAME_LENGTH];
     int age;
-    // struct Person *next;
+    struct Person *next;
 } Person;
 
 
@@ -32,14 +32,26 @@ int hash(char *name) {
 }
 
 int insertToHashTable(Person *hashTable, Person person) {
+    printf("Inserting to hash table!");
     int index = hash(person.name);
-
+    
+    // something is wrong here
     if (hashTable[index].age != -1) {
-        return 0;
+        // insert new person at index and stuff
+        Person *current = &(hashTable[index]);
+        while (current->next == NULL) {
+            current = current->next;
+        }
+        Person *newPerson = malloc(sizeof(Person));
+        newPerson->next = NULL;
+        strcpy(newPerson->name, person.name);
+        newPerson->age = person.age;
+        current->next = newPerson;
+    } else {
+        strcpy(hashTable[index].name, person.name);
+        hashTable[index].age = person.age;
     }
 
-    strcpy(hashTable[index].name, person.name);
-    hashTable[index].age = person.age;
 
     return 1;
 }
@@ -48,13 +60,18 @@ void initializeHashTable(Person *hashTable) {
     for (int i = 0; i < HASHMAP_MAX_LENGTH; i++) {
         hashTable[i].age = -1;
         strcpy(hashTable[i].name, "");
+        hashTable[i].next = NULL;
     }
 }
 
 void printHashTable(Person *hashTable) {
     printf("Printing Hash Table: \n");
     for (int i = 0; i < HASHMAP_MAX_LENGTH; i++) {
-        printf("Name: %s \t---\t Age: %d \n", hashTable[i].name, hashTable[i].age);
+        Person *current = &(hashTable[i]);
+        while (current != NULL) {
+            printf("Name: %s \t---\t Age: %d \n", current->name, current->age);
+            current = current->next;
+        }
     }
 }
 
@@ -74,15 +91,13 @@ int main() {
     printf("Hash Value for %s: %d\n", jeremy.name, hash(jeremy.name));
     printf("Hash Value for %s: %d\n", jessica.name, hash(jessica.name));
     printf("Hash Value for %s: %d\n", jill.name, hash(jill.name));
-    
+
     insertToHashTable(personHashTable, jake);
     insertToHashTable(personHashTable, john);
     insertToHashTable(personHashTable, jeremy);
     insertToHashTable(personHashTable, jessica);
     insertToHashTable(personHashTable, jill);
-
+    
     printHashTable(personHashTable);
-
-    printf("Hello World!");
     return 0;
 }
