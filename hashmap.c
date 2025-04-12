@@ -34,9 +34,8 @@ int hash(char *name) {
     return hash;
 }
 
-// separate chaining
+// separate/external chaining
 int insertSeparateChaining(Person *hashTable, Person person) {
-    printf("Inserting to hash table!");
     int index = hash(person.name);
     
     // something is wrong here
@@ -65,23 +64,51 @@ int insertOpenAddressing(Person *hashTable, Person person) {
     int index = hash(person.name);
     for (int i = 0; i < HASHMAP_MAX_LENGTH; i++) {
         int currentIndex = (index + i) % HASHMAP_MAX_LENGTH;
-        if (hashTable[currentIndex].age == -1) {
-            strcpy(hashTable[index].name, person.name);
-            hashTable[index].age = person.age;
+        if (hashTable[currentIndex].age == -1 || hashTable[currentIndex].age == DELETED_PERSON) {
+            strcpy(hashTable[currentIndex].name, person.name);
+            hashTable[currentIndex].age = person.age;
             return 1;
         }
     }
+    printf("Hash table is full. Cannot insert %s.\n", person.name);
     return 0;
 }
 
-int deleteEntry(char *name) {
-    return 1;
+int deleteEntry(Person *hashTable, char *name) {
+    int index = hash(name);
+    for (int i = 0; i < HASHMAP_MAX_LENGTH; i++) {
+        int hashedIndex = (index + i) % HASHMAP_MAX_LENGTH;
+        Person *currentPerson = &(hashTable[hashedIndex]);
+        if (strcmp(currentPerson->name, name) != 0) {
+            while (currentPerson->next != NULL) {
+                if (strcmp(currentPerson->next->name, name) == 0) {
+                    Person *temp = currentPerson->next;
+                    currentPerson->next = temp->next;
+                    free(temp);
+                    printf("Deleted: %s\n", name);
+                    return 1;
+                } else {
+                    currentPerson = currentPerson->next;
+                }
+            }
+        } else {
+            strcpy(currentPerson->name, "");
+            currentPerson->age = DELETED_PERSON;
+            return 1;
+        }
+    }
 }
 
 Person *findPerson(Person *hashTable, char *name) {
     // fix this
     for (int i = 0; i < HASHMAP_MAX_LENGTH; i++) {
         Person *currentPerson = &(hashTable[i]);
+        if (currentPerson->age == -1) {
+            return NULL;
+        }
+        if (currentPerson->age == DELETED_PERSON) {
+            continue;
+        }
         if (strcmp(currentPerson->name, name) != 0) {
             while(currentPerson != NULL) {
                 if (strcmp(currentPerson->name, name) == 0) {
@@ -126,27 +153,53 @@ int main() {
     Person jeremy = {"Jeremy", 35};
     Person jessica = {"Jessica", 28};
     Person jill = {"Jill", 22};
-
+    Person fran = {"Fran", 40};
+    Person kim = {"Kim", 29};
+    Person max = {"Max", 32};
+    Person daphne = {"Daphne", 27};
+    Person paul = {"Paul", 31};
+    Person remy = {"Remy", 26};
+    Person vincent = {"Vincent", 33};
+    Person ghemar = {"Ghemar", 24};
+    /*
     printf("Hash Value for %s: %d\n", jake.name, hash(jake.name));
     printf("Hash Value for %s: %d\n", john.name, hash(john.name));
     printf("Hash Value for %s: %d\n", jeremy.name, hash(jeremy.name));
     printf("Hash Value for %s: %d\n", jessica.name, hash(jessica.name));
     printf("Hash Value for %s: %d\n", jill.name, hash(jill.name));
+    */
 
     insertSeparateChaining(personHashTable, jake);
     insertSeparateChaining(personHashTable, john);
     insertSeparateChaining(personHashTable, jeremy);
     insertSeparateChaining(personHashTable, jessica);
     insertSeparateChaining(personHashTable, jill);
+    insertOpenAddressing(personHashTable, fran);
+    insertOpenAddressing(personHashTable, kim);
+    insertOpenAddressing(personHashTable, max);
+    insertOpenAddressing(personHashTable, daphne);
+    insertOpenAddressing(personHashTable, paul);
+    insertOpenAddressing(personHashTable, remy);
+    insertOpenAddressing(personHashTable, vincent);
+    insertSeparateChaining(personHashTable, ghemar);
 
     printHashTable(personHashTable);
     
-    Person *foundPerson = findPerson(personHashTable, "John");
+    
+    Person *foundPerson = findPerson(personHashTable, "Ghemar");
     if (foundPerson) {
         printf("Person found!: %s Age: %d\n", foundPerson->name, foundPerson->age);
     } else {
         printf("Person not found. \n");
     }
+    
+    if (deleteEntry(personHashTable, "Ghemar")) {
+        printf("Person successfully deleted!");
+    } else {
+        printf("Person does not exist.\n");
+    }
+
+    printHashTable(personHashTable);
     
     return 0;
 }
