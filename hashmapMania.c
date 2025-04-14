@@ -4,12 +4,18 @@
 
 #define MAX_HASHTABLE_LENGTH 10
 #define MAX_NAME_LENGTH 50
-#define DELETED_PERSON (uintptr_t) (0xfffffffffffffffful)
+#define DELETED_PERSON 0xfffffffffffffffful
 
 typedef struct Person {
     char name[MAX_NAME_LENGTH];
     struct Person *next;
 } Person, *PersonPointer;
+
+
+int hash(char *string);
+int initializeHashMap(PersonPointer *hashMap);
+void displayHashmap(PersonPointer *hashMap);
+int insertSeparateChaining(PersonPointer *hashMap, char *personName);
 
 /*
 todos: 
@@ -29,20 +35,11 @@ handle deleted persons properly
 wrap-around for loop ints and stuff
 */ 
 
-int hash(char *string) {
-    int hash = 0;
-    for (int i = 0; i < strlen(string); i++) {
-        hash += i;
-        hash += string[i];
-        hash *= string[i];
-        hash %= MAX_HASHTABLE_LENGTH;
-    }
-    return hash;
-}
-
 int main() {
-    PersonPointer hashmap[MAX_HASHTABLE_LENGTH];
+    PersonPointer hashMap[MAX_HASHTABLE_LENGTH];
+    initializeHashMap(hashMap);
     int input = -1;
+    char name[MAX_NAME_LENGTH];
     printf("--- WELCOME TO HASHMAP MANIA ---");
     while (input != 0) {
         printf("Welcome to hash map mania! Entries are cooked daily! Here are your options: \n");
@@ -63,9 +60,13 @@ int main() {
                 break;
             case 1:
                 printf("Displaying current hashmap...\n");
+                displayHashmap(hashMap);
                 break;
             case 2:
                 printf("Inserting person to hashmap via separate chaining...\n");
+                printf("Please enter name to insert: ");
+                gets(name);
+                insertSeparateChaining(hashMap, name);
                 break;
             case 3:
                 printf("Inserting person to hashmap via open addressing...\n");
@@ -83,4 +84,62 @@ int main() {
         }
     }
     return 0;
+}
+
+int hash(char *string) {
+    int hash = 0;
+    for (int i = 0; i < strlen(string); i++) {
+        hash += i;
+        hash += string[i];
+        hash *= string[i];
+        hash %= MAX_HASHTABLE_LENGTH;
+    }
+    return hash;
+}
+
+int initializeHashMap(PersonPointer *hashMap) {
+    for (int i = 0; i < MAX_HASHTABLE_LENGTH; i++) {
+        hashMap[i] = NULL;
+    }
+    return 1;
+}
+
+void displayHashmap(PersonPointer *hashMap) {
+    printf("--- START OF HASHMAP ---\n");
+    for (int i = 0; i < MAX_HASHTABLE_LENGTH; i++) {
+        printf("Index: %d = ", i);
+        Person *currentPerson = hashMap[i];
+        if (currentPerson == NULL) {
+            printf(" Empty...");
+        } else {
+            while (currentPerson != NULL) {
+                printf("$s", currentPerson->name);
+                if (currentPerson->next != NULL) {
+                    printf(" -> ");
+                }
+                currentPerson = currentPerson->next;
+            }
+        }
+        printf("\n");
+    }
+    printf("--- END OF HASHMAP ---\n");
+    printf("Successfully displayed hashmap!\n");
+}
+
+int insertSeparateChaining(PersonPointer *hashMap, char *personName) {
+    int hashedIndex = hash(personName);
+    Person *newPerson = malloc(sizeof(Person));
+    strcpy(newPerson->name, personName);
+    
+    if (hashMap[hashedIndex] == NULL) {
+        hashMap[hashedIndex] = newPerson;
+    } else {
+        Person *temp = hashMap[hashedIndex];
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newPerson;
+    }
+    printf("Successfully inserted person via externam chaining!\n");
+    return 1;
 }
