@@ -16,6 +16,8 @@ int hash(char *string);
 int initializeHashMap(PersonPointer *hashMap);
 void displayHashmap(PersonPointer *hashMap);
 int insertSeparateChaining(PersonPointer *hashMap, char *personName);
+int insertOpenAddressing(PersonPointer *hashMap, char *personName);
+Person *findPerson(char *personName);
 
 /*
 todos: 
@@ -65,11 +67,16 @@ int main() {
             case 2:
                 printf("Inserting person to hashmap via separate chaining...\n");
                 printf("Please enter name to insert: ");
+                while(getchar() != '\n');
                 gets(name);
                 insertSeparateChaining(hashMap, name);
                 break;
             case 3:
                 printf("Inserting person to hashmap via open addressing...\n");
+                printf("Please enter name to insert: ");
+                while(getchar() != '\n');
+                gets(name);
+                insertOpenAddressing(hashMap, name);
                 break;
             case 4:
                 printf("Attempting to delete person from hashmap...\n");
@@ -79,6 +86,10 @@ int main() {
                 break;
             case 6:                
                 printf("Checking hash value of person's name...\n");
+                printf("Please enter name to hash: ");
+                while(getchar() != '\n');
+                gets(name);
+                printf("Hash value of %s = %d", name, hash(name));
                 break;
 
         }
@@ -113,7 +124,7 @@ void displayHashmap(PersonPointer *hashMap) {
             printf(" Empty...");
         } else {
             while (currentPerson != NULL) {
-                printf("$s", currentPerson->name);
+                printf("%s", currentPerson->name);
                 if (currentPerson->next != NULL) {
                     printf(" -> ");
                 }
@@ -142,4 +153,20 @@ int insertSeparateChaining(PersonPointer *hashMap, char *personName) {
     }
     printf("Successfully inserted person via externam chaining!\n");
     return 1;
+}
+
+int insertOpenAddressing(PersonPointer *hashMap, char *personName) {
+    int hashedIndex = hash(personName);
+    for (int i = 0; i < MAX_HASHTABLE_LENGTH; i++) {
+        int try = (hashedIndex + i) % MAX_HASHTABLE_LENGTH;
+        if (hashMap[try] == NULL) {
+            Person *newPerson = malloc(sizeof(Person));
+            strcpy(newPerson->name, personName);
+            hashMap[try] = newPerson;
+            printf("Successfully inserted person via open addressing!\n");
+            return 1;
+        }
+    }
+    printf("Hashmap is full! Failed to insert person via open addressing...\n");
+    return 0;
 }
