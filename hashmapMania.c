@@ -4,7 +4,9 @@
 
 #define MAX_HASHTABLE_LENGTH 10
 #define MAX_NAME_LENGTH 50
-#define DELETED_PERSON 0xfffffffffffffffful
+#define DELETED_PERSON 0xffffff
+
+// fix errors for deleted person
 
 typedef struct Person {
     char name[MAX_NAME_LENGTH];
@@ -17,7 +19,8 @@ int initializeHashMap(PersonPointer *hashMap);
 void displayHashmap(PersonPointer *hashMap);
 int insertSeparateChaining(PersonPointer *hashMap, char *personName);
 int insertOpenAddressing(PersonPointer *hashMap, char *personName);
-Person *findPerson(char *personName);
+int deletePerson(PersonPointer *hashMap, char *personName);
+Person *findPerson(PersonPointer *hashMap, char *personName);
 
 /*
 todos: 
@@ -169,4 +172,49 @@ int insertOpenAddressing(PersonPointer *hashMap, char *personName) {
     }
     printf("Hashmap is full! Failed to insert person via open addressing...\n");
     return 0;
+}
+
+int deletePerson(PersonPointer *hashMap, char *personName) {
+    int hashedIndex = hash(personName);
+    for (int i = 0; i < MAX_HASHTABLE_LENGTH; i++) {
+        int try = (hashedIndex + i) % MAX_HASHTABLE_LENGTH;
+        if (hashMap[try] == NULL) {
+            printf("Person not found! Person might already be deleted! \n");
+            return 0;
+        }
+        if (hashMap[try] == DELETED_PERSON) {
+            continue;
+        }
+        if (strcmp(hashMap[try]->name, personName) == 0) {
+            // delete it
+            if (hashMap[try]->next == NULL || hashMap[try]->next == DELETED_PERSON) {
+                // delete it normally
+                free(hashMap[try]);
+                hashMap[try] = DELETED_PERSON;
+                printf("Successfully deleted person: %s\n", personName);
+                return 1;
+            } else {
+                // perform delete first
+                Person *temp = hashMap[try]->next;
+                hashMap[try]->next = temp->next;
+                free(temp);
+                printf("Successfully deleted person: %s\n", personName);
+                return 1;
+            }
+        } else {
+            // otherwise, traverse the linked list and delete if it's there
+            Person *currentPerson = hashMap[try];
+            while (currentPerson->next != NULL || currentPerson->next != DELETED_PERSON) {
+                if (strcmp(currentPerson->next->name, personName)) {
+                    Person *temp = currentPerson->next;
+                    currentPerson->next = temp->next;
+                    free(temp);
+                    printf("Successfully deleted person: %s\n", personName);
+                    return 1;
+                }
+                currentPerson = currentPerson->next;
+            }
+        }
+    }
+    printf("Unable to find person %s. Deletion failed... \n", personName);
 }
