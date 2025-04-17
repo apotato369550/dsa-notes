@@ -4,7 +4,7 @@
 
 #define MAX_HASHTABLE_LENGTH 10
 #define MAX_NAME_LENGTH 50
-#define DELETED_PERSON 0xffffff
+#define DELETED_PERSON (Person *) 0xffffff
 
 // fix errors for deleted person
 
@@ -83,6 +83,10 @@ int main() {
                 break;
             case 4:
                 printf("Attempting to delete person from hashmap...\n");
+                printf("Please enter name to delete: ");
+                while(getchar() != '\n');
+                gets(name);
+                deletePerson(hashMap, name);
                 break;
             case 5:
                 printf("Checking if person exists in hashmap...\n");
@@ -94,7 +98,9 @@ int main() {
                 gets(name);
                 printf("Hash value of %s = %d", name, hash(name));
                 break;
-
+            default:
+                printf("Please enter a valid input...\n");
+                break;
         }
     }
     return 0;
@@ -125,13 +131,18 @@ void displayHashmap(PersonPointer *hashMap) {
         Person *currentPerson = hashMap[i];
         if (currentPerson == NULL) {
             printf(" Empty...");
+        } else if(currentPerson == DELETED_PERSON) {
+            printf("DELETED");
         } else {
-            while (currentPerson != NULL) {
+            while (currentPerson != NULL || currentPerson != DELETED_PERSON) {
                 printf("%s", currentPerson->name);
                 if (currentPerson->next != NULL) {
                     printf(" -> ");
                 }
                 currentPerson = currentPerson->next;
+            }
+            if (currentPerson == DELETED_PERSON) {
+                printf("DELETED");
             }
         }
         printf("\n");
@@ -195,8 +206,8 @@ int deletePerson(PersonPointer *hashMap, char *personName) {
                 return 1;
             } else {
                 // perform delete first
-                Person *temp = hashMap[try]->next;
-                hashMap[try]->next = temp->next;
+                Person *temp = hashMap[try];
+                hashMap[try] = hashMap[try]->next;
                 free(temp);
                 printf("Successfully deleted person: %s\n", personName);
                 return 1;
@@ -205,7 +216,7 @@ int deletePerson(PersonPointer *hashMap, char *personName) {
             // otherwise, traverse the linked list and delete if it's there
             Person *currentPerson = hashMap[try];
             while (currentPerson->next != NULL || currentPerson->next != DELETED_PERSON) {
-                if (strcmp(currentPerson->next->name, personName)) {
+                if (strcmp(currentPerson->next->name, personName) == 0) {
                     Person *temp = currentPerson->next;
                     currentPerson->next = temp->next;
                     free(temp);
@@ -217,4 +228,25 @@ int deletePerson(PersonPointer *hashMap, char *personName) {
         }
     }
     printf("Unable to find person %s. Deletion failed... \n", personName);
+}
+
+Person *findPerson(PersonPointer *hashMap, char *personName) {
+    int hashedIndex = hash(personName);
+    for (int i = 0; i < MAX_HASHTABLE_LENGTH; i++) {
+        int try = (hashedIndex + i) % MAX_HASHTABLE_LENGTH;
+        if (hashMap[try] == NULL) {
+            return NULL;
+        }
+        if (hashMap[try] == DELETED_PERSON) {
+            continue;
+        }
+
+        if (strcmp(hashMap[try]->name, personName) == 0) {
+            // if person is found, return pointer to person
+            return hashMap[try];
+        } else {
+            // otherwise, traverse linked list chain to find person
+            Person *currentPerson = hashMap[try];
+        }
+    }
 }
