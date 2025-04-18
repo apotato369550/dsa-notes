@@ -21,6 +21,7 @@ int insertSeparateChaining(PersonPointer *hashMap, char *personName);
 int insertOpenAddressing(PersonPointer *hashMap, char *personName);
 int deletePerson(PersonPointer *hashMap, char *personName);
 Person *findPerson(PersonPointer *hashMap, char *personName);
+int populateHashmap(PersonPointer *hashMap);
 
 /*
 todos: 
@@ -55,6 +56,7 @@ int main() {
         printf("4 - Delete person from hashmap\n");
         printf("5 - Check if person exists in hashmap\n");
         printf("6 - View hash value of person's name\n");
+        printf("7 - Populate hashmap\n");
 
         printf("Enter a choice: ");
         scanf("%d", &input);
@@ -98,6 +100,9 @@ int main() {
                 gets(name);
                 printf("Hash value of %s = %d", name, hash(name));
                 break;
+            case 7:
+                printf("Populating hashmap...");
+                populateHashmap(hashMap);
             default:
                 printf("Please enter a valid input...\n");
                 break;
@@ -134,7 +139,8 @@ void displayHashmap(PersonPointer *hashMap) {
         } else if(currentPerson == DELETED_PERSON) {
             printf("DELETED");
         } else {
-            while (currentPerson != NULL || currentPerson != DELETED_PERSON) {
+            // use && instead of || to avoid infinite loop
+            while (currentPerson != NULL && currentPerson != DELETED_PERSON) {
                 printf("%s", currentPerson->name);
                 if (currentPerson->next != NULL) {
                     printf(" -> ");
@@ -152,10 +158,13 @@ void displayHashmap(PersonPointer *hashMap) {
 }
 
 int insertSeparateChaining(PersonPointer *hashMap, char *personName) {
+    if (findPerson(hashMap, personName) != NULL) {
+        printf("Person: %s already exists in hashmap!", personName);
+        return 0;
+    }
     int hashedIndex = hash(personName);
     Person *newPerson = malloc(sizeof(Person));
     strcpy(newPerson->name, personName);
-    
     if (hashMap[hashedIndex] == NULL) {
         hashMap[hashedIndex] = newPerson;
     } else {
@@ -170,12 +179,17 @@ int insertSeparateChaining(PersonPointer *hashMap, char *personName) {
 }
 
 int insertOpenAddressing(PersonPointer *hashMap, char *personName) {
+    if (findPerson(hashMap, personName) != NULL) {
+        printf("Person: %s already exists in hashmap!", personName);
+        return 0;
+    }
     int hashedIndex = hash(personName);
     for (int i = 0; i < MAX_HASHTABLE_LENGTH; i++) {
         int try = (hashedIndex + i) % MAX_HASHTABLE_LENGTH;
         if (hashMap[try] == NULL) {
             Person *newPerson = malloc(sizeof(Person));
             strcpy(newPerson->name, personName);
+            newPerson->next = NULL;
             hashMap[try] = newPerson;
             printf("Successfully inserted person via open addressing!\n");
             return 1;
@@ -199,12 +213,15 @@ int deletePerson(PersonPointer *hashMap, char *personName) {
         if (strcmp(hashMap[try]->name, personName) == 0) {
             // delete it
             if (hashMap[try]->next == NULL || hashMap[try]->next == DELETED_PERSON) {
+                printf("Attempting to delete person: %s\n", personName);
+                // if it's the only person in the slot, just free it and set to NULL
                 // delete it normally
                 free(hashMap[try]);
                 hashMap[try] = DELETED_PERSON;
                 printf("Successfully deleted person: %s\n", personName);
                 return 1;
             } else {
+                printf("Attempting to delete person: %s\n", personName);
                 // perform delete first
                 Person *temp = hashMap[try];
                 hashMap[try] = hashMap[try]->next;
@@ -215,7 +232,8 @@ int deletePerson(PersonPointer *hashMap, char *personName) {
         } else {
             // otherwise, traverse the linked list and delete if it's there
             Person *currentPerson = hashMap[try];
-            while (currentPerson->next != NULL || currentPerson->next != DELETED_PERSON) {
+            // use && instead of || to avoid infinite loop -> source of "Ella Bug"
+            while (currentPerson->next != NULL && currentPerson->next != DELETED_PERSON) {
                 if (strcmp(currentPerson->next->name, personName) == 0) {
                     Person *temp = currentPerson->next;
                     currentPerson->next = temp->next;
@@ -228,6 +246,7 @@ int deletePerson(PersonPointer *hashMap, char *personName) {
         }
     }
     printf("Unable to find person %s. Deletion failed... \n", personName);
+    return 0;
 }
 
 Person *findPerson(PersonPointer *hashMap, char *personName) {
@@ -249,4 +268,23 @@ Person *findPerson(PersonPointer *hashMap, char *personName) {
             Person *currentPerson = hashMap[try];
         }
     }
+    return NULL;
+}
+
+int populateHashmap(PersonPointer *hashMap) {// Open Addressing
+    insertOpenAddressing(hashMap, "John");
+    insertOpenAddressing(hashMap, "Alice");
+    insertOpenAddressing(hashMap, "Bob");
+    insertOpenAddressing(hashMap, "Clara");
+    insertOpenAddressing(hashMap, "David");
+    insertOpenAddressing(hashMap, "Ella");
+    insertOpenAddressing(hashMap, "Frank");
+    
+    insertSeparateChaining(hashMap, "Jordan");
+    insertSeparateChaining(hashMap, "Grace");
+    insertSeparateChaining(hashMap, "Hannah");
+    insertSeparateChaining(hashMap, "Isaac");
+    insertSeparateChaining(hashMap, "Jasmine");
+    insertSeparateChaining(hashMap, "Kyle");
+    insertSeparateChaining(hashMap, "Liam");
 }
