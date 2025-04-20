@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <limits.h>
 
 #define STACK_LENGTH 5
@@ -17,6 +16,15 @@ int pop(Stack *stack);
 int main () {
     Stack stack;
     stack.top = EMPTY;
+
+    push(&stack, 3);
+    push(&stack, 4);
+    push(&stack, 5);
+
+    printf("Popped: %d\n", pop(&stack));
+    printf("Popped: %d\n", pop(&stack));
+    printf("Popped: %d\n", pop(&stack));
+    printf("Popped: %d\n", pop(&stack));
     
     // test push and pop here
 }
