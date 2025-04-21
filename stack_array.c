@@ -7,7 +7,7 @@
 
 typedef struct Stack {
     int top;
-    int stack[];
+    int stack[STACK_LENGTH];
 } Stack;
 
 void push(Stack *stack, int value);
