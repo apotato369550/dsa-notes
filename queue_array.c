@@ -12,7 +12,6 @@ typedef struct Queue {
     int *array;
 } Queue;
 
-// implement circular queue
 
 void initializeQueue(Queue *queue, int size);
 void enqueue(Queue *queue, int value);
@@ -23,20 +22,22 @@ int isQueueFull(Queue *queue);
 int main() {
     Queue queue;
 
+    initializeQueue(&queue, 5);
+
     enqueue(&queue, 3);
     enqueue(&queue, 4);
     enqueue(&queue, 5);
 
     for (int i = 0; i < 5; i++) {
-        dequeue(&queue);
+        printf("%d\n", dequeue(&queue));
     }
 
     return 0;
 }
 
-void initialize_queue(Queue *queue, int size) {
+void initializeQueue(Queue *queue, int size) {
     queue->head = 0;
-    queue->tail = size - 1;
+    queue->tail = 0;
     queue->count = 0;
     queue->size = size;
     queue->array = malloc(sizeof(int) * size);
