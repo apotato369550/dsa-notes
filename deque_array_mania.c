@@ -85,7 +85,7 @@ int main() {
                 break;
             case 4:
                 printf("Popping an item from the deque...\n");
-                int popped = dequeue(&deque);
+                int popped = pop(&deque);
                 if (popped != DEQUE_EMPTY) {
                     printf("Popped value: %d\n", popped);
                 }
@@ -112,7 +112,7 @@ void displayDeque(Deque deque) {
     // DEFINITELY fix this
     printf("---- START OF DEQUE ---\n");
     for (int i = 0; i < deque.count; i++) {
-        int try = (deque.tail + i) % MAX_DEQUE_SIZE;
+        int try = (deque.head + i) % MAX_DEQUE_SIZE;
         printf("Index [%d]: %d\n", i, deque.array[try]);
     }
     printf("---- END  OF DEQUE ---\n");
@@ -147,11 +147,14 @@ int dequeue(Deque *deque) {
 int pop(Deque *deque) {
     // there's something wrong with pop
     if (isEmpty(deque)) {
-        printf("Deque is empty! Failed to dequeue...\n");
+        printf("Deque is empty! Failed to pop...\n");
         return DEQUE_EMPTY;
     }
-    int popped = deque->array[deque->tail];
-    deque->tail = (deque->tail - 1) % MAX_DEQUE_SIZE;
+    int popped = deque->array[deque->tail - 1];
+    deque->tail = deque->tail - 1;
+    if (deque->tail < 0) {
+        deque->tail = MAX_DEQUE_SIZE - 1;
+    }
     deque->count -= 1;
     return popped;
 }
