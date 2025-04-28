@@ -13,6 +13,10 @@ void push(Stack *stack, int value);
 int pop(Stack *stack);
 void printStack(Stack stack);
 
+// how push and pop work:
+// push - insert first
+// pop - delete first
+
 int main() {
     Stack stack = NULL;
 
@@ -44,7 +48,6 @@ void push(Stack *stack, int value) {
     if (*stack == NULL) {
         *stack = newNode;
     } else {
-        // this is wrong
         newNode->next = *stack;
         (*stack) = newNode;
     }
