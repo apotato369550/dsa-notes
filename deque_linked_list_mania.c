@@ -112,29 +112,51 @@ void displayDeque(Deque deque) {
 // put - places a node/inserts an item at the end of the deque
 void put(Deque *deque, int value) {
     // create a new node, set its value, then set its next to NULL
+    Node *newNode = malloc(sizeof(Node));
+    newNode->value = value;
+    newNode->next = NULL;
     // if tail is not null, set its next to newnode
+    if (deque->tail != NULL) {
+        deque->tail->next = newNode;
+    }
     // set tail to newnode
+    deque->tail = newNode;
     // if head is null, set it to point to newnode
-
+    if (deque->head == NULL) {
+        deque->head = newNode;
+    }
     return;
 }
 
 // dequeue - removes and returns the item at the head of the deque
 int dequeue(Deque *deque) {
     // check if head is null
+    if (deque->head == NULL) {
+        return DEQUE_EMPTY;
+    }
     // get value of head
+    int dequeuedValue = deque->head->value;
     // set temp pointer to head
+    Node *temp = deque->head;
     // set head = head->next
+    deque->head = deque->head->next;
     // free temp
+    free(temp);
     // if head is null, set tail to null also
-    return 0;
+    if (deque->head == NULL) {
+        deque->tail = NULL;
+    }
+    return dequeuedValue;
 }
 
 // pop - removes an item from the tail of the queue
 int pop(Deque *deque) {
     // get value of tail
+    int poppedValue = deque->tail->value;
     // create temp that points to tail
+    Node *temp = deque->tail;
     // set tail to head
+    deque->tail = deque->head;
     // traverse till next node is temp
     // free temp
     // return popped value
