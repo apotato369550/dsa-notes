@@ -77,6 +77,8 @@ int main () {
                 int dequeued = dequeue(&deque);
                 if (dequeued != DEQUE_EMPTY) {
                     printf("Dequeued value: %d\n", dequeued);
+                } else {
+                    printf("Deque is empty! Failed to dequeue...\n");
                 }
                 break;
             case 4:
@@ -84,6 +86,8 @@ int main () {
                 int popped = pop(&deque);
                 if (popped != DEQUE_EMPTY) {
                     printf("Popped value: %d\n", popped);
+                } else {
+                    printf("Deque is empty! Failed to pop...\n");
                 }
                 break;
             default:
@@ -102,11 +106,13 @@ void initializeDeque(Deque *deque) {
 // display - display all values in deque
 void displayDeque(Deque deque) {
     NodePointer temp = deque.head;
-    printf("--- START OF DEQUE ---");
+    printf("--- START OF DEQUE ---\n");
     while (temp != NULL) {
         printf("%d\n", temp->value);
+        // forgot to traverse mb
+        temp = temp->next;
     }
-    printf("--- END OF DEQUE ---");
+    printf("--- END OF DEQUE ---\n");
 }
 
 // put - places a node/inserts an item at the end of the deque
@@ -150,15 +156,33 @@ int dequeue(Deque *deque) {
 }
 
 // pop - removes an item from the tail of the queue
+// issue: pop works until the last item in the deque. then it crashes
 int pop(Deque *deque) {
+    if (deque->tail == NULL) {
+        return DEQUE_EMPTY;
+    }
     // get value of tail
     int poppedValue = deque->tail->value;
+
+    // if tail == head (meaning one node left)
+    if (deque->head == deque->tail) {
+        free(deque->tail);
+        deque->tail = NULL;
+        deque->head = NULL;
+        return poppedValue;
+    }
+
     // create temp that points to tail
     Node *temp = deque->tail;
     // set tail to head
     deque->tail = deque->head;
     // traverse till next node is temp
+    while (deque->tail->next != temp) {
+        deque->tail = deque->tail->next;
+    }
     // free temp
+    free(temp);
+    deque->tail->next = NULL;
     // return popped value
-    return 0;
+    return poppedValue;
 }
