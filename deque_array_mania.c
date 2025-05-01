@@ -82,6 +82,7 @@ int main() {
                 if (dequeued != DEQUE_EMPTY) {
                     printf("Dequeued value: %d\n", dequeued);
                 }
+                printf("Total queue capacity: %d\n", deque.count);
                 break;
             case 4:
                 printf("Popping an item from the deque...\n");
@@ -89,6 +90,7 @@ int main() {
                 if (popped != DEQUE_EMPTY) {
                     printf("Popped value: %d\n", popped);
                 }
+                printf("Total queue capacity: %d\n", deque.count);
                 break;
             default:
                 printf("Please enter a valid option...\n");
@@ -129,6 +131,7 @@ void put(Deque *deque, int value) {
     printf("Value of tail: %d\n", deque->tail);
     deque->count += 1;
     printf("Successfully put value (%d) in deque.\n", value);
+    printf("Total queue capacity: %d\n", deque->count);
 }
 
 // dequeue - removes and returns the element at the front of the array
@@ -166,5 +169,5 @@ int isEmpty(Deque *deque) {
 
 // isfull - checks if deque is full
 int isFull(Deque *deque) {
-    return deque->count >= MAX_DEQUE_SIZE - 1 ? 1 : 0;
+    return deque->count > MAX_DEQUE_SIZE - 1 ? 1 : 0;
 }
