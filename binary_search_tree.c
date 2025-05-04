@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
+#define NUMBER_NOT_FOUND INT_MIN
 
 typedef struct TreeNode {
     int value;
@@ -10,21 +13,34 @@ typedef struct TreeNode {
 TreeNode *createTreeNode(int value);
 void printIndentation(int indents);
 void printTree(TreeNode *root, int indents);
+int insertNumber(TreeNode **root, int value);
+int findNumber(TreeNode *root, int value);
 
 int main() {
+    TreeNode *root = createTreeNode(15);
+
+    insertNumber(&root, 5);
+    insertNumber(&root, 10);
+    insertNumber(&root, 20);
+    insertNumber(&root, 25);
+    insertNumber(&root, 16);
+    insertNumber(&root, 7);
+
+    printTree(root, 0);
+
 
     return 0;
 }
 
 TreeNode *createTreeNode(int value) {
-    TreeNode *newNode = malloc(sizeof(TreeNode));
-    if (newNode) {
-        newNode->value = value;
-        newNode->left = NULL;
-        newNode->right = NULL;
+    TreeNode *newTreeNode = malloc(sizeof(TreeNode));
+    if (newTreeNode) {
+        newTreeNode->value = value;
+        newTreeNode->left = NULL;
+        newTreeNode->right = NULL;
     }
 
-    return newNode;
+    return newTreeNode;
 }
 
 void printIndentation(int value) {
@@ -43,4 +59,35 @@ void printTree(TreeNode *root, int indents) {
         printf("%d \n", root->value);
         printTree(root->right, indents + 1);
     }
+}
+
+int insertNumber(TreeNode **root, int value) {
+    if (*root == NULL) {
+        *root = createTreeNode(value);
+        return 1;
+    } else {
+        if (value < (*root)->value) {
+            insertNumber(&(*root)->left, value);
+        } else {
+            insertNumber(&(*root)->right, value);
+        }
+    }
+
+    return 0;
+}
+
+int findNumber(TreeNode *root, int value) {
+    if (root == NULL) {
+        return 0;
+    }
+
+    if (root->value == value) {
+        return 1;
+    } else if (value < root->value) {
+        findNumber(root->left, value);
+    } else {
+        findNumber(root->right, value);
+    }
+
+    return 0;
 }
