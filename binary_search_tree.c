@@ -28,6 +28,14 @@ int main() {
 
     printTree(root, 0);
 
+    // findNumber(root, 5);
+    
+    printf("Number %d in tree?: %d\n", 5, findNumber(root, 5));
+    printf("Number %d in tree?: %d\n", 3, findNumber(root, 3));
+    printf("Number %d in tree?: %d\n", 10, findNumber(root, 10));
+    printf("Number %d in tree?: %d\n", 8, findNumber(root, 8));
+    printf("Number %d in tree?: %d\n", 7, findNumber(root, 7));
+
 
     return 0;
 }
@@ -78,15 +86,19 @@ int insertNumber(TreeNode **root, int value) {
 
 int findNumber(TreeNode *root, int value) {
     if (root == NULL) {
+        printf("Root is null\n");
         return 0;
     }
 
     if (root->value == value) {
+        printf("Number Found!\n");
         return 1;
     } else if (value < root->value) {
-        findNumber(root->left, value);
+        printf("Searching left\n");
+        return findNumber(root->left, value);
     } else {
-        findNumber(root->right, value);
+        printf("Searching right\n");
+        return findNumber(root->right, value);
     }
 
     return 0;
