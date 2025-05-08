@@ -15,7 +15,7 @@ typedef struct TreeNode{
 void mainMenu();
 
 // helper functions
-TreeNode *createNode(int value);
+TreeNode *createTreeNode(int value);
 void printTabs(int tabs);
 
 // 2. print tree
@@ -23,6 +23,7 @@ void printTree(Root root, int tabs);
 
 // 3. insert node to tree
 void insertNodeMenu(Root *root, int value);
+void insertBST(Root *root, int value);
 
 // 4. delete node with value
 void deleteNode(Root *root, int value);
@@ -65,9 +66,14 @@ void mainMenu() {
                 break;
             case 1:
                 printf("Printing tree...\n");
+                printTree(root, 0);
                 break;
             case 2:
                 printf("Inserting node into tree...\n");
+                int value = 0;
+                printf("Enter integer value to be inserted: \n");
+                scanf("%d", &value);
+                insertNodeMenu(&root, value);
                 break;
             case 3:
                 printf("Deleting node with value...\n");
@@ -86,7 +92,7 @@ void mainMenu() {
 }
 
 // helper function to create nodes and stuff
-TreeNode *createNode(int value) {
+TreeNode *createTreeNode(int value) {
     TreeNode *newTreeNode = malloc(sizeof(TreeNode));
     if (newTreeNode != NULL) {
         newTreeNode->value = value;
@@ -132,8 +138,26 @@ void insertNodeMenu(Root *root, int value) {
                 break;
             case 2:
                 printf("Inserting BST... \n");
+                insertBST(root, value);
                 break;
         }
+    }
+}
+
+void insertBST(Root *root, int value) {
+    // check if root is null. if null, create new node and insert
+    if (*root == NULL) {
+        TreeNode *newTreeNode = createTreeNode(value);
+        *root = newTreeNode;
+        printf("Inserted new tree node! \n");
+        return;
+    }
+
+    // if value is less than root
+    if ((*root)->value) {
+        // call insertBST to the address of the address of the left treenode
+    } else {
+        // otherwise do it to the right
     }
 }
 
