@@ -11,6 +11,9 @@ typedef struct TreeNode{
 // function prototypes
 // basic functionalities to include in program
 
+// 1. main menu with options - maybe this time I should delegate the options thing to a separate function
+void mainMenu();
+
 // helper functions
 TreeNode *createNode(int value);
 void printTabs(int tabs);
@@ -71,7 +74,8 @@ void mainMenu() {
                 break;
             case 2:
                 printf("Inserting node into tree...\n");
-                printf("Please enter value to insert: ");
+                int value = 0;
+                printf("Enter integer value to be inserted: \n");
                 scanf("%d", &value);
                 insertNodeMenu(&root, value);
                 break;
@@ -99,7 +103,7 @@ void mainMenu() {
 }
 
 // helper function to create nodes and stuff
-TreeNode *createNode(int value) {
+TreeNode *createTreeNode(int value) {
     TreeNode *newTreeNode = malloc(sizeof(TreeNode));
     if (newTreeNode != NULL) {
         newTreeNode->value = value;
@@ -150,7 +154,7 @@ void insertNodeMenu(Root *root, int value) {
                 input = 0;
                 break;
             case 2:
-                printf("Inserting level-order... \n");
+                printf("Inserting BST... \n");
                 break;
         }
     }
