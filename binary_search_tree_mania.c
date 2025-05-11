@@ -11,18 +11,19 @@ typedef struct TreeNode{
 // function prototypes
 // basic functionalities to include in program
 
-// 1. main menu with options - maybe this time I should delegate the options thing to a separate function
-void mainMenu();
-
 // helper functions
 TreeNode *createNode(int value);
 void printTabs(int tabs);
+
+// 1. main menu with options - maybe this time I should delegate the options thing to a separate function
+void mainMenu();
 
 // 2. print tree
 void printTree(Root root, int tabs);
 
 // 3. insert node to tree
 void insertNodeMenu(Root *root, int value);
+void insertBST(Root *root, int value);
 
 // 4. delete node with value
 void deleteNode(Root *root, int value);
@@ -47,6 +48,7 @@ int main() {
 void mainMenu() {
     Root root = NULL;
     int input = -1;
+    int value = -1;
     while (input != 0) {
         printf("Here are your choices: \n");
         printf("0 - Exit \n");
@@ -65,15 +67,26 @@ void mainMenu() {
                 break;
             case 1:
                 printf("Printing tree...\n");
+                printTree(root, 0);
                 break;
             case 2:
                 printf("Inserting node into tree...\n");
+                printf("Please enter value to insert: ");
+                scanf("%d", &value);
+                insertNodeMenu(&root, value);
                 break;
             case 3:
                 printf("Deleting node with value...\n");
                 break;
             case 4:
                 printf("Checking if value exists within tree...\n");
+                printf("Please enter value to search: ");
+                scanf("%d", &value);
+                if (doesValueExist(root, value)) {
+                    printf("Value %d exists within the tree!\n", value);
+                } else {
+                    printf("Failed to find %d within the tree\n", value);
+                }
                 break;
             case 5:
                 printf("Entering tree traversal submenu...\n");
@@ -96,6 +109,7 @@ TreeNode *createNode(int value) {
     return newTreeNode;
 }
 
+// prints tabs when printing tree
 void printTabs(int tabs) {
     for (int i = 0 ; i < tabs; i++) {
         printf("\t");
@@ -107,11 +121,14 @@ void printTree(Root root, int tabs) {
     if (root == NULL) {
         printTabs(tabs);
         printf("--- EMPTY ---\n");
+    } else {
+        // put it in else statement, otherwise
+        // it crashes because it accesses null
+        printTree(root->right, tabs + 1);
+        printTabs(tabs);
+        printf("%d\n", root->value);
+        printTree(root->left, tabs + 1);
     }
-    printTree(root->right, tabs + 1);
-    printTabs(tabs);
-    printf("%d\n", root->value);
-    printTree(root->left, tabs + 1);
 }
 
 // 3. insert node to tree
@@ -120,20 +137,39 @@ void insertNodeMenu(Root *root, int value) {
     printf("How would you like your node inserted? \n");
     while (input != 0) {
         printf("0 - Cancel insertion :(( \n");
-        printf("1 - Insert Level Order \n");
-        printf("2 - Insert BST (binary search tree) \n");
+        printf("1 - Insert BST (binary search tree) \n");
+        printf("2 - Insert Level Order \n");
         scanf("%d", &input);
         switch(input) {
             case 0:
                 printf("Cancelling insertion. Returning back to main menu...\n");
                 break;
             case 1:
-                printf("Inserting level-order... \n");
+                printf("Inserting BST... \n");
+                insertBST(root, value);
+                input = 0;
                 break;
             case 2:
-                printf("Inserting BST... \n");
+                printf("Inserting level-order... \n");
                 break;
         }
+    }
+}
+
+void insertBST(Root *root, int value) {
+    if (*root == NULL) {
+        *root = createNode(value);
+        printf("Value %d has been inserted into tree!!!", value);
+        return;
+    }
+
+    // always less than symbol
+    if (value < (*root)->value) {
+        // insert left
+        insertBST(&(*root)->left, value);
+    } else {
+        // insert right
+        insertBST(&(*root)->right, value);
     }
 }
 
@@ -141,7 +177,22 @@ void insertNodeMenu(Root *root, int value) {
 void deleteNode(Root *root, int value);
 
 // 5. check if value exists in tree
-int doesValueExist(Root root, int value);
+int doesValueExist(Root root, int value) {
+    // if value is found, return 1
+    // recursively check if it exists in left and in right
+    // if it exists in either, return 1, otherwise return 0
+
+    // does not work. should try and handle NULL case
+    // test this now.
+    if (root->value == value) {
+        return 1;
+    } else {
+        int existsInLeft = root->left == NULL ? 0 : doesValueExist(root->left, value);
+        int existsInRight = root->right == NULL ? 0 : doesValueExist(root->right, value);
+
+        return existsInLeft || existsInRight;
+    }
+}
 
 // 6. traverse tree submenu - inorder, preorder, postorder, level order
 void traverseTreeSubmenu(Root *root);
