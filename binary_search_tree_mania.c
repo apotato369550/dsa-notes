@@ -25,7 +25,6 @@ void mainMenu();
 void printTree(Root root, int tabs);
 
 // 3. insert node to tree
-void insertNodeMenu(Root *root, int value);
 void insertBST(Root *root, int value);
 
 // 4. delete node with value
@@ -75,12 +74,17 @@ void mainMenu() {
             case 2:
                 printf("Inserting node into tree...\n");
                 int value = 0;
-                printf("Enter integer value to be inserted: \n");
+                printf("Enter integer value to be inserted: ");
                 scanf("%d", &value);
-                insertNodeMenu(&root, value);
+                insertBST(&root, value);
                 break;
             case 3:
                 printf("Deleting node with value...\n");
+                if (!doesValueExist(root, value)) {
+                    printf("Value %d does not exist within the tree! Cancelling deletion\n", value);
+                } else {
+                    deleteNode(&root, value);
+                }
                 break;
             case 4:
                 printf("Checking if value exists within tree...\n");
@@ -135,34 +139,10 @@ void printTree(Root root, int tabs) {
     }
 }
 
-// 3. insert node to tree
-void insertNodeMenu(Root *root, int value) {
-    int input = -1;
-    printf("How would you like your node inserted? \n");
-    while (input != 0) {
-        printf("0 - Cancel insertion :(( \n");
-        printf("1 - Insert BST (binary search tree) \n");
-        printf("2 - Insert Level Order \n");
-        scanf("%d", &input);
-        switch(input) {
-            case 0:
-                printf("Cancelling insertion. Returning back to main menu...\n");
-                break;
-            case 1:
-                printf("Inserting BST... \n");
-                insertBST(root, value);
-                input = 0;
-                break;
-            case 2:
-                printf("Inserting BST... \n");
-                break;
-        }
-    }
-}
 
 void insertBST(Root *root, int value) {
     if (*root == NULL) {
-        *root = createNode(value);
+        *root = createTreeNode(value);
         printf("Value %d has been inserted into tree!!!", value);
         return;
     }
@@ -178,7 +158,12 @@ void insertBST(Root *root, int value) {
 }
 
 // 4. delete node with value
-void deleteNode(Root *root, int value);
+void deleteNode(Root *root, int value) {
+    // traverse the tree till you find a left/right that matches value
+    // if the node w/ the matching value has no children, delete it
+    // otherwise, get the smallest node in the right subtree (inorder successor)
+    // then recursively delete the leaf node
+}
 
 // 5. check if value exists in tree
 int doesValueExist(Root root, int value) {
