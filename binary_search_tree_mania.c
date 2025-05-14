@@ -28,6 +28,7 @@ void printTree(Root root, int tabs);
 void insertBST(Root *root, int value);
 
 // 4. delete node with value
+TreeNode *findInorderSuccessor(TreeNode *node);
 void deleteNode(Root *root, int value);
 
 // 5. check if value exists in tree
@@ -157,12 +158,50 @@ void insertBST(Root *root, int value) {
     }
 }
 
+TreeNode *findInorderSuccessor(TreeNode *node) {
+    while (node->left != NULL) {
+        node = node->left;
+    }
+    return node;
+}
+
 // 4. delete node with value
 void deleteNode(Root *root, int value) {
-    // traverse the tree till you find a left/right that matches value
-    // if the node w/ the matching value has no children, delete it
-    // otherwise, get the smallest node in the right subtree (inorder successor)
-    // then recursively delete the leaf node
+    // if root is empty, return null
+    if ((*root) == NULL) {
+        return NULL;
+    }
+
+    // otherwise, we enter another conditional
+    if (value < (*root)->value) {
+        // if value is less than the value of root, call deleteNode on root's left child
+        deleteNode(&(*root)->left, value);
+    } else if (value < (*root)->value) {
+        // otherwise if value is greater than the value of root, call deleteNode on the right child
+        deleteNode(&(*root)->right, value);
+    } else {
+        // otherwise, you've hit the node you've tried to delete
+        if ((*root)->left == NULL && (*root)->right == NULL) {
+            // if both left and right child are null, free root and set it to null
+            free(*root);
+            *root = NULL;
+        } else if ((*root)->left == NULL) {
+            // if only left is null, set temp to the right child, free root, and re-assign it to temp
+            TreeNode *temp = (*root)->right;
+            free(*root);
+            *root = temp;
+        } else if ((*root)->right == NULL) {
+            // do the same if right is null
+            TreeNode *temp = (*root)->left;
+            free(*root);
+            *root = temp;
+        } else {
+            // if there are two children, find the inorder successor (using a helper function passing the address of root's right child)
+        }
+    }
+
+        // then assign root's value to the successor's value,
+        // then call deleteNode, passing the address of root's right child, and the successor's value
 }
 
 // 5. check if value exists in tree
