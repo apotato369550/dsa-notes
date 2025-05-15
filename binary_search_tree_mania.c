@@ -27,12 +27,15 @@ void printTree(Root root, int tabs);
 // 3. insert node to tree
 void insertBST(Root *root, int value);
 
+
 // 4. delete node with value
 TreeNode *findInorderSuccessor(TreeNode *node);
 void deleteNode(Root *root, int value);
 
 // 5. check if value exists in tree
 int doesValueExist(Root root, int value);
+
+void populateTree(Root *root);
 
 // 6. traverse tree submenu - inorder, preorder, postorder, level order
 void traverseTreeSubmenu(Root *root);
@@ -61,6 +64,7 @@ void mainMenu() {
         printf("4 - Check if value exists in tree \n");
         printf("5 - Traverse tree \n");
         printf("6 - Perform structural checks on tree \n");
+        printf("7 - Populate tree \n");
 
         scanf("%d", &input);
 
@@ -74,13 +78,14 @@ void mainMenu() {
                 break;
             case 2:
                 printf("Inserting node into tree...\n");
-                int value = 0;
                 printf("Enter integer value to be inserted: ");
                 scanf("%d", &value);
                 insertBST(&root, value);
                 break;
             case 3:
                 printf("Deleting node with value...\n");
+                printf("Enter integer value to be deleted: ");
+                scanf("%d", &value);
                 if (!doesValueExist(root, value)) {
                     printf("Value %d does not exist within the tree! Cancelling deletion\n", value);
                 } else {
@@ -102,6 +107,10 @@ void mainMenu() {
                 break;
             case 6:
                 printf("Entering structural checks submenu...\n");
+                break;
+            case 7:
+                printf("Populating Tree...\n");
+                populateTree(&root);
                 break;
         }
     }
@@ -144,7 +153,7 @@ void printTree(Root root, int tabs) {
 void insertBST(Root *root, int value) {
     if (*root == NULL) {
         *root = createTreeNode(value);
-        printf("Value %d has been inserted into tree!!!", value);
+        printf("Value %d has been inserted into tree!!!\n", value);
         return;
     }
 
@@ -166,10 +175,11 @@ TreeNode *findInorderSuccessor(TreeNode *node) {
 }
 
 // 4. delete node with value
+// fix this function
 void deleteNode(Root *root, int value) {
     // if root is empty, return null
     if ((*root) == NULL) {
-        return NULL;
+        return;
     }
 
     // otherwise, we enter another conditional
@@ -197,11 +207,13 @@ void deleteNode(Root *root, int value) {
             *root = temp;
         } else {
             // if there are two children, find the inorder successor (using a helper function passing the address of root's right child)
+            TreeNode *successor = findInorderSuccessor((*root)->right);
+            // then assign root's value to the successor's value,
+            (*root)->value = successor->value;
+            // then call deleteNode, passing the address of root's right child, and the successor's value
+            deleteNode(&(*root)->right, successor->value);
         }
     }
-
-        // then assign root's value to the successor's value,
-        // then call deleteNode, passing the address of root's right child, and the successor's value
 }
 
 // 5. check if value exists in tree
@@ -212,6 +224,11 @@ int doesValueExist(Root root, int value) {
 
     // does not work. should try and handle NULL case
     // test this now.
+    // LMAO I FORGOT TO FIX THIS
+    if (root == NULL) {
+        return 0;
+    }
+
     if (root->value == value) {
         return 1;
     } else {
@@ -221,6 +238,28 @@ int doesValueExist(Root root, int value) {
         return existsInLeft || existsInRight;
     }
 }
+
+void populateTree(Root *root) {
+    if (!doesValueExist((*root), 15)) {
+        insertBST(root, 15);
+    }
+    if (!doesValueExist((*root), 7)) {
+        insertBST(root, 7);
+    }
+    if (!doesValueExist((*root), 10)) {
+        insertBST(root, 10);
+    }
+    if (!doesValueExist((*root), 20)) {
+        insertBST(root, 20);
+    }
+    if (!doesValueExist((*root), 21)) {
+        insertBST(root, 21);
+    }
+    if (!doesValueExist((*root), 35)) {
+        insertBST(root, 35);
+    }
+}
+
 
 // 6. traverse tree submenu - inorder, preorder, postorder, level order
 void traverseTreeSubmenu(Root *root);
