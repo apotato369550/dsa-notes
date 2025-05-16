@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// create required structs
+
+// create queuenode
+
+// create queue
+
 // basic treenode definition with treenode and root aliases
 typedef struct TreeNode{
     int value;
@@ -38,9 +44,13 @@ int doesValueExist(Root root, int value);
 void populateTree(Root *root);
 
 // 6. traverse tree submenu - inorder, preorder, postorder, level order
-void traverseTreeSubmenu(Root *root);
+void traverseTreeInOrder(Root root);
+void traverseTreePreOrder(Root root);
+void traverseTreePostOrder(Root root);
+void traverseTreeLevelOrder(Root root);
+void traverseTreeSubmenu(Root root);
 
-// 7. structural check submenu - height of tree, number of nodes, is tree balanced?, is tree bst?
+// 7. structural check submenu - height of tree, number of nodes, is tree balanced?
 void structuralCheckSubmenu(Root *root);
 
 
@@ -175,7 +185,7 @@ TreeNode *findInorderSuccessor(TreeNode *node) {
 }
 
 // 4. delete node with value
-// fix this function
+// fix this function - done
 void deleteNode(Root *root, int value) {
     // if root is empty, return null
     if ((*root) == NULL) {
@@ -186,7 +196,7 @@ void deleteNode(Root *root, int value) {
     if (value < (*root)->value) {
         // if value is less than the value of root, call deleteNode on root's left child
         deleteNode(&(*root)->left, value);
-    } else if (value < (*root)->value) {
+    } else if (value > (*root)->value) {
         // otherwise if value is greater than the value of root, call deleteNode on the right child
         deleteNode(&(*root)->right, value);
     } else {
@@ -260,9 +270,67 @@ void populateTree(Root *root) {
     }
 }
 
+void traverseTreeInOrder(Root root) {
+    traverseTreeInOrder(root->left);
+    if (root != NULL) {
+        print("%d ", root->value);
+    }
+    traverseTreeInOrder(root->right);
+}
+
+void traverseTreePreOrder(Root root) {
+    if (root != NULL) {
+        print("%d ", root->value);
+    }
+    traverseTreeInOrder(root->left);
+    traverseTreeInOrder(root->right);
+}
+
+void traverseTreePostOrder(Root root) {
+    traverseTreeInOrder(root->left);
+    traverseTreeInOrder(root->right);
+    if (root != NULL) {
+        print("%d ", root->value);
+    }
+}
+void traverseTreeLevelOrder(Root root) {
+    return;
+}
 
 // 6. traverse tree submenu - inorder, preorder, postorder, level order
-void traverseTreeSubmenu(Root *root);
+void traverseTreeSubmenu(Root root) {
+    int input = -1;
+    printf("Welcome to the tree traversal submenu! Where we explore trees like it's nobody's business! How would you like your tree traversed?\n");
+    while (input != 0) {
+        printf("Here are your choices: \n");
+        printf("0 - Exit \n");
+        printf("1 - Traverse and Print Tree Inorder \n");
+        printf("2 - Traverse and Print Tree Preorder \n");
+        printf("3 - Traverse and Print Tree Postorder \n");
+        printf("4 - Traverse and Print Tree Level Order \n");
+
+        scanf("%d", &input);
+
+        switch(input) {
+            case 0:
+                printf("Going back to main menu...\n");
+                break;
+            case 1:
+                printf("Traversing tree Inorder...\n");
+                traverseTreeInOrder(root);
+            case 2:
+                printf("Traversing tree Preorder...\n");
+                traverseTreePreOrder(root);
+            case 3:
+                printf("Traversing tree Postorder...\n");
+                traverseTreePostOrder(root);
+            case 4:
+                printf("Traversing tree Level Order...\n");
+                traverseTreeLevelOrder(root);
+                break;
+        }
+    }
+}
 
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?, is tree bst?
 void structuralCheckSubmenu(Root *root);
