@@ -3,9 +3,6 @@
 
 // create required structs
 
-// create queuenode
-
-// create queue
 
 // basic treenode definition with treenode and root aliases
 typedef struct TreeNode{
@@ -13,6 +10,18 @@ typedef struct TreeNode{
     struct TreeNode *left;
     struct TreeNode *right;
 } TreeNode, *Root;
+
+// create queuenode
+typedef struct QueueNode {
+    TreeNode *node;
+    struct QueueNode *next;
+} QueueNode;
+
+// create queue
+typedef struct Queue {
+    QueueNode *head;
+    QueueNode *tail;
+} Queue;
 
 // function prototypes
 // basic functionalities to include in program
