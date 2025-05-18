@@ -56,7 +56,13 @@ void populateTree(Root *root);
 void traverseTreeInOrder(Root root);
 void traverseTreePreOrder(Root root);
 void traverseTreePostOrder(Root root);
+
+void initializeQueue(Queue *queue);
+void enqueue(Queue *queue, TreeNode *treeNode);
+TreeNode *dequeue(Queue *queue);
+
 void traverseTreeLevelOrder(Root root);
+
 void traverseTreeSubmenu(Root root);
 
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?
@@ -302,8 +308,72 @@ void traverseTreePostOrder(Root root) {
         print("%d ", root->value);
     }
 }
+
+void initializeQueue(Queue *queue) {
+    queue->head = NULL;
+    queue->tail = NULL;
+}
+
+void enqueue(Queue *queue, TreeNode *treeNode) {
+    QueueNode *newQueueNode = malloc(sizeof(QueueNode));
+    newQueueNode->node = treeNode;
+    newQueueNode->next = NULL;
+
+    // if tail is not null, append to tail's next
+    if (queue->tail != NULL) {
+        queue->tail->next = newQueueNode;
+    }
+    // move tail pointer
+    queue->tail = queue->tail->next;
+
+    // if queue's head is null, set head to treenode
+    if (queue->head == NULL) {
+        queue->head = newQueueNode;
+    }
+}
+TreeNode *dequeue(Queue *queue) {
+    if (queue->head = NULL) {
+        // if null, return null, which is queue->head
+        return queue->head;
+    }
+
+    // set a temp pointing to head
+    QueueNode *temp = queue->head;
+    // move head pointer
+    queue->head = queue->head->next;
+    // set a treenode whose value is that of temp
+    TreeNode *dequeuedNode = temp->node;
+    // free temp
+    free(temp);
+
+    // if head is null, tail must equal null as well
+    if (queue->head == NULL) {
+        queue->tail == NULL;
+    }
+
+    // return treenode  
+    return dequeuedNode;
+}
+
+
 void traverseTreeLevelOrder(Root root) {
-    return;
+    if (root == NULL) {
+        print("Unable to traverse tree level-order. Tree has no values...\n");
+    }
+    Queue queue;
+    initializeQueue(&queue);
+    enqueue(&queue, root);
+    TreeNode *dequeued = dequeue(&queue);
+    while (dequeued != NULL) {
+        print("%d ", dequeued->value);
+        if (dequeued->left != NULL) {
+            enqueue(&queue, dequeued->left);
+        }
+        if (dequeued->right != NULL) {
+            enqueue(&queue, dequeued->right);
+        }
+        dequeued = dequeue(&queue);
+    }
 }
 
 // 6. traverse tree submenu - inorder, preorder, postorder, level order
