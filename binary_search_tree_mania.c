@@ -91,6 +91,7 @@ void mainMenu() {
         printf("6 - Perform structural checks on tree \n");
         printf("7 - Populate tree \n");
 
+        printf("Please select an option: ");
         scanf("%d", &input);
 
         switch(input) {
@@ -129,6 +130,7 @@ void mainMenu() {
                 break;
             case 5:
                 printf("Entering tree traversal submenu...\n");
+                traverseTreeSubmenu(root);
                 break;
             case 6:
                 printf("Entering structural checks submenu...\n");
@@ -286,26 +288,26 @@ void populateTree(Root *root) {
 }
 
 void traverseTreeInOrder(Root root) {
-    traverseTreeInOrder(root->left);
     if (root != NULL) {
-        print("%d ", root->value);
+        traverseTreeInOrder(root->left);
+        printf("%d ", root->value);
+        traverseTreeInOrder(root->right);
     }
-    traverseTreeInOrder(root->right);
 }
 
 void traverseTreePreOrder(Root root) {
     if (root != NULL) {
-        print("%d ", root->value);
+        printf("%d ", root->value);
+        traverseTreePreOrder(root->left);
+        traverseTreePreOrder(root->right);
     }
-    traverseTreeInOrder(root->left);
-    traverseTreeInOrder(root->right);
 }
 
 void traverseTreePostOrder(Root root) {
-    traverseTreeInOrder(root->left);
-    traverseTreeInOrder(root->right);
     if (root != NULL) {
-        print("%d ", root->value);
+        traverseTreePostOrder(root->left);
+        traverseTreePostOrder(root->right);
+        printf("%d ", root->value);
     }
 }
 
@@ -334,7 +336,8 @@ void enqueue(Queue *queue, TreeNode *treeNode) {
 TreeNode *dequeue(Queue *queue) {
     if (queue->head = NULL) {
         // if null, return null, which is queue->head
-        return queue->head;
+        TreeNode *nullNode = NULL;
+        return nullNode;
     }
 
     // set a temp pointing to head
@@ -358,14 +361,14 @@ TreeNode *dequeue(Queue *queue) {
 
 void traverseTreeLevelOrder(Root root) {
     if (root == NULL) {
-        print("Unable to traverse tree level-order. Tree has no values...\n");
+        printf("Unable to traverse tree level-order. Tree has no values...\n");
     }
     Queue queue;
     initializeQueue(&queue);
     enqueue(&queue, root);
     TreeNode *dequeued = dequeue(&queue);
     while (dequeued != NULL) {
-        print("%d ", dequeued->value);
+        printf("%d ", dequeued->value);
         if (dequeued->left != NULL) {
             enqueue(&queue, dequeued->left);
         }
@@ -388,6 +391,8 @@ void traverseTreeSubmenu(Root root) {
         printf("3 - Traverse and Print Tree Postorder \n");
         printf("4 - Traverse and Print Tree Level Order \n");
 
+        printf("Please select an option: ");
+
         scanf("%d", &input);
 
         switch(input) {
@@ -397,15 +402,22 @@ void traverseTreeSubmenu(Root root) {
             case 1:
                 printf("Traversing tree Inorder...\n");
                 traverseTreeInOrder(root);
+                printf("\n");
+                break;
             case 2:
                 printf("Traversing tree Preorder...\n");
                 traverseTreePreOrder(root);
+                printf("\n");
+                break;
             case 3:
                 printf("Traversing tree Postorder...\n");
                 traverseTreePostOrder(root);
+                printf("\n");
+                break;
             case 4:
                 printf("Traversing tree Level Order...\n");
                 traverseTreeLevelOrder(root);
+                printf("\n");
                 break;
         }
     }
