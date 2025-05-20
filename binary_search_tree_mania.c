@@ -325,8 +325,9 @@ void enqueue(Queue *queue, TreeNode *treeNode) {
     if (queue->tail != NULL) {
         queue->tail->next = newQueueNode;
     }
-    // move tail pointer
-    queue->tail = queue->tail->next;
+
+    // move tail pointer to point to tail
+    queue->tail = newQueueNode;
 
     // if queue's head is null, set head to treenode
     if (queue->head == NULL) {
@@ -334,7 +335,7 @@ void enqueue(Queue *queue, TreeNode *treeNode) {
     }
 }
 TreeNode *dequeue(Queue *queue) {
-    if (queue->head = NULL) {
+    if (queue->head == NULL) {
         // if null, return null, which is queue->head
         TreeNode *nullNode = NULL;
         return nullNode;
@@ -351,7 +352,7 @@ TreeNode *dequeue(Queue *queue) {
 
     // if head is null, tail must equal null as well
     if (queue->head == NULL) {
-        queue->tail == NULL;
+        queue->tail = NULL;
     }
 
     // return treenode  
@@ -362,20 +363,23 @@ TreeNode *dequeue(Queue *queue) {
 void traverseTreeLevelOrder(Root root) {
     if (root == NULL) {
         printf("Unable to traverse tree level-order. Tree has no values...\n");
+        return;
     }
     Queue queue;
     initializeQueue(&queue);
     enqueue(&queue, root);
-    TreeNode *dequeued = dequeue(&queue);
-    while (dequeued != NULL) {
+    // fix: try to dequeue within the while loop lol
+    while (queue.head != NULL) {
+        TreeNode *dequeued = dequeue(&queue);
         printf("%d ", dequeued->value);
         if (dequeued->left != NULL) {
             enqueue(&queue, dequeued->left);
+            printf("Enqueued left.\n");
         }
         if (dequeued->right != NULL) {
             enqueue(&queue, dequeued->right);
+            printf("Enqueued right.\n");
         }
-        dequeued = dequeue(&queue);
     }
 }
 
