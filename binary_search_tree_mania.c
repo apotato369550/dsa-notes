@@ -66,6 +66,9 @@ void traverseTreeLevelOrder(Root root);
 void traverseTreeSubmenu(Root root);
 
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?
+int getTreeHeight(Root root);
+int getTreeNodes(Root root);
+int isTreeBalanced(Root root);
 void structuralCheckSubmenu(Root *root);
 
 
@@ -425,6 +428,18 @@ void traverseTreeSubmenu(Root root) {
     }
 }
 
+int getTreeHeight(Root root) {
+    return;
+}
+
+int getTreeNodes(Root root) {
+    return;
+}
+
+int isTreeBalanced(Root root) {
+    return;
+}
+
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?, is tree bst?
 void structuralCheckSubmenu(Root *root) {
     int input = -1;
@@ -432,10 +447,9 @@ void structuralCheckSubmenu(Root *root) {
     while (input != 0) {
         printf("Here are your choices: \n");
         printf("0 - Exit \n");
-        printf("1 - Traverse and Print Tree Inorder \n");
-        printf("2 - Traverse and Print Tree Preorder \n");
-        printf("3 - Traverse and Print Tree Postorder \n");
-        printf("4 - Traverse and Print Tree Level Order \n");
+        printf("1 - Get height of tree \n");
+        printf("2 - Get Number of nodes in tree \n");
+        printf("3 - Check if tree is balanced \n");
 
         printf("Please select an option: ");
 
@@ -446,23 +460,15 @@ void structuralCheckSubmenu(Root *root) {
                 printf("Going back to main menu...\n");
                 break;
             case 1:
-                printf("Traversing tree Inorder...\n");
-                traverseTreeInOrder(root);
+                printf("Getting height of tree...\n");
                 printf("\n");
                 break;
             case 2:
-                printf("Traversing tree Preorder...\n");
-                traverseTreePreOrder(root);
+                printf("Getting number of nodes in tree...\n");
                 printf("\n");
                 break;
             case 3:
-                printf("Traversing tree Postorder...\n");
-                traverseTreePostOrder(root);
-                printf("\n");
-                break;
-            case 4:
-                printf("Traversing tree Level Order...\n");
-                traverseTreeLevelOrder(root);
+                printf("Checking if tree is balanced...\n");
                 printf("\n");
                 break;
         }
