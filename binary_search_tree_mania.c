@@ -429,15 +429,47 @@ void traverseTreeSubmenu(Root root) {
 }
 
 int getTreeHeight(Root root) {
-    return;
+    if (root == NULL) {
+        return 0;
+    } else {
+        int leftHeight = 1 + getTreeHeight(root->left);
+        int rightHeight = 1 + getTreeHeight(root->right);
+        if (leftHeight > rightHeight) {
+            return leftHeight;
+        } else {
+            return rightHeight;
+        }
+    }
 }
 
 int getTreeNodes(Root root) {
-    return;
+    if (root == NULL) {
+        return 0;
+    } else {
+        int leftCount = getTreeNodes(root->left);
+        int rightCount = getTreeNodes(root->right);
+        return 1 + leftCount + rightCount;
+    }
 }
 
 int isTreeBalanced(Root root) {
-    return;
+    if (root == NULL) {
+        return 1;
+    } else {
+        int isLeftBalanced = isTreeBalanced(root->left);
+        int isRightBalaned = isTreeBalanced(root->right);
+        int leftHeight = getTreeHeight(root->left);
+        int rightHeight = getTreeHeight(root->right);
+        if (isLeftBalanced && isRightBalaned) {
+            if (abs(leftHeight - rightHeight) == 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
 }
 
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?, is tree bst?
@@ -461,14 +493,21 @@ void structuralCheckSubmenu(Root *root) {
                 break;
             case 1:
                 printf("Getting height of tree...\n");
+                print("The height of the tree is : %d\n", getTreeHeight(root));
                 printf("\n");
                 break;
             case 2:
                 printf("Getting number of nodes in tree...\n");
+                printf("There are %d nodes in the tree.\n", getTreeNodes(root));
                 printf("\n");
                 break;
             case 3:
                 printf("Checking if tree is balanced...\n");
+                if (isTreeBalanced(root)) {
+                    printf("The tree is balanced!\n"); 
+                } else {
+                    printf("The tree is unbalanced! \n");
+                }
                 printf("\n");
                 break;
         }
