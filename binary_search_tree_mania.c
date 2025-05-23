@@ -69,7 +69,7 @@ void traverseTreeSubmenu(Root root);
 int getTreeHeight(Root root);
 int getTreeNodes(Root root);
 int isTreeBalanced(Root root);
-void structuralCheckSubmenu(Root *root);
+void structuralCheckSubmenu(Root root);
 
 
 
@@ -137,6 +137,7 @@ void mainMenu() {
                 break;
             case 6:
                 printf("Entering structural checks submenu...\n");
+                structuralCheckSubmenu(root);
                 break;
             case 7:
                 printf("Populating Tree...\n");
@@ -286,7 +287,7 @@ void populateTree(Root *root) {
         insertBST(root, 21);
     }
     if (!doesValueExist((*root), 35)) {
-        insertBST(root, 35);
+        insertBST(root, 6);
     }
 }
 
@@ -473,7 +474,7 @@ int isTreeBalanced(Root root) {
 }
 
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?, is tree bst?
-void structuralCheckSubmenu(Root *root) {
+void structuralCheckSubmenu(Root root) {
     int input = -1;
     printf("Welcome to the structural checks submenu! Where we check tree structures like it's noone's business\n");
     while (input != 0) {
@@ -493,7 +494,7 @@ void structuralCheckSubmenu(Root *root) {
                 break;
             case 1:
                 printf("Getting height of tree...\n");
-                print("The height of the tree is : %d\n", getTreeHeight(root));
+                printf("The height of the tree is : %d\n", getTreeHeight(root));
                 printf("\n");
                 break;
             case 2:
