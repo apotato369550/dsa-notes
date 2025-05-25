@@ -66,7 +66,10 @@ void traverseTreeLevelOrder(Root root);
 void traverseTreeSubmenu(Root root);
 
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?
-void structuralCheckSubmenu(Root *root);
+int getTreeHeight(Root root);
+int getTreeNodes(Root root);
+int isTreeBalanced(Root root);
+void structuralCheckSubmenu(Root root);
 
 
 
@@ -134,6 +137,7 @@ void mainMenu() {
                 break;
             case 6:
                 printf("Entering structural checks submenu...\n");
+                structuralCheckSubmenu(root);
                 break;
             case 7:
                 printf("Populating Tree...\n");
@@ -283,7 +287,7 @@ void populateTree(Root *root) {
         insertBST(root, 21);
     }
     if (!doesValueExist((*root), 35)) {
-        insertBST(root, 35);
+        insertBST(root, 6);
     }
 }
 
@@ -325,8 +329,9 @@ void enqueue(Queue *queue, TreeNode *treeNode) {
     if (queue->tail != NULL) {
         queue->tail->next = newQueueNode;
     }
-    // move tail pointer
-    queue->tail = queue->tail->next;
+
+    // move tail pointer to point to tail
+    queue->tail = newQueueNode;
 
     // if queue's head is null, set head to treenode
     if (queue->head == NULL) {
@@ -334,7 +339,7 @@ void enqueue(Queue *queue, TreeNode *treeNode) {
     }
 }
 TreeNode *dequeue(Queue *queue) {
-    if (queue->head = NULL) {
+    if (queue->head == NULL) {
         // if null, return null, which is queue->head
         TreeNode *nullNode = NULL;
         return nullNode;
@@ -351,7 +356,7 @@ TreeNode *dequeue(Queue *queue) {
 
     // if head is null, tail must equal null as well
     if (queue->head == NULL) {
-        queue->tail == NULL;
+        queue->tail = NULL;
     }
 
     // return treenode  
@@ -362,12 +367,14 @@ TreeNode *dequeue(Queue *queue) {
 void traverseTreeLevelOrder(Root root) {
     if (root == NULL) {
         printf("Unable to traverse tree level-order. Tree has no values...\n");
+        return;
     }
     Queue queue;
     initializeQueue(&queue);
     enqueue(&queue, root);
-    TreeNode *dequeued = dequeue(&queue);
-    while (dequeued != NULL) {
+    // fix: try to dequeue within the while loop lol
+    while (queue.head != NULL) {
+        TreeNode *dequeued = dequeue(&queue);
         printf("%d ", dequeued->value);
         if (dequeued->left != NULL) {
             enqueue(&queue, dequeued->left);
@@ -375,7 +382,6 @@ void traverseTreeLevelOrder(Root root) {
         if (dequeued->right != NULL) {
             enqueue(&queue, dequeued->right);
         }
-        dequeued = dequeue(&queue);
     }
 }
 
@@ -423,5 +429,88 @@ void traverseTreeSubmenu(Root root) {
     }
 }
 
+int getTreeHeight(Root root) {
+    if (root == NULL) {
+        return 0;
+    } else {
+        int leftHeight = 1 + getTreeHeight(root->left);
+        int rightHeight = 1 + getTreeHeight(root->right);
+        if (leftHeight > rightHeight) {
+            return leftHeight;
+        } else {
+            return rightHeight;
+        }
+    }
+}
+
+int getTreeNodes(Root root) {
+    if (root == NULL) {
+        return 0;
+    } else {
+        int leftCount = getTreeNodes(root->left);
+        int rightCount = getTreeNodes(root->right);
+        return 1 + leftCount + rightCount;
+    }
+}
+
+int isTreeBalanced(Root root) {
+    if (root == NULL) {
+        return 1;
+    } else {
+        int isLeftBalanced = isTreeBalanced(root->left);
+        int isRightBalaned = isTreeBalanced(root->right);
+        int leftHeight = getTreeHeight(root->left);
+        int rightHeight = getTreeHeight(root->right);
+        if (isLeftBalanced && isRightBalaned) {
+            if (abs(leftHeight - rightHeight) == 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+}
+
 // 7. structural check submenu - height of tree, number of nodes, is tree balanced?, is tree bst?
-void structuralCheckSubmenu(Root *root);
+void structuralCheckSubmenu(Root root) {
+    int input = -1;
+    printf("Welcome to the structural checks submenu! Where we check tree structures like it's noone's business\n");
+    while (input != 0) {
+        printf("Here are your choices: \n");
+        printf("0 - Exit \n");
+        printf("1 - Get height of tree \n");
+        printf("2 - Get Number of nodes in tree \n");
+        printf("3 - Check if tree is balanced \n");
+
+        printf("Please select an option: ");
+
+        scanf("%d", &input);
+
+        switch(input) {
+            case 0:
+                printf("Going back to main menu...\n");
+                break;
+            case 1:
+                printf("Getting height of tree...\n");
+                printf("The height of the tree is : %d\n", getTreeHeight(root));
+                printf("\n");
+                break;
+            case 2:
+                printf("Getting number of nodes in tree...\n");
+                printf("There are %d nodes in the tree.\n", getTreeNodes(root));
+                printf("\n");
+                break;
+            case 3:
+                printf("Checking if tree is balanced...\n");
+                if (isTreeBalanced(root)) {
+                    printf("The tree is balanced!\n"); 
+                } else {
+                    printf("The tree is unbalanced! \n");
+                }
+                printf("\n");
+                break;
+        }
+    }
+}
