@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct Graph {
     int n;
@@ -13,7 +14,27 @@ int addEdge(GraphPointer graph, int from, int to, int weight);
 int removeEdge(GraphPointer graph, int from, int to);
 
 int main() {
+    printf("Hello! \n");
+    Graph *graph = createGraph(5);
+    printf("Hello 2! \n");
 
+    // addEdge(graph, 0, 1, 1);
+    
+    addEdge(graph, 1, 0, 1);
+    addEdge(graph, 2, 0, 1);
+    addEdge(graph, 3, 1, 1);
+    addEdge(graph, 0, 2, 1);
+    addEdge(graph, 3, 4, 1);
+    removeEdge(graph, 3, 4);
+    addEdge(graph, 4, 2, 1);
+    
+    printf("Hello 3! \n");
+
+    printGraph(graph);
+    printf("Hello 4! \n");
+
+    destroyGraph(graph);
+    printf("Hello 5! \n");
 
     return 0;
 }
@@ -40,6 +61,7 @@ GraphPointer createGraph(int n) {
             return NULL;
         }
     }
+    return graph;
 }
 
 void destroyGraph(GraphPointer graph) {
@@ -71,23 +93,34 @@ void printGraph(GraphPointer graph) {
 }
 
 int hasEdge(GraphPointer graph, int from, int to) {
+    if (from >= graph->n || to >= graph->n) {
+        return 0;
+    }
     return graph->edges[from][to];
 }
 
 int addEdge(GraphPointer graph, int from, int to, int weight) {
     if (hasEdge(graph, from, to)) {
+        printf("Already has edge...\n");
+        return 0;
+    }
+    if (from >= graph->n || to >= graph->n) {
+        printf("Index out of bounds!\n");
         return 0;
     }
 
     graph->edges[from][to] = weight;
+    printf("Edge created!\n");
 
     return 1;
 }
 
 
-
 int removeEdge(GraphPointer graph, int from, int to) {
     if (!hasEdge(graph, from, to)) {
+        return 0;
+    }
+    if (from >= graph->n || to >= graph->n) {
         return 0;
     }
 
