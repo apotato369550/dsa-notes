@@ -17,7 +17,7 @@ typedef struct Graph {
 GraphPointer createGraph(int n);
 int hasVertex(GraphPointer graph, char vertex);
 int hasEdge(GraphPointer graph, char from, char to);
-int addEdge(GraphPointer graph, char from, char to);
+int addEdge(GraphPointer graph, char from, char to, int weight);
 int removeEdge(GraphPointer graph, char from, char to);
 void printGraph(GraphPointer graph);
 int destroyGraph(GraphPointer graph);
@@ -29,6 +29,12 @@ int main() {
         printf("Failed to allocate memory...\n");
         return 1;
     }
+
+    addEdge(graph, 'A', 'B', 10);
+    addEdge(graph, 'B', 'A', 10);
+    addEdge(graph, 'A', 'C', 20);
+    addEdge(graph, 'B', 'C', 12);
+    addEdge(graph, 'D', 'E', 2);
 
     printGraph(graph);
 
@@ -60,24 +66,22 @@ GraphPointer createGraph(int n) {
 }
 
 int hasVertex(GraphPointer graph, char vertex) {
-    for (int i = 0; i < graph->n; i++) {
-        if (graph->adjacency_list[i].vertex == vertex) {
-            return i;
-        }
-    }
-    return -1;
+    printf("Graph has vertex %c\n", vertex);
+    return ((int) vertex - (int) 'A') - 1 >= graph->n ? -1 : ((int) vertex - (int) 'A') - 1;
 }
 
 int hasEdge(GraphPointer graph, char from, char to) {
     int fromVertex = hasVertex(graph, from);
     int toVertex = hasVertex(graph, to);
     if (fromVertex == -1 || toVertex == -1) {
-        return 0;
+        printf("An edge from %c to %c does not exist...\n", from, to);
+        return -1;
     }
 
     GraphNodePointer current = graph->adjacency_list[fromVertex].next;
     while (current != NULL) {
         if (current->vertex == to) {
+            printf("Graph has edge from %c to %c\n", from, to);
             return current->weight; 
         }
         current = current->next;
@@ -86,7 +90,27 @@ int hasEdge(GraphPointer graph, char from, char to) {
     return -1;
 }
 
-int addEdge(GraphPointer graph, char from, char to) {
+// debug insertion
+// i REALLY need to review my linked list basics :V
+int addEdge(GraphPointer graph, char from, char to, int weight) {
+    int fromVertex = hasVertex(graph, from);
+    int toVertex = hasVertex(graph, to);
+    if (fromVertex == -1 || toVertex == -1) {
+        printf("An vertex %c or %c does not exist...\n", from, to);
+        return -1;
+    }
+
+    // insert last becoz ez
+    // this should works :V
+    GraphNode *newGraphNode = malloc(sizeof(GraphNode));
+    newGraphNode->vertex = to;
+    newGraphNode->next = NULL;
+    newGraphNode->weight = weight;
+    GraphNode *current = &(graph->adjacency_list[fromVertex]);
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newGraphNode;
 
     return 1;
 }
