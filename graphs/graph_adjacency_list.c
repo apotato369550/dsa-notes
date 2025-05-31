@@ -9,6 +9,8 @@ typedef struct GraphNode {
     struct GraphNode *next;
 } GraphNode, *GraphNodePointer;
 
+// i think adjacency list should be a double pointer...
+// unless i can "magic" it in a way where it shouldn't have to be...
 typedef struct Graph {
     int n;
     GraphNodePointer adjacency_list;
@@ -38,6 +40,11 @@ int main() {
 
     printGraph(graph);
 
+    hasEdge(graph, 'A', 'B');
+    hasEdge(graph, 'A', 'E');
+    hasEdge(graph, 'D', 'E');
+
+
     destroyGraph(graph);
     return 0;
 }
@@ -66,8 +73,15 @@ GraphPointer createGraph(int n) {
 }
 
 int hasVertex(GraphPointer graph, char vertex) {
-    printf("Graph has vertex %c\n", vertex);
-    return ((int) vertex - (int) 'A') - 1 >= graph->n ? -1 : ((int) vertex - (int) 'A') - 1;
+    // debugging purposes
+    // printf("Graph has vertex %c\n", vertex);
+
+    int index = ((int) vertex - (int) 'A');
+
+    // debugging purposes
+    // printf("Index of %c: %d\n", vertex, index);
+
+    return index >= graph->n ? -1 : index;
 }
 
 int hasEdge(GraphPointer graph, char from, char to) {
@@ -87,6 +101,7 @@ int hasEdge(GraphPointer graph, char from, char to) {
         current = current->next;
     }
 
+    printf("An edge from %c to %c does not exist...\n", from, to);
     return -1;
 }
 
@@ -96,7 +111,7 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
     int fromVertex = hasVertex(graph, from);
     int toVertex = hasVertex(graph, to);
     if (fromVertex == -1 || toVertex == -1) {
-        printf("An vertex %c or %c does not exist...\n", from, to);
+        printf("Vertex %c or %c does not exist...\n", from, to);
         return -1;
     }
 
@@ -106,7 +121,7 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
     newGraphNode->vertex = to;
     newGraphNode->next = NULL;
     newGraphNode->weight = weight;
-    GraphNode *current = &(graph->adjacency_list[fromVertex]);
+    GraphNodePointer current = &(graph->adjacency_list[fromVertex]);
     while (current->next != NULL) {
         current = current->next;
     }
@@ -115,7 +130,28 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
     return 1;
 }
 int removeEdge(GraphPointer graph, char from, char to) {
-    return 1;
+    int fromVertex = hasVertex(graph, from);
+    int toVertex = hasVertex(graph, to);
+    if (fromVertex == -1 || toVertex == -1) {
+        printf("Vertex %c or %c does not exist...\n", from, to);
+        return -1;
+    }
+
+    if (hasEdge(graph, from, to) == -1) {
+        return -1;
+    }
+    GraphNodePointer current = &(graph->adjacency_list[fromVertex]);
+    // we can assume that the edge exists within the ll thanks to hasEdge()
+    while (current->next->vertex != to) {
+        current = current->next;
+    }
+
+    // ok so time to derive the logic...
+    // if it's in current->next, check if current->next->next exists
+    // create tempt for current->next
+    // link current with current->next->next
+    // free temp
+    // should be ok??
 }
 
 void printGraph(GraphPointer graph) {
@@ -126,6 +162,9 @@ void printGraph(GraphPointer graph) {
         GraphNodePointer current = graph->adjacency_list[i].next;
         while (current != NULL) {
             printf("%c (%d)", current->vertex, current->weight);
+            if (current->next != NULL) {
+                printf(" -> ");
+            }
             current = current->next;
         }
 
