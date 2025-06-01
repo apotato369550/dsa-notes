@@ -35,6 +35,8 @@ int main() {
     addEdge(graph, 'A', 'B', 10);
     addEdge(graph, 'B', 'A', 10);
     addEdge(graph, 'A', 'C', 20);
+    addEdge(graph, 'A', 'D', 20);
+    addEdge(graph, 'A', 'E', 20);
     addEdge(graph, 'B', 'C', 12);
     addEdge(graph, 'D', 'E', 2);
 
@@ -43,6 +45,11 @@ int main() {
     hasEdge(graph, 'A', 'B');
     hasEdge(graph, 'A', 'E');
     hasEdge(graph, 'D', 'E');
+
+    removeEdge(graph, 'A', 'B');
+    removeEdge(graph, 'A', 'C');
+
+    printGraph(graph);
 
 
     destroyGraph(graph);
@@ -115,6 +122,11 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
         return -1;
     }
 
+    if (hasEdge(graph, from, to) >= 0) {
+        printf("An edge already exists from %c to %c...\n", from, to);
+        return -1;
+    }
+
     // insert last becoz ez
     // this should works :V
     GraphNode *newGraphNode = malloc(sizeof(GraphNode));
@@ -145,6 +157,14 @@ int removeEdge(GraphPointer graph, char from, char to) {
     while (current->next->vertex != to) {
         current = current->next;
     }
+
+    GraphNodePointer temp = current->next;
+
+    if (temp->next != NULL) {
+        current->next = temp->next;
+    }
+
+    free(temp);
 
     // ok so time to derive the logic...
     // if it's in current->next, check if current->next->next exists
