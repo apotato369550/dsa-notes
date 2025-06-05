@@ -10,16 +10,16 @@ typedef struct HeapNode {
     struct HeapNode *parent;
 } HeapNode, *Root;
 
-HeapNode *createNode(int value);
+HeapNode *createHeapNode(int value, HeapNode *parent);
 void printTabs(int tabs);
 void printTree(Root root, int tabs);
 HeapNode *findInsertionPoint(Root *root);
-void insertNode(Root *root, int value);
+void insertHeapNode(Root *root, int value);
 int extractMinimum(Root *root);
 int peekMinimum(Root *root);
 void heapifyUp(Root *root);
 void heapifyDown(Root *root);
-int getNodeCount(Root *root);
+int getNodeCount(Root root);
 void destroyHeap(Root *root);
 
 // continue making function prototypes
@@ -28,24 +28,51 @@ int main() {
     return 0;
 }
 
-HeapNode *createNode(int value) {
-    return NULL;
+HeapNode *createHeapNode(int value, HeapNode *parent) {
+    HeapNode *newHeapNode = malloc(sizeof(HeapNode));
+
+    if (newHeapNode == NULL) {
+        printf("Unable to allocate memory.\n");
+        return NULL;
+    }
+
+    newHeapNode->value = value;
+    newHeapNode->parent = parent;
+    newHeapNode->left = NULL;
+    newHeapNode->right = NULL;
+    return newHeapNode;
 }
 
 void printTabs(int tabs) {
-    return;
+    for (int i = 0; i < tabs; i++) {
+        printf("\t");
+    }
 }
 
 void printTree(Root root, int tabs) {
-    return;
+    if (root == NULL) {
+        printTabs(tabs);
+        printf("--- EMPTY ---\n");
+    } else {
+        printTree(root->right, tabs + 1);
+        printTabs(tabs);
+        printf("%d\n", root->value);
+        printTree(root->left, tabs + 1);
+    }
 }
 
 HeapNode *findInsertionPoint(Root *root) {
     return NULL;
 }
 
-void insertNode(Root *root, int value) {
-    return;
+void insertHeapNode(Root *root, int value) {
+    HeapNode *parent = findInsertionPoint(root);
+    HeapNode *newHeapNode = createHeapNode(value, root);
+    if (parent->left == NULL) {
+        parent->left = newHeapNode;
+    } else {
+        parent->right = newHeapNode;
+    }
 }
 
 int extractMinimum(Root *root) {
@@ -66,9 +93,14 @@ void heapifyDown(Root *root) {
     return; 
 }
 
-int getNodeCount(Root *root) {
-    // something something recursive count
-    return 0;
+int getNodeCount(Root root) {
+    if (root == NULL) {
+        return 0;
+    } else {
+        int leftCount = getNodeCount(root->left);
+        int rightCount = getNodeCount(root->right);
+        return 1 + leftCount + rightCount;
+    }
 }
 
 void destroyHeap(Root *root) {
