@@ -17,8 +17,10 @@ HeapNode *findInsertionPoint(Root *root);
 void insertHeapNode(Root *root, int value);
 int extractMinimum(Root *root);
 int peekMinimum(Root *root);
-void heapifyUp(Root *root);
-void heapifyDown(Root *root);
+void heapifyUp(HeapNode *insertHeapNode) ;
+void heapifyDown(Root root);
+HeapNode *findLastNode(Root root, int nodeCount);
+void deleteLastNode(Root root, int nodeCount);
 int getNodeCount(Root root);
 void destroyHeap(Root *root);
 
@@ -73,11 +75,21 @@ void insertHeapNode(Root *root, int value) {
     } else {
         parent->right = newHeapNode;
     }
+    heapifyUp(newHeapNode);
 }
 
 int extractMinimum(Root *root) {
     int minimum = (*root)->value;
-    // free root, heapify down or smth
+
+    // get last node
+    HeapNode *lastNode = findLastNode(root, getNodeCount(root));
+
+    // swap values
+    //delete last node
+
+    // heapify down
+    
+    // return min
     return minimum;
 }
 
@@ -85,13 +97,42 @@ int peekMinimum(Root *root) {
     return (*root)->value;
 }
 
-void heapifyUp(Root *root) {
+void heapifyUp(HeapNode *insertHeapNode) {
+    // bubble the newly inserted node upward till
+    // min-heap property is restored :V
+    HeapNode *current = insertHeapNode;
+    while (current->parent != NULL) {
+        if (current->value < current->parent->value) {
+            // perform swap
+            int temp = current->value;
+            current->value = current->parent->value;
+            current->parent->value = temp;
+
+            // "bubble up"
+            current = current->parent;
+        } else {
+            // node is at where it needs to be :V
+            break;
+        }
+    }
+}
+
+// next three functions are necessary for extractMinimum():
+// heapifyDown, findLastNode, and deleteLastNode
+
+void heapifyDown(Root root) {
+    // sink the new root downward to its correct position in the heap.
     return;
 }
 
-void heapifyDown(Root *root) {
-    return; 
+HeapNode *findLastNode(Root root, int nodeCount) {
+    return NULL;
 }
+
+void deleteLastNode(Root root, int nodeCount) {
+    return;
+}
+
 
 int getNodeCount(Root root) {
     if (root == NULL) {
