@@ -10,17 +10,35 @@ typedef struct HeapNode {
     struct HeapNode *parent;
 } HeapNode, *Root;
 
+typedef struct QueueNode {
+    HeapNode *queueNode;
+    struct QueueNode *next;
+} QueueNode;
+
+typedef struct Queue {
+    QueueNode *head;
+    QueueNode *tail;
+} Queue;
+
 HeapNode *createHeapNode(int value, HeapNode *parent);
 void printTabs(int tabs);
 void printTree(Root root, int tabs);
-HeapNode *findInsertionPoint(Root *root);
+HeapNode *findInsertionPoint(Root root);
 void insertHeapNode(Root *root, int value);
 int extractMinimum(Root *root);
-int peekMinimum(Root *root);
+int peekMinimum(Root root);
 void heapifyUp(HeapNode *insertHeapNode) ;
 void heapifyDown(Root root);
-HeapNode *findLastNode(Root root, int nodeCount);
-void deleteLastNode(Root root, int nodeCount);
+
+// queue helper functions
+void initializeQueue(Queue *queue);
+void enqueue(Queue *queue, HeapNode *queueNode);
+HeapNode *dequeue(Queue *queue);
+
+HeapNode *findLastNode(Root root);
+void deleteLastNode(Root root);
+
+
 int getNodeCount(Root root);
 void destroyHeap(Root *root);
 
@@ -63,7 +81,7 @@ void printTree(Root root, int tabs) {
     }
 }
 
-HeapNode *findInsertionPoint(Root *root) {
+HeapNode *findInsertionPoint(Root root) {
     return NULL;
 }
 
@@ -81,20 +99,33 @@ void insertHeapNode(Root *root, int value) {
 int extractMinimum(Root *root) {
     int minimum = (*root)->value;
 
+    // handle test case if root is the only node in the heap
+    if ((*root)->left == NULL && (*root)->right == NULL) {
+        free(*root);
+        *root = NULL;
+        return minimum;
+    }
+
     // get last node
-    HeapNode *lastNode = findLastNode(root, getNodeCount(root));
+    HeapNode *lastNode = findLastNode(root);
 
     // swap values
+    int temp = minimum;
+    (*root)->value = lastNode->value;
+    lastNode->value = temp;
+
     //delete last node
+    deleteLastNode((*root));
 
     // heapify down
-    
+    heapifyDown((*root));
+
     // return min
     return minimum;
 }
 
-int peekMinimum(Root *root) {
-    return (*root)->value;
+int peekMinimum(Root root) {
+    return root->value;
 }
 
 void heapifyUp(HeapNode *insertHeapNode) {
@@ -125,11 +156,11 @@ void heapifyDown(Root root) {
     return;
 }
 
-HeapNode *findLastNode(Root root, int nodeCount) {
+HeapNode *findLastNode(Root root) {
     return NULL;
 }
 
-void deleteLastNode(Root root, int nodeCount) {
+void deleteLastNode(Root root) {
     return;
 }
 
