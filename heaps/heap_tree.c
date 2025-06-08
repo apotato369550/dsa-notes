@@ -125,9 +125,15 @@ int extractMinimum(Root *root) {
 }
 
 int peekMinimum(Root root) {
-    return root->value;
+    if (root != NULL) {
+        return root->value;
+    } else {
+        return -1;
+    }
 }
 
+
+// maybe refactor this VVV
 void heapifyUp(HeapNode *insertHeapNode) {
     // bubble the newly inserted node upward till
     // min-heap property is restored :V
@@ -152,15 +158,53 @@ void heapifyUp(HeapNode *insertHeapNode) {
 // heapifyDown, findLastNode, and deleteLastNode
 
 void heapifyDown(Root root) {
+    // goal:
     // sink the new root downward to its correct position in the heap.
+
+    // while the current node (root) still has at least one child
+        // identify the smaller child (min of left/right)
+        // compare parent's value with child's value
+        // if child < parent, swap
+        // move current pointer to child, and repeat
+        // stop when node is smaller than both children 
+        // stop also when both children are null
+        // if only one child, compare with child. swap if necessary
     return;
 }
 
+void initializeQueue(Queue *queue) {
+    queue->head = NULL;
+    queue->tail = NULL;
+}
+
+void enqueue(Queue *queue, HeapNode *queueNode) {
+    // follow enqueue logic from bstmania
+    return;
+}
+
+HeapNode *dequeue(Queue *queue) {
+    // follow dequeue logic from bstmania
+    return NULL;
+}
+
+
 HeapNode *findLastNode(Root root) {
+    // declare an queue
+    // initialize said empty queue
+    // while the queue is not empty,
+        // dequeue a node
+        // if it has a left child, enqueue it
+        // if it has a right child, enqueue it as well
+    // the last node dequeued is your last node. return its pointer
     return NULL;
 }
 
 void deleteLastNode(Root root) {
+    // call findLastNode()
+    // set temp pointer variable equal to the lastNode's parent
+    // determine if last node is left or right child: temp->left == lastNode, then set left = null, otherwise set right to null
+    // free the last node
+    // set parent's left or right node to null
     return;
 }
 
