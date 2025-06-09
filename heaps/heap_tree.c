@@ -11,7 +11,7 @@ typedef struct HeapNode {
 } HeapNode, *Root;
 
 typedef struct QueueNode {
-    HeapNode *queueNode;
+    HeapNode *value;
     struct QueueNode *next;
 } QueueNode;
 
@@ -32,7 +32,7 @@ void heapifyDown(Root root);
 
 // queue helper functions
 void initializeQueue(Queue *queue);
-void enqueue(Queue *queue, HeapNode *queueNode);
+void enqueue(Queue *queue, HeapNode *heapNode);
 HeapNode *dequeue(Queue *queue);
 
 HeapNode *findLastNode(Root root);
@@ -177,25 +177,76 @@ void initializeQueue(Queue *queue) {
     queue->tail = NULL;
 }
 
-void enqueue(Queue *queue, HeapNode *queueNode) {
+void enqueue(Queue *queue, HeapNode *heapNode) {
     // follow enqueue logic from bstmania
-    return;
+
+    // create new queuenode and set its value to heapnode and its next to null
+    QueueNode *newQueueNode = malloc(sizeof(QueueNode));
+    newQueueNode->next = heapNode;
+    newQueueNode->next = NULL;
+
+    // if tail is not null, append to tail's next
+    if (queue->tail != NULL) {
+        queue->tail = queue->tail->next;
+    }
+
+    // move tail pointer to point to the new node, which is now at tail
+    queue->tail = queue->tail->next;
+
+    // if queue's head is null, set head to the newnode
+    // this is for if queue was empty, then we added a new, first node
+    if (queue->head == NULL) {
+        queue->head = newQueueNode;
+    }
 }
 
 HeapNode *dequeue(Queue *queue) {
     // follow dequeue logic from bstmania
-    return NULL;
+
+    // if queue's head is null, return null
+    if (queue->head == NULL) {
+        return NULL;
+    }
+
+    // set a temp variable pointing to head
+    QueueNode *temp = queue->head;
+
+    // move head to head->next
+    queue->head = queue->head->next;
+
+    // set a heapnode with value equal to temp's value
+    HeapNode *dequeuedNode = temp->value;
+
+    // free temp
+    free(temp);
+
+    // if head is null, set tail to null. queue is empty
+    if (queue->head == NULL) {
+        queue->tail = NULL;
+    }
+
+    // return the treenode
+    return dequeuedNode;
 }
 
 
 HeapNode *findLastNode(Root root) {
     // declare an queue
-    // initialize said empty queue
-    // while the queue is not empty,
-        // dequeue a node
-        // if it has a left child, enqueue it
-        // if it has a right child, enqueue it as well
-    // the last node dequeued is your last node. return its pointer
+    Queue queue;
+    initializeQueue(&queue);
+    // enqueue root
+    enqueue(&queue, root);
+
+    // declare a lastNode variable and set it to null intially
+    
+
+    // loop through while queue's head is not null
+        // dequeue a queuenode
+        // enqueue left
+        // enqeue right
+
+    // return the lastNode variable's value
+
     return NULL;
 }
 
