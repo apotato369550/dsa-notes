@@ -27,7 +27,7 @@ HeapNode *findInsertionPoint(Root root);
 void insertHeapNode(Root *root, int value);
 int extractMinimum(Root *root);
 int peekMinimum(Root root);
-void heapifyUp(HeapNode *insertHeapNode) ;
+void heapifyUp(HeapNode *heapNode) ;
 void heapifyDown(Root root);
 
 // queue helper functions
@@ -134,19 +134,18 @@ int peekMinimum(Root root) {
 
 
 // maybe refactor this VVV
-void heapifyUp(HeapNode *insertHeapNode) {
+void heapifyUp(HeapNode *heapNode) {
     // bubble the newly inserted node upward till
     // min-heap property is restored :V
-    HeapNode *current = insertHeapNode;
-    while (current->parent != NULL) {
-        if (current->value < current->parent->value) {
+    while (heapNode->parent != NULL) {
+        if (heapNode->value < heapNode->parent->value) {
             // perform swap
-            int temp = current->value;
-            current->value = current->parent->value;
-            current->parent->value = temp;
+            int temp = heapNode->value;
+            heapNode->value = heapNode->parent->value;
+            heapNode->parent->value = temp;
 
             // "bubble up"
-            current = current->parent;
+            heapNode = heapNode->parent;
         } else {
             // node is at where it needs to be :V
             break;
@@ -162,7 +161,15 @@ void heapifyDown(Root root) {
     // sink the new root downward to its correct position in the heap.
 
     // while the current node (root) still has at least one child
+    while (root->left != NULL || root->right != NULL) {
         // identify the smaller child (min of left/right)
+        int isLeftSmaller = 1;
+        HeapNode *min = root->left;
+        if (root->left->value > root->right->value) {
+            int isLeftSmaller = 0;
+        } 
+    }
+
         // compare parent's value with child's value
         // if child < parent, swap
         // move current pointer to child, and repeat
@@ -238,25 +245,43 @@ HeapNode *findLastNode(Root root) {
     enqueue(&queue, root);
 
     // declare a lastNode variable and set it to null intially
-    
+    HeapNode *lastNode = NULL;
 
     // loop through while queue's head is not null
+    while (queue.head != NULL) {
         // dequeue a queuenode
+        lastNode = dequeue(&queue);
+
         // enqueue left
+        if (lastNode->left != NULL) {
+            enqueue(&queue, lastNode->left);
+        }   
         // enqeue right
+        if (lastNode->right != NULL) {
+            enqueue(&queue, lastNode->right);
+        }   
+    }
 
     // return the lastNode variable's value
-
-    return NULL;
+    return lastNode;
 }
 
 void deleteLastNode(Root root) {
     // call findLastNode()
+    HeapNode *lastNode = findLastNode(root);
+
     // set temp pointer variable equal to the lastNode's parent
+    HeapNode *temp = lastNode->parent;
+
     // determine if last node is left or right child: temp->left == lastNode, then set left = null, otherwise set right to null
+    if (temp->left == lastNode) {
+        temp->left = NULL;
+    } else {
+        temp->right = NULL;
+    }
+
     // free the last node
-    // set parent's left or right node to null
-    return;
+    free(lastNode);
 }
 
 
