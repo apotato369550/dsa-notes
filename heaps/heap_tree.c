@@ -163,19 +163,36 @@ void heapifyDown(Root root) {
     // while the current node (root) still has at least one child
     while (root->left != NULL || root->right != NULL) {
         // identify the smaller child (min of left/right)
-        int isLeftSmaller = 1;
-        HeapNode *min = root->left;
+        HeapNode *min = NULL;
         if (root->left->value > root->right->value) {
-            int isLeftSmaller = 0;
-        } 
-    }
-
+            min = root->right;
+        } else {
+            min = root->left;
+        }
         // compare parent's value with child's value
         // if child < parent, swap
+        if (min->value < root->value) {
+            int temp = min->value;
+            min->value = root->value;
+            root->value = temp;
+        }
         // move current pointer to child, and repeat
-        // stop when node is smaller than both children 
+        root = min;
+
         // stop also when both children are null
+        if (root->left  == NULL && root->right  == NULL) {
+            break;
+        }
+
+        // stop when node is smaller than both children 
+        if (root->value < root->left->value && root->value < root->right->value) {
+            break;
+        }
+
         // if only one child, compare with child. swap if necessary
+        // dunno how to do this one
+    }
+
     return;
 }
 
