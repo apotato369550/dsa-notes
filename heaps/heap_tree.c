@@ -40,13 +40,18 @@ void deleteLastNode(Root root);
 
 
 int getNodeCount(Root root);
+void populateMinHeap(Root *root);
 void destroyHeap(Root *root);
 
 // continue making function prototypes
 
 int main() {
+    Root minHeap;
+    populateMinHeap(&minHeap);
+    printTree(minHeap, 0);
     return 0;
 }
+
 
 HeapNode *createHeapNode(int value, HeapNode *parent) {
     HeapNode *newHeapNode = malloc(sizeof(HeapNode));
@@ -82,6 +87,24 @@ void printTree(Root root, int tabs) {
 }
 
 HeapNode *findInsertionPoint(Root root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    Queue queue;
+    initializeQueue(&queue);
+    enqueue(&queue, root);
+
+    while (queue.head != NULL) {
+        HeapNode *current = dequeue(&queue);
+
+        if (current->left == NULL || current->right == NULL) {
+            return current;
+        }
+        enqueue(&queue, current->left);
+        enqueue(&queue, current->right);
+    }
+
     return NULL;
 }
 
@@ -164,10 +187,18 @@ void heapifyDown(Root root) {
     while (root->left != NULL || root->right != NULL) {
         // identify the smaller child (min of left/right)
         HeapNode *min = NULL;
-        if (root->left->value > root->right->value) {
-            min = root->right;
+        if ((root->left == NULL && root->right != NULL) || (root->left != NULL && root->right == NULL)) {
+            if (root->right != NULL) {
+                min = root->right;
+            } else {
+                min = root->left;
+            }
         } else {
-            min = root->left;
+            if (root->left->value > root->right->value) {
+                min = root->right;
+            } else {
+                min = root->left;
+            }
         }
         // compare parent's value with child's value
         // if child < parent, swap
@@ -312,6 +343,24 @@ int getNodeCount(Root root) {
     }
 }
 
+void populateMinHeap(Root *root) {
+    insertHeapNode(root, 5);
+    insertHeapNode(root, 10);
+    insertHeapNode(root, 15);
+    insertHeapNode(root, 20);
+    insertHeapNode(root, 25);
+    insertHeapNode(root, 17);
+    insertHeapNode(root, 21);
+}
+
 void destroyHeap(Root *root) {
-    return;
+    if (root == NULL) {
+        return;
+    }
+
+    destroyHeap(&(*root)->left);
+    destroyHeap(&(*root)->right);
+
+    free((*root));
+    (*root) = NULL;
 }
