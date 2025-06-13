@@ -24,7 +24,7 @@ HeapNode *createHeapNode(int value, HeapNode *parent);
 void printTabs(int tabs);
 void printTree(Root root, int tabs);
 HeapNode *findInsertionPoint(Root root);
-void insertHeapNode(Root *root, int value);
+int insertHeapNode(Root *root, int value);
 int extractMinimum(Root *root);
 int peekMinimum(Root root);
 void heapifyUp(HeapNode *heapNode) ;
@@ -108,15 +108,33 @@ HeapNode *findInsertionPoint(Root root) {
     return NULL;
 }
 
-void insertHeapNode(Root *root, int value) {
-    HeapNode *parent = findInsertionPoint(root);
-    HeapNode *newHeapNode = createHeapNode(value, root);
+int insertHeapNode(Root *root, int value) {
+    // handle case where root is null
+    if (*root == NULL) {
+        *root = createHeapNode(value, NULL);
+        return (*root != NULL);
+    }
+
+    HeapNode *parent = findInsertionPoint((*root));
+    HeapNode *newHeapNode = createHeapNode(value, parent);
+    if (newHeapNode == NULL) {
+        printf("Failed to allocate space for new heapnode...\n");
+        return 0;
+    }
+    if (parent == NULL) {
+        (*root) = newHeapNode;
+        return 1;
+    }
+
     if (parent->left == NULL) {
         parent->left = newHeapNode;
     } else {
         parent->right = newHeapNode;
     }
+
+    // something wrong with heapify now...
     heapifyUp(newHeapNode);
+    return 1;
 }
 
 int extractMinimum(Root *root) {
@@ -130,7 +148,7 @@ int extractMinimum(Root *root) {
     }
 
     // get last node
-    HeapNode *lastNode = findLastNode(root);
+    HeapNode *lastNode = findLastNode((*root));
 
     // swap values
     int temp = minimum;
@@ -237,16 +255,16 @@ void enqueue(Queue *queue, HeapNode *heapNode) {
 
     // create new queuenode and set its value to heapnode and its next to null
     QueueNode *newQueueNode = malloc(sizeof(QueueNode));
-    newQueueNode->next = heapNode;
+    newQueueNode->value = heapNode;
     newQueueNode->next = NULL;
 
     // if tail is not null, append to tail's next
     if (queue->tail != NULL) {
-        queue->tail = queue->tail->next;
+        queue->tail->next = newQueueNode;
     }
 
     // move tail pointer to point to the new node, which is now at tail
-    queue->tail = queue->tail->next;
+    queue->tail = newQueueNode;
 
     // if queue's head is null, set head to the newnode
     // this is for if queue was empty, then we added a new, first node
@@ -344,13 +362,16 @@ int getNodeCount(Root root) {
 }
 
 void populateMinHeap(Root *root) {
-    insertHeapNode(root, 5);
-    insertHeapNode(root, 10);
-    insertHeapNode(root, 15);
-    insertHeapNode(root, 20);
-    insertHeapNode(root, 25);
-    insertHeapNode(root, 17);
-    insertHeapNode(root, 21);
+    int array[] = {5, 10, 15, 20, 25, 17, 21};
+    int arrayLength = sizeof(array) / sizeof(array[0]);
+    for (int i = 0; i < arrayLength; i++) {
+        printf("Attempting to insert: %d\n", array[i]);
+        if (insertHeapNode(root, array[i])) {
+            printf("Successfully inserted %d! \n", array[i]);
+        } else {
+            printf("Failed to insert %d... \n", array[i]);
+        }
+    }
 }
 
 void destroyHeap(Root *root) {
