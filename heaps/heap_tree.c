@@ -46,9 +46,22 @@ void destroyHeap(Root *root);
 // continue making function prototypes
 
 int main() {
-    Root minHeap;
+    // twas initialized to a garbage value that's why
+    Root minHeap = NULL;
+
+    // populate and display
     populateMinHeap(&minHeap);
     printTree(minHeap, 0);
+
+    // peek top value
+    int peekedValue = peekMinimum(minHeap);
+    printf("Peeked value: %d\n", peekedValue);
+
+    // extract top value
+    int extractedValue = extractMinimum(&minHeap);
+    printf("Extracted minimum: %d\n", extractedValue);
+
+    // re-print entire tree
     return 0;
 }
 
@@ -62,6 +75,7 @@ HeapNode *createHeapNode(int value, HeapNode *parent) {
     }
 
     newHeapNode->value = value;
+    // printf("New node's value: %d\n", newHeapNode->value);
     newHeapNode->parent = parent;
     newHeapNode->left = NULL;
     newHeapNode->right = NULL;
@@ -98,7 +112,10 @@ HeapNode *findInsertionPoint(Root root) {
     while (queue.head != NULL) {
         HeapNode *current = dequeue(&queue);
 
+        // printf("Current dequeued value: \n", current->value);
+
         if (current->left == NULL || current->right == NULL) {
+            // printf("Returning current %d\n", current->value);
             return current;
         }
         enqueue(&queue, current->left);
@@ -112,13 +129,18 @@ int insertHeapNode(Root *root, int value) {
     // handle case where root is null
     if (*root == NULL) {
         *root = createHeapNode(value, NULL);
-        return (*root != NULL);
+        if (*root == NULL) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     HeapNode *parent = findInsertionPoint((*root));
+    // printf("Insertion point's value: %d\n", parent->value);
     HeapNode *newHeapNode = createHeapNode(value, parent);
     if (newHeapNode == NULL) {
-        printf("Failed to allocate space for new heapnode...\n");
+        // printf("Failed to allocate space for new heapnode...\n");
         return 0;
     }
     if (parent == NULL) {
@@ -178,6 +200,7 @@ int peekMinimum(Root root) {
 void heapifyUp(HeapNode *heapNode) {
     // bubble the newly inserted node upward till
     // min-heap property is restored :V
+    
     while (heapNode->parent != NULL) {
         if (heapNode->value < heapNode->parent->value) {
             // perform swap
@@ -364,6 +387,7 @@ int getNodeCount(Root root) {
 void populateMinHeap(Root *root) {
     int array[] = {5, 10, 15, 20, 25, 17, 21};
     int arrayLength = sizeof(array) / sizeof(array[0]);
+    printf("Length of array: %d\n", arrayLength);
     for (int i = 0; i < arrayLength; i++) {
         printf("Attempting to insert: %d\n", array[i]);
         if (insertHeapNode(root, array[i])) {
