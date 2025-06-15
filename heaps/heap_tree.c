@@ -62,6 +62,10 @@ int main() {
     printf("Extracted minimum: %d\n", extractedValue);
 
     // re-print entire tree
+    printTree(minHeap, 0);
+
+    destroyHeap(&minHeap);
+
     return 0;
 }
 
