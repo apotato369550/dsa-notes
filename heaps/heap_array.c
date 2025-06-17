@@ -80,5 +80,36 @@ int extractMin(MinHeap *minHeap) {
         printf("Minheap is empty! Failed to extract...\n");
         return HEAP_ERROR;
     }
+    int minimumValue = minHeap->minHeap[0];
+    int lastElement = minHeap->minHeap[minHeap->count - 1];
+    minHeap->minHeap[0] = lastElement;
+    minHeap->count -= 1;
+    heapifyDown(minHeap, 0);
+    return minimumValue;
 }
-int peekMin(MinHeap *minHeap);
+int peekMin(MinHeap *minHeap) {
+    if (isEmpty(minHeap)) {
+        printf("Minheap is empty! Failed to peek...\n");
+        return HEAP_ERROR;
+    }
+    return minHeap->minHeap[minHeap->count - 1];
+}
+
+
+// heapify functions
+int heapifyUp(MinHeap *minHeap, int index) {
+    // start at index (ideally the last element inserted) = count - 1
+    // compare element at index vs parent element
+    int childIndex = index;
+    int parentIndex = (childIndex - 1) / 2;
+
+    // while we still have a valid parent index...
+    while (parentIndex >= 0) {
+        // check if we need to swap:
+        // 
+        if (minHeap->minHeap[childIndex] ) {
+            break;
+        }
+    }
+}
+int heapifyDown(MinHeap *minHeap, int index);
