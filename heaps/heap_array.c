@@ -18,7 +18,10 @@ typedef struct {
 
 // create/destroy minheap
 MinHeap *createMinHeap(int size);
-void destroyMinHeap(MinHeap *minHeap);
+void destroyMinHeap(MinHeap **minHeap);
+
+// printing functions
+// how does one go about printing a minheap??
 
 // insertion, extraction, and peeking
 int insertMinHeap(MinHeap *minHeap, int value);
@@ -39,8 +42,17 @@ int isEmpty(MinHeap *minHeap);
 int isFull(MinHeap *minHeap);
 void printHeap(MinHeap *minHeap);
 
-int main() {
+// populate function
+void populateMinHeap(MinHeap *minHeap);
 
+int main() {
+    // maybe perform realloc whenever new element is added??
+    MinHeap *minHeap = createMinHeap(10);
+    populateMinHeap(minHeap);
+
+    // do some printing in between to debug all the functions related to insertion
+
+    destroyMinHeap(minHeap);
     return 0;
 }
 
@@ -57,9 +69,10 @@ MinHeap *createMinHeap(int size) {
 }
 
 
-void destroyMinHeap(MinHeap *minHeap) {
-    free(minHeap->minHeap);
-    free(minHeap);
+void destroyMinHeap(MinHeap **minHeap) {
+    free((*minHeap)->minHeap);
+    free((*minHeap));
+    (*minHeap) = NULL;
     return;
 }
 
@@ -106,10 +119,33 @@ int heapifyUp(MinHeap *minHeap, int index) {
     // while we still have a valid parent index...
     while (parentIndex >= 0) {
         // check if we need to swap:
-        // 
-        if (minHeap->minHeap[childIndex] ) {
+        int parent = minHeap->minHeap[parentIndex];
+        int child = minHeap->minHeap[childIndex];
+    
+        if (child < parent) {
+            // perform the swap 
+            minHeap->minHeap[childIndex] = parent;
+            minHeap->minHeap[parentIndex] = child;
+
+            // move child to parent
+            childIndex = parentIndex;
+            parentIndex = parentIndex = (childIndex - 1) / 2;
+        } else {
+            // the minheap should be alright
             break;
         }
     }
 }
 int heapifyDown(MinHeap *minHeap, int index);
+
+void populateMinHeap(MinHeap *minHeap) {
+    int array[] = {5, 10, 15, 20, 25, 3, 6, 9, 12};
+    for (int i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
+        if (insertMinHeap(minHeap, array[i]) != HEAP_ERROR) { 
+            printf("Successfully inserted value %d to minheap\n", array[i]);
+        } else {
+            printf("Failed to insert value %d to minheap.\n", array[i]);
+        }
+    }
+    return;
+}
