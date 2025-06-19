@@ -22,6 +22,9 @@ void destroyMinHeap(MinHeap **minHeap);
 
 // printing functions
 // how does one go about printing a minheap??
+void printMinHeapAsArray(MinHeap *minHeap);
+void printTabs(int tabs);
+void printMinHeapAsTree(MinHeap *minHeap, int index, int tabs);
 
 // insertion, extraction, and peeking
 int insertMinHeap(MinHeap *minHeap, int value);
@@ -51,6 +54,8 @@ int main() {
     populateMinHeap(minHeap);
 
     // do some printing in between to debug all the functions related to insertion
+    printf("Printing minheap in array form: \n");
+    printMinHeapAsArray(minHeap);
 
     destroyMinHeap(minHeap);
     return 0;
@@ -74,6 +79,45 @@ void destroyMinHeap(MinHeap **minHeap) {
     free((*minHeap));
     (*minHeap) = NULL;
     return;
+}
+
+void printMinHeapAsArray(MinHeap *minHeap) {
+    for (int i = 0; i < minHeap->count; i++) {
+        printf("%d " + minHeap->minHeap[i]);
+    }
+    printf("\n");
+}
+
+void printTabs(int tabs) {
+    for (int i = 0; i < tabs; i++) {
+        printf("\t");
+    }
+}
+
+void printMinHeapAsTree(MinHeap *minHeap, int index, int tabs) {
+    // if index is greater or equal to than the heap's size, 
+    // print tabs and empty, then return
+    if (index > minHeap->size) {
+        printTabs(tabs);
+        printf("----- EMPTY ----- \n");
+        return;
+    }
+
+    // by default, it should:
+    // get the right child = 2 * index + 2
+    int rightChildIndex = 2 * index + 2;
+
+    // get the left child = 2 * index + 1
+    int leftChildIndex = 2 * index + 1;
+
+    // recurse with right, incrementing tabs
+    printMinHeapAsTree(minHeap, rightChildIndex, tabs + 1);
+    // print current tabs (to indent current index)
+    printTabs(tabs);
+    // print the current value at index
+    printf("%d \n", minHeap->minHeap[index]);
+    // recurse with left child, incrementing tabs again
+    printMinHeapAsTree(minHeap, leftChildIndex, tabs + 1);
 }
 
 int insertMinHeap(MinHeap *minHeap, int value) {
