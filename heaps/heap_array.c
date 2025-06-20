@@ -43,7 +43,6 @@ int getRightChildIndex(int index);
 // other functions
 int isEmpty(MinHeap *minHeap);
 int isFull(MinHeap *minHeap);
-void printHeap(MinHeap *minHeap);
 
 // populate function
 void populateMinHeap(MinHeap *minHeap);
@@ -57,7 +56,10 @@ int main() {
     printf("Printing minheap in array form: \n");
     printMinHeapAsArray(minHeap);
 
-    destroyMinHeap(minHeap);
+    printf("Printing minheap in tree form: \n");
+    printMinHeapAsTree(minHeap, 0, 0);
+
+    destroyMinHeap(&minHeap);
     return 0;
 }
 
@@ -192,4 +194,12 @@ void populateMinHeap(MinHeap *minHeap) {
         }
     }
     return;
+}
+
+int isEmpty(MinHeap *minHeap) {
+    return 0;
+}
+
+int isFull(MinHeap *minHeap) {
+    return 0;
 }
