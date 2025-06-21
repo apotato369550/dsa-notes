@@ -128,7 +128,11 @@ int insertMinHeap(MinHeap *minHeap, int value) {
         return HEAP_ERROR;
     }
     minHeap->minHeap[minHeap->count] = value;
-    heapifyUp(minHeap, minHeap->count);
+    if (heapifyUp(minHeap, minHeap->count)) {
+        printf("Successfully heapified up!\n");
+    } else {
+        printf("Failed to heapfiy up...");
+    }
     minHeap->count++;
 
     return value;
@@ -143,7 +147,11 @@ int extractMin(MinHeap *minHeap) {
     int lastElement = minHeap->minHeap[minHeap->count - 1];
     minHeap->minHeap[0] = lastElement;
     minHeap->count -= 1;
-    heapifyDown(minHeap, 0);
+    if (heapifyDown(minHeap, 0)) {
+        printf("Successfully heapified down!\n");
+    } else {
+        printf("Failed to heapify down...\n");
+    }
     return minimumValue;
 }
 int peekMin(MinHeap *minHeap) {
@@ -160,7 +168,7 @@ int heapifyUp(MinHeap *minHeap, int index) {
     // start at index (ideally the last element inserted) = count - 1
     // compare element at index vs parent element
     int childIndex = index;
-    int parentIndex = (childIndex - 1) / 2;
+    int parentIndex = getParentIndex(index);
 
     // while we still have a valid parent index...
     while (parentIndex >= 0) {
@@ -175,14 +183,48 @@ int heapifyUp(MinHeap *minHeap, int index) {
 
             // move child to parent
             childIndex = parentIndex;
-            parentIndex = parentIndex = (childIndex - 1) / 2;
+            parentIndex = getParentIndex(childIndex);
         } else {
             // the minheap should be alright
             break;
         }
     }
+    return 1;
 }
-int heapifyDown(MinHeap *minHeap, int index);
+int heapifyDown(MinHeap *minHeap, int index) {
+    // when the current node has at least one child
+    
+    // parent = (i - 1) / 2
+    // left child = 2i + 1
+    // right child = 2i + 2
+
+    int parentIndex = index;
+    int leftChildIndex = getLeftChildIndex(index);
+    int rightChildIndex = getRightChildIndex(index);
+
+    while (leftChildIndex < minHeap->count || rightChildIndex) {
+
+    }
+        // find the smaller child (or only child)
+        // if the current node's value > smaller child, 
+            // swap downwards
+            // move index to the child index
+        // otherwise, minheap property should be restored
+    return 1;
+}
+
+// getter functions
+int getParentIndex(int index) {
+    return (index - 1) / 2;
+}
+
+int getLeftChildIndex(int index) {
+    return (2 * index) + 1;
+}
+
+int getRightChildIndex(int index) {
+    return (2 * index) + 2;
+}
 
 void populateMinHeap(MinHeap *minHeap) {
     int array[] = {5, 10, 15, 20, 25, 3, 6, 9, 12};
