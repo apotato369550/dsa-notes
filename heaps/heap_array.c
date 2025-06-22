@@ -3,6 +3,7 @@
 #include <limits.h>
 
 #define HEAP_ERROR INT_MIN
+#define HEAP_EMPTY INT_MIN + 1
 
 typedef struct {
     int *minHeap;
@@ -56,8 +57,8 @@ int main() {
     printf("Printing minheap in array form: \n");
     printMinHeapAsArray(minHeap);
 
-    printf("Printing minheap in tree form: \n");
-    printMinHeapAsTree(minHeap, 0, 0);
+    // printf("Printing minheap in tree form: \n");
+    // printMinHeapAsTree(minHeap, 0, 0);
 
     destroyMinHeap(&minHeap);
     return 0;
@@ -71,7 +72,12 @@ MinHeap *createMinHeap(int size) {
     }
     newMinHeap->count = 0;
     newMinHeap->size = size;
+
+    // use calloc :V OR! SET IT TO EMPTY
     newMinHeap->minHeap = malloc(sizeof(int) * newMinHeap->size);
+    for (int i = 0; i < newMinHeap->size; i++) {
+        newMinHeap->minHeap[i] = HEAP_EMPTY;
+    }
     return newMinHeap;
 }
 
@@ -85,7 +91,9 @@ void destroyMinHeap(MinHeap **minHeap) {
 
 void printMinHeapAsArray(MinHeap *minHeap) {
     for (int i = 0; i < minHeap->count; i++) {
-        printf("%d " + minHeap->minHeap[i]);
+        if (minHeap->minHeap[i] != HEAP_EMPTY) {
+            printf("%d " + minHeap->minHeap[i]);
+        }
     }
     printf("\n");
 }
@@ -117,7 +125,11 @@ void printMinHeapAsTree(MinHeap *minHeap, int index, int tabs) {
     // print current tabs (to indent current index)
     printTabs(tabs);
     // print the current value at index
-    printf("%d \n", minHeap->minHeap[index]);
+    if (minHeap->minHeap[index] != HEAP_EMPTY) {
+        printf("%d \n", minHeap->minHeap[index]);
+    } else {
+        printf("----- EMPTY ----- \n");
+    }
     // recurse with left child, incrementing tabs again
     printMinHeapAsTree(minHeap, leftChildIndex, tabs + 1);
 }
@@ -202,14 +214,48 @@ int heapifyDown(MinHeap *minHeap, int index) {
     int leftChildIndex = getLeftChildIndex(index);
     int rightChildIndex = getRightChildIndex(index);
 
-    while (leftChildIndex < minHeap->count || rightChildIndex) {
-
-    }
+    while (leftChildIndex < minHeap->count || rightChildIndex < minHeap->count) {
         // find the smaller child (or only child)
+        // if left and right are valid, compare left and right
+        // otherwise, isolate and check which is invalid, and assign that instead to childIndex
+        int childIndex = -1;
+        if (leftChildIndex < minHeap->count && rightChildIndex < minHeap->count) {
+            int leftChild = minHeap->minHeap[leftChildIndex];
+            int rightChild = minHeap->minHeap[rightChildIndex];
+
+            if (leftChild < rightChild) {
+                childIndex = leftChildIndex;
+            } else {
+                childIndex = rightChildIndex;
+            }
+        } else {
+            if (leftChildIndex < minHeap->count) {
+                // left must be valid, right must be invalid
+                childIndex = leftChildIndex;
+            } else {
+                // right must be valid.
+                childIndex = rightChildIndex;
+            }
+        }
+        int child = minHeap->minHeap[childIndex];
+        int parent = minHeap->minHeap[parentIndex];
         // if the current node's value > smaller child, 
-            // swap downwards
-            // move index to the child index
+        if (parent > child) {
+            // perform swap
+            int temp = child;
+            minHeap->minHeap[childIndex] = parent;
+            minHeap->minHeap[parentIndex] = temp;
+            // move index to child index
+            parentIndex = childIndex;
+
+            // recalculate left and right child indices
+            leftChildIndex = getLeftChildIndex(index);
+            rightChildIndex = getRightChildIndex(index);
+        } else {
+            break;
         // otherwise, minheap property should be restored
+        }
+    }
     return 1;
 }
 
@@ -239,9 +285,9 @@ void populateMinHeap(MinHeap *minHeap) {
 }
 
 int isEmpty(MinHeap *minHeap) {
-    return 0;
+    return minHeap->count == 0 ? 1 : 0;
 }
 
 int isFull(MinHeap *minHeap) {
-    return 0;
+    return minHeap->count >= minHeap->size - 1 ? 1 : 0;
 }
