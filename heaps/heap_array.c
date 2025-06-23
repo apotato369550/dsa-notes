@@ -57,8 +57,8 @@ int main() {
     printf("Printing minheap in array form: \n");
     printMinHeapAsArray(minHeap);
 
-    // printf("Printing minheap in tree form: \n");
-    // printMinHeapAsTree(minHeap, 0, 0);
+    printf("Printing minheap in tree form: \n");
+    printMinHeapAsTree(minHeap, 0, 0);
 
     destroyMinHeap(&minHeap);
     return 0;
@@ -92,7 +92,10 @@ void destroyMinHeap(MinHeap **minHeap) {
 void printMinHeapAsArray(MinHeap *minHeap) {
     for (int i = 0; i < minHeap->count; i++) {
         if (minHeap->minHeap[i] != HEAP_EMPTY) {
-            printf("%d " + minHeap->minHeap[i]);
+            // replace + with ,
+            printf("%d ", minHeap->minHeap[i]);
+        } else {
+            printf("(empty) ");
         }
     }
     printf("\n");
@@ -107,7 +110,9 @@ void printTabs(int tabs) {
 void printMinHeapAsTree(MinHeap *minHeap, int index, int tabs) {
     // if index is greater or equal to than the heap's size, 
     // print tabs and empty, then return
-    if (index > minHeap->size) {
+
+    // fixed > to >=
+    if (index >= minHeap->size) {
         printTabs(tabs);
         printf("----- EMPTY ----- \n");
         return;
@@ -171,7 +176,7 @@ int peekMin(MinHeap *minHeap) {
         printf("Minheap is empty! Failed to peek...\n");
         return HEAP_ERROR;
     }
-    return minHeap->minHeap[minHeap->count - 1];
+    return minHeap->minHeap[0];
 }
 
 
@@ -249,8 +254,9 @@ int heapifyDown(MinHeap *minHeap, int index) {
             parentIndex = childIndex;
 
             // recalculate left and right child indices
-            leftChildIndex = getLeftChildIndex(index);
-            rightChildIndex = getRightChildIndex(index);
+            // replaced index with parentIndex
+            leftChildIndex = getLeftChildIndex(parentIndex);
+            rightChildIndex = getRightChildIndex(parentIndex);
         } else {
             break;
         // otherwise, minheap property should be restored
