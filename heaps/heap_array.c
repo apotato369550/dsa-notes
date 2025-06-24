@@ -60,6 +60,13 @@ int main() {
     printf("Printing minheap in tree form: \n");
     printMinHeapAsTree(minHeap, 0, 0);
 
+    printf("Extracting from top: ");
+    int extracted = extractMin(minHeap);
+    printf("Extracted value: %d", extracted);
+    
+    printf("Printing minheap in tree form: \n");
+    printMinHeapAsTree(minHeap, 0, 0);
+    
     destroyMinHeap(&minHeap);
     return 0;
 }
@@ -171,6 +178,7 @@ int extractMin(MinHeap *minHeap) {
     }
     return minimumValue;
 }
+
 int peekMin(MinHeap *minHeap) {
     if (isEmpty(minHeap)) {
         printf("Minheap is empty! Failed to peek...\n");
