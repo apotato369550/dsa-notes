@@ -15,9 +15,10 @@ typedef struct Graph {
 GraphPointer createGraph(int n);
 int addEdge(GraphPointer graph, char from, char to, int weight);
 void printGraph(GraphPointer graph);
+GraphNode *getVertexFromGraph(GraphPointer graph, char vertex);
 int destroyGraph(GraphPointer graph);
 
-void DFS_explore(GraphPointer graph, char start, int *visited);
+void DFS_explore(GraphPointer graph, char current, int *visited);
 void DFS_target(GraphPointer graph, char start, char target);
 
 int main() {
@@ -138,19 +139,51 @@ void printGraph(GraphPointer graph) {
     return;
 }
 
+GraphNode *getVertexFromGraph(GraphPointer graph, char vertex) {
+    for (int i = 0; i < graph->n; i++) {
+        // complete this...
+        GraphNode *currentVertex = NULL;
+    }
+    return NULL;
+}
+
 int destroyGraph(GraphPointer graph) {
     free(graph->adjacency_list);
     free(graph);
 }
 
-void DFS_explore(GraphPointer graph, char start, int *visited) {
-    int is_visited = 0;
+void DFS_explore(GraphPointer graph, char current, int *visited) {
+    int isVisited = 0;
+    int currentIndexVisited = (int) current - (int) 'A';
     for (int i = 0; i < graph->n; i++) {
-        if (visited[(int) start - (int) 'A'] == 1) {
-            is_visited = 1;
+        if (visited[currentIndexVisited] == 1) {
+            isVisited = 1;
             break;
         }
     }
+    if (isVisited) {
+        return;
+    }
+    visited[currentIndexVisited] = 1;
+    // process
+    printf("Visiting: %c\n", current);
+
+    // we need a sort of search function to get the current graph's next
+    GraphNode *currentVertex = getVertexFromGraph(graph, current);
+
+    if (currentVertex == NULL) {
+        printf("Vertex not found in graph:(( Returning...\n");
+        return;
+    }
+
+    GraphNode *currentNeighbor = currentVertex->next;
+
+    while (currentNeighbor != NULL) {
+        // recurse and perform DFS explore
+        DFS_explore(graph, currentNeighbor->vertex, visited);
+        currentNeighbor = currentNeighbor->next;
+    }
+
 }
 
 void DFS_target(GraphPointer graph, char start, char target) {
