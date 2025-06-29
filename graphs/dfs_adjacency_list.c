@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+#define NO_VERTEX '*'
 
 typedef struct GraphNode {
     char vertex;
@@ -13,13 +15,35 @@ typedef struct Graph {
 } Graph, *GraphPointer;
 
 GraphPointer createGraph(int n);
+int hasVertex(GraphPointer graph, char vertex);
+int hasEdge(GraphPointer graph, char from, char to);
 int addEdge(GraphPointer graph, char from, char to, int weight);
+int isVisited(GraphPointer graph, char vertex, int *visited);
+int getIndexOfVertex(char vertex);
 void printGraph(GraphPointer graph);
-GraphNode *getVertexFromGraph(GraphPointer graph, char vertex);
+GraphNode getVertexFromGraph(GraphPointer graph, char vertex);
+void resetVisited(int *visited, int n);
 int destroyGraph(GraphPointer graph);
 
 void DFS_explore(GraphPointer graph, char current, int *visited);
-void DFS_target(GraphPointer graph, char start, char target);
+int DFS_target(GraphPointer graph, char current, char target, int *visited);
+
+/*
+
+    A
+   / \
+  B   C
+ /     \
+D       E
+ \     /
+   F - G
+       |
+       H
+
+I - J  (Disconnected component)
+
+*/
+
 
 int main() {
     Graph *graph = createGraph(10);
@@ -28,6 +52,7 @@ int main() {
         printf("Failed to allocate memory...\n");
         return 1;
     }
+
     addEdge(graph, 'A', 'B', 1); 
     addEdge(graph, 'B', 'A', 1);
 
@@ -59,8 +84,23 @@ int main() {
 
     DFS_explore(graph, 'A', visited);
 
-    DFS_target(graph->adjacency_list, 'A', 'H');   // should find path
-    DFS_target(graph->adjacency_list, 'A', 'I');   // should report not reachable
+    resetVisited(visited, graph->n);
+
+    // should find path
+    if (DFS_target(graph, 'A', 'H', visited)) {
+        printf("A path was found from A to H!!!");
+    } else {
+        printf("Could not find path from A to H:((");
+    } 
+    resetVisited(visited, graph->n);
+
+    // should report not reachable
+    if (DFS_target(graph, 'A', 'I', visited)) {
+        printf("A path was found from A to I!!!");
+    } else {
+        printf("Could not find path from A to I:((");
+    } 
+    resetVisited(visited, graph->n);
 
     destroyGraph(graph);
 
@@ -91,16 +131,44 @@ GraphPointer createGraph(int n) {
 }
 
 
+int hasVertex(GraphPointer graph, char vertex) {
+    // debugging purposes
+    // printf("Graph has vertex %c\n", vertex);
+
+    int index = ((int) vertex - (int) 'A');
+
+    // debugging purposes
+    // printf("Index of %c: %d\n", vertex, index);
+
+    return index >= graph->n ? -1 : index;
+}
+
+int hasEdge(GraphPointer graph, char from, char to) {
+    int fromVertex = hasVertex(graph, from);
+    int toVertex = hasVertex(graph, to);
+    if (fromVertex == -1 || toVertex == -1) {
+        return -1;
+    }
+
+    GraphNodePointer current = graph->adjacency_list[fromVertex].next;
+    while (current != NULL) {
+        if (current->vertex == to) {
+            return current->weight; 
+        }
+        current = current->next;
+    }
+
+    return -1;
+}
+
 int addEdge(GraphPointer graph, char from, char to, int weight) {
     int fromVertex = hasVertex(graph, from);
     int toVertex = hasVertex(graph, to);
     if (fromVertex == -1 || toVertex == -1) {
-        printf("Vertex %c or %c does not exist...\n", from, to);
         return -1;
     }
 
     if (hasEdge(graph, from, to) >= 0) {
-        printf("An edge already exists from %c to %c...\n", from, to);
         return -1;
     }
 
@@ -117,6 +185,19 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
     current->next = newGraphNode;
 
     return 1;
+}
+
+int isVisited(GraphPointer graph, char vertex, int *visited) {
+    for (int i = 0; i < graph->n; i++) {
+        if (visited[(int) graph->adjacency_list[i].vertex - (int) 'A'] == 1) {
+            return 1;
+        }
+    }
+    return 0;   
+}
+
+int getIndexOfVertex(char vertex) {
+    return (int) vertex - (int) 'A';
 }
 
 void printGraph(GraphPointer graph) {
@@ -139,12 +220,24 @@ void printGraph(GraphPointer graph) {
     return;
 }
 
-GraphNode *getVertexFromGraph(GraphPointer graph, char vertex) {
+GraphNode getVertexFromGraph(GraphPointer graph, char vertex) {
+    int found = 0;
     for (int i = 0; i < graph->n; i++) {
-        // complete this...
-        GraphNode *currentVertex = NULL;
+        if (graph->adjacency_list[i].vertex == vertex) {
+            return graph->adjacency_list[i];
+        }
     }
-    return NULL;
+    GraphNode dummy;
+    dummy.vertex = NO_VERTEX;
+    dummy.next = NULL;
+    dummy.weight = -1;
+    return dummy;
+}
+
+void resetVisited(int *visited, int n) {
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+    }
 }
 
 int destroyGraph(GraphPointer graph) {
@@ -153,30 +246,31 @@ int destroyGraph(GraphPointer graph) {
 }
 
 void DFS_explore(GraphPointer graph, char current, int *visited) {
-    int isVisited = 0;
-    int currentIndexVisited = (int) current - (int) 'A';
-    for (int i = 0; i < graph->n; i++) {
-        if (visited[currentIndexVisited] == 1) {
-            isVisited = 1;
-            break;
-        }
-    }
-    if (isVisited) {
+    // check if current vertex is visited
+    // if it is, return
+    if (isVisited(graph, current, visited)) {
         return;
     }
+
+    int currentIndexVisited = (int) current - (int) 'A';
+    // otherwise, update visited array
     visited[currentIndexVisited] = 1;
+
     // process
     printf("Visiting: %c\n", current);
 
     // we need a sort of search function to get the current graph's next
-    GraphNode *currentVertex = getVertexFromGraph(graph, current);
+    // so we get the current vertex from the graph
+    GraphNode currentVertex = getVertexFromGraph(graph, current);
 
-    if (currentVertex == NULL) {
+    // if the vertex does not exist, just return
+    if (currentVertex.vertex == NO_VERTEX) {
         printf("Vertex not found in graph:(( Returning...\n");
         return;
     }
 
-    GraphNode *currentNeighbor = currentVertex->next;
+    // start interating through the vertex's neighbors
+    GraphNode *currentNeighbor = currentVertex.next;
 
     while (currentNeighbor != NULL) {
         // recurse and perform DFS explore
@@ -186,6 +280,31 @@ void DFS_explore(GraphPointer graph, char current, int *visited) {
 
 }
 
-void DFS_target(GraphPointer graph, char start, char target) {
-    return;
+int DFS_target(GraphPointer graph, char current, char target, int *visited) {
+    // if the current vertex is already visited, return false
+    if (current == target) {
+        return 1;
+    }
+    int currentVisitedIndex = (int) current - (int) target;
+    // mark current as visited
+    visited[currentVisitedIndex] = 1;
+
+    // get current vertex
+    GraphNode currentVertex = getVertexFromGraph(graph, current);
+    
+    // return if no vertex is found
+    if (currentVertex.vertex == NO_VERTEX) {
+        printf("Vertex not found in graph:(( Returning...\n");
+        return 0;
+    }
+
+    // get current vertex's neighbors
+    GraphNode *currentNeighbor = currentVertex.next;
+
+    while (currentNeighbor != NULL) {
+        // i think i should delegate the responsibility of finding if
+        // current is in neighbor to another function
+    }
+
+    return 0;
 }
