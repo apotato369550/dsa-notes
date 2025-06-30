@@ -20,13 +20,16 @@ int hasEdge(GraphPointer graph, char from, char to);
 int addEdge(GraphPointer graph, char from, char to, int weight);
 int isVisited(GraphPointer graph, char vertex, int *visited);
 int getIndexOfVertex(char vertex);
+char getVertexOfIndex(int index);
 void printGraph(GraphPointer graph);
 GraphNode getVertexFromGraph(GraphPointer graph, char vertex);
 void resetVisited(int *visited, int n);
 int destroyGraph(GraphPointer graph);
 
 void DFS_explore(GraphPointer graph, char current, int *visited);
-int DFS_target(GraphPointer graph, char current, char target, int *visited);
+int DFS_target(GraphPointer graph, char current, char target, int *visited, int *parent);
+
+void printPath(char start, char target, int *parent);
 
 /*
 
@@ -81,13 +84,14 @@ int main() {
     addEdge(graph, 'J', 'I', 1);
 
     int *visited = calloc(graph->n, sizeof(int));
+    int *parent = calloc(graph->n, sizeof(int));
 
     DFS_explore(graph, 'A', visited);
 
     resetVisited(visited, graph->n);
 
     // should find path
-    if (DFS_target(graph, 'A', 'H', visited)) {
+    if (DFS_target(graph, 'A', 'H', visited, parent)) {
         printf("A path was found from A to H!!!");
     } else {
         printf("Could not find path from A to H:((");
@@ -95,7 +99,7 @@ int main() {
     resetVisited(visited, graph->n);
 
     // should report not reachable
-    if (DFS_target(graph, 'A', 'I', visited)) {
+    if (DFS_target(graph, 'A', 'I', visited, parent)) {
         printf("A path was found from A to I!!!");
     } else {
         printf("Could not find path from A to I:((");
@@ -200,6 +204,10 @@ int getIndexOfVertex(char vertex) {
     return (int) vertex - (int) 'A';
 }
 
+char getVertexOfIndex(int index) {
+    return (char) (index + (int) 'A');
+}
+
 void printGraph(GraphPointer graph) {
     printf("----- START OF GRAPH -----\n");
     for (int i = 0; i < graph->n; i++) {
@@ -252,9 +260,9 @@ void DFS_explore(GraphPointer graph, char current, int *visited) {
         return;
     }
 
-    int currentIndexVisited = (int) current - (int) 'A';
+    int currentVisitedIndex = getIndexOfVertex(current);
     // otherwise, update visited array
-    visited[currentIndexVisited] = 1;
+    visited[currentVisitedIndex] = 1;
 
     // process
     printf("Visiting: %c\n", current);
@@ -280,12 +288,12 @@ void DFS_explore(GraphPointer graph, char current, int *visited) {
 
 }
 
-int DFS_target(GraphPointer graph, char current, char target, int *visited) {
+int DFS_target(GraphPointer graph, char current, char target, int *visited, int *parent) {
     // if the current vertex is already visited, return false
     if (current == target) {
         return 1;
     }
-    int currentVisitedIndex = (int) current - (int) target;
+    int currentVisitedIndex = getIndexOfVertex('current');
     // mark current as visited
     visited[currentVisitedIndex] = 1;
 
@@ -302,9 +310,24 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited) {
     GraphNode *currentNeighbor = currentVertex.next;
 
     while (currentNeighbor != NULL) {
+        int currentNeighborVertexIndex = getIndexOfVertex(currentNeighbor->vertex);
+        if (visited[currentNeighborVertexIndex] == 0) {
+            parent[currentNeighborVertexIndex] = currentNeighborVertexIndex;
+            if (DFS_target(graph, currentNeighbor->vertex, target, visited, parent)) {
+                return 1;
+            }
+        }
+        currentNeighbor = currentNeighbor->next;
         // i think i should delegate the responsibility of finding if
         // current is in neighbor to another function
     }
 
     return 0;
+}
+
+void printPath(char start, char target, int *parent) {
+    if (start == target) {
+        printf("%c", start);
+    }
+    // printPath(start, index)
 }
