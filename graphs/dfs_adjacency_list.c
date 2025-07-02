@@ -91,22 +91,32 @@ int main() {
     resetVisited(visited, graph->n);
 
     // should find path
+
+    
     if (DFS_target(graph, 'A', 'H', visited, parent)) {
-        printf("A path was found from A to H!!!");
+        printf("A path was found from A to H!!!\n");
+        for (int i = 0; i < graph->n; i++) {
+            printf("%d", parent[i]);
+        }
+        // put 'I' instead of 'H'
+        printPath('A', 'H', parent);
     } else {
-        printf("Could not find path from A to H:((");
+        printf("Could not find path from A to H:((\n");
     } 
     resetVisited(visited, graph->n);
 
     // should report not reachable
     if (DFS_target(graph, 'A', 'I', visited, parent)) {
-        printf("A path was found from A to I!!!");
+        printf("A path was found from A to I!!!\n");
+        // printPath('A', 'I', parent);
     } else {
-        printf("Could not find path from A to I:((");
+        printf("Could not find path from A to I:((\n");
     } 
     resetVisited(visited, graph->n);
 
     destroyGraph(graph);
+    free(visited);
+    free(parent);
 
     return 0;
 }
@@ -192,12 +202,10 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
 }
 
 int isVisited(GraphPointer graph, char vertex, int *visited) {
-    for (int i = 0; i < graph->n; i++) {
-        if (visited[(int) graph->adjacency_list[i].vertex - (int) 'A'] == 1) {
-            return 1;
-        }
-    }
-    return 0;   
+    // omg im so dumb.
+    // i checked if any was visited instead of just the index T_T
+    int index = getIndexOfVertex(vertex);
+    return visited[index];
 }
 
 int getIndexOfVertex(char vertex) {
@@ -257,6 +265,7 @@ void DFS_explore(GraphPointer graph, char current, int *visited) {
     // check if current vertex is visited
     // if it is, return
     if (isVisited(graph, current, visited)) {
+        printf("%c has already been visited...\n", current);
         return;
     }
 
@@ -293,7 +302,13 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
     if (current == target) {
         return 1;
     }
-    int currentVisitedIndex = getIndexOfVertex('current');
+    int currentVisitedIndex = getIndexOfVertex(current);
+    // check if current vertex is already visited :V
+
+    if (isVisited(graph, current, visited)) {
+        return 0;
+    }
+
     // mark current as visited
     visited[currentVisitedIndex] = 1;
 
@@ -312,7 +327,7 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
     while (currentNeighbor != NULL) {
         int currentNeighborVertexIndex = getIndexOfVertex(currentNeighbor->vertex);
         if (visited[currentNeighborVertexIndex] == 0) {
-            parent[currentNeighborVertexIndex] = currentNeighborVertexIndex;
+            parent[currentNeighborVertexIndex] = getIndexOfVertex(current);
             if (DFS_target(graph, currentNeighbor->vertex, target, visited, parent)) {
                 return 1;
             }
@@ -328,6 +343,8 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
 void printPath(char start, char target, int *parent) {
     if (start == target) {
         printf("%c", start);
+        return;
     }
-    // printPath(start, index)
+    printPath(start, getVertexOfIndex(parent[getIndexOfVertex(target)]), parent);
+    printf(" -> %c", target);
 }
