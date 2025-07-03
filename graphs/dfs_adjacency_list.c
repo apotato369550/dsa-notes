@@ -95,9 +95,6 @@ int main() {
     
     if (DFS_target(graph, 'A', 'H', visited, parent)) {
         printf("A path was found from A to H!!!\n");
-        for (int i = 0; i < graph->n; i++) {
-            printf("%d", parent[i]);
-        }
         // put 'I' instead of 'H'
         printPath('A', 'H', parent);
     } else {
