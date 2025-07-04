@@ -6,12 +6,37 @@ typedef struct Graph {
     int **edges;
 } Graph, *GraphPointer;
 
+//  pre-built stuff
 GraphPointer createGraph(int n);
 void destroyGraph(GraphPointer graph);
 void printGraph(GraphPointer graph);
 int hasEdge(GraphPointer graph, int from, int to);
 int addEdge(GraphPointer graph, int from, int to, int weight);
 int removeEdge(GraphPointer graph, int from, int to);
+
+// stuff i need to make:
+// hasVertex
+int hasVertex(GraphPointer graph, int vertex);
+
+// isVisited
+int isVisited(GraphPointer, int vertex, int *visited);
+
+// printGraph
+void printGraph(GraphPointer graph);
+
+// resetVisited
+void resetVisited(int *visited);
+
+// dfs functions:
+// DFS_explore
+void DFS_explore(GraphPointer graph, char current, int *visited);
+
+// DFS_target
+int DFS_target(GraphPointer graph, char current, char target, int *visited, int *parent);
+
+// other functions
+// printPath
+void printPath(char start, char target, int *parent);
 
 int main() {
     printf("Hello! \n");
