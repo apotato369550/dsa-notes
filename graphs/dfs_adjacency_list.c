@@ -18,7 +18,7 @@ GraphPointer createGraph(int n);
 int hasVertex(GraphPointer graph, char vertex);
 int hasEdge(GraphPointer graph, char from, char to);
 int addEdge(GraphPointer graph, char from, char to, int weight);
-int isVisited(GraphPointer graph, char vertex, int *visited);
+int isVisited(char vertex, int *visited);
 int getIndexOfVertex(char vertex);
 char getVertexOfIndex(int index);
 void printGraph(GraphPointer graph);
@@ -198,7 +198,7 @@ int addEdge(GraphPointer graph, char from, char to, int weight) {
     return 1;
 }
 
-int isVisited(GraphPointer graph, char vertex, int *visited) {
+int isVisited(char vertex, int *visited) {
     // omg im so dumb.
     // i checked if any was visited instead of just the index T_T
     int index = getIndexOfVertex(vertex);

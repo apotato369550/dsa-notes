@@ -19,13 +19,10 @@ int removeEdge(GraphPointer graph, int from, int to);
 int hasVertex(GraphPointer graph, int vertex);
 
 // isVisited
-int isVisited(GraphPointer, int vertex, int *visited);
-
-// printGraph
-void printGraph(GraphPointer graph);
+int isVisited(int vertex, int *visited);
 
 // resetVisited
-void resetVisited(int *visited);
+void resetVisited(int *visited, int n);
 
 // dfs functions:
 // DFS_explore
@@ -152,4 +149,63 @@ int removeEdge(GraphPointer graph, int from, int to) {
     graph->edges[from][to] = 0;
 
     return 1;
+}
+
+// stuff i need to make:
+// hasVertex
+int hasVertex(GraphPointer graph, int vertex) {
+    return vertex >= graph->n ? -1 : vertex;
+}
+
+// isVisited
+int isVisited(int vertex, int *visited) {
+    return visited[vertex];
+}
+
+// resetVisited
+void resetVisited(int *visited, int n) {
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+    }
+}
+
+// dfs functions:
+// DFS_explore
+void DFS_explore(GraphPointer graph, char current, int *visited) {
+    if (isVisited(graph, current, visited)) {
+        printf("Vertex %d has already been visited...\n", current);
+        return;
+    }
+    visited[current] = 1;
+    if (!hasVertex(graph, current)) {
+        printf("Vertex not found in graph:(( Returning...\n");
+        return;
+    }
+    printf("Visiting vertex %d\n", current);
+    for (int i = 0; i < graph->n; i++) {
+        if (i == current) {
+            continue;
+        }
+        DFS_explore(graph, i, visited);
+    }
+
+}
+
+// DFS_target
+int DFS_target(GraphPointer graph, char current, char target, int *visited, int *parent) {
+    if (current == target) {
+        return 1;
+    }
+
+    // stopped here
+    if (1) {
+        return;
+    }
+
+    if (isVisited(graph, current, visited)) {
+        return 0;
+    }
+ 
+    visited[current] = 1;
+
 }
