@@ -261,7 +261,7 @@ int destroyGraph(GraphPointer graph) {
 void DFS_explore(GraphPointer graph, char current, int *visited) {
     // check if current vertex is visited
     // if it is, return
-    if (isVisited(graph, current, visited)) {
+    if (isVisited(current, visited)) {
         printf("%c has already been visited...\n", current);
         return;
     }
@@ -302,7 +302,7 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
     int currentVisitedIndex = getIndexOfVertex(current);
     // check if current vertex is already visited :V
 
-    if (isVisited(graph, current, visited)) {
+    if (isVisited(current, visited)) {
         return 0;
     }
 

@@ -36,27 +36,69 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
 void printPath(char start, char target, int *parent);
 
 int main() {
-    printf("Hello! \n");
-    Graph *graph = createGraph(5);
-    printf("Hello 2! \n");
+    Graph *graph = createGraph(10);
 
-    // addEdge(graph, 0, 1, 1);
-    
+    if (graph == NULL) {
+        printf("Failed to allocate memory...\n");
+        return 1;
+    }
+
+    addEdge(graph, 0, 1, 1); 
     addEdge(graph, 1, 0, 1);
-    addEdge(graph, 2, 0, 1);
-    addEdge(graph, 3, 1, 1);
-    addEdge(graph, 0, 2, 1);
-    addEdge(graph, 3, 4, 1);
-    removeEdge(graph, 3, 4);
-    addEdge(graph, 4, 2, 1);
-    
-    printf("Hello 3! \n");
 
-    printGraph(graph);
-    printf("Hello 4! \n");
+    addEdge(graph, 0, 2, 1); 
+    addEdge(graph, 2, 0, 1);
+
+    addEdge(graph, 1, 3, 1); 
+    addEdge(graph, 3, 1, 1);
+
+    addEdge(graph, 2, 4, 1); 
+    addEdge(graph, 4, 2, 1);
+
+    addEdge(graph, 3, 5, 1); 
+    addEdge(graph, 5, 3, 1);
+
+    addEdge(graph, 4, 6, 1); 
+    addEdge(graph, 6, 4, 1);
+
+    addEdge(graph, 5, 6, 1);
+    addEdge(graph, 6, 5, 1);
+
+    addEdge(graph, 6, 7, 1); 
+    addEdge(graph, 7, 6, 1);
+
+    addEdge(graph, 8, 9, 1);
+    addEdge(graph, 9, 8, 1);
+
+    int *visited = calloc(graph->n, sizeof(int));
+    int *parent = calloc(graph->n, sizeof(int));
+
+    DFS_explore(graph, 0, visited);
+
+    resetVisited(visited, graph->n);
+
+    // should find path
+
+    
+    if (DFS_target(graph, 0, 7, visited, parent)) {
+        printf("A path was found from A to H!!!\n");
+        printPath(0, 7, parent);
+    } else {
+        printf("Could not find path from A to H:((\n");
+    } 
+    resetVisited(visited, graph->n);
+
+    // should report not reachable
+    if (DFS_target(graph, 0, 8, visited, parent)) {
+        printf("A path was found from A to I!!!\n");
+    } else {
+        printf("Could not find path from A to I:((\n");
+    } 
+    resetVisited(visited, graph->n);
 
     destroyGraph(graph);
-    printf("Hello 5! \n");
+    free(visited);
+    free(parent);
 
     return 0;
 }
@@ -154,7 +196,7 @@ int removeEdge(GraphPointer graph, int from, int to) {
 // stuff i need to make:
 // hasVertex
 int hasVertex(GraphPointer graph, int vertex) {
-    return vertex >= graph->n ? -1 : vertex;
+    return vertex >= graph->n ? 0 : vertex;
 }
 
 // isVisited
@@ -172,13 +214,13 @@ void resetVisited(int *visited, int n) {
 // dfs functions:
 // DFS_explore
 void DFS_explore(GraphPointer graph, char current, int *visited) {
-    if (isVisited(graph, current, visited)) {
+    if (isVisited(current, visited)) {
         printf("Vertex %d has already been visited...\n", current);
         return;
     }
     visited[current] = 1;
     if (!hasVertex(graph, current)) {
-        printf("Vertex not found in graph:(( Returning...\n");
+        printf("Vertex %d not found in graph:(( Returning...\n", current);
         return;
     }
     printf("Visiting vertex %d\n", current);
@@ -198,14 +240,33 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
     }
 
     // stopped here
-    if (1) {
-        return;
+    if (!hasVertex(graph, current)) {
+        return 0;
     }
 
-    if (isVisited(graph, current, visited)) {
+    if (isVisited(current, visited)) {
         return 0;
     }
  
     visited[current] = 1;
 
+    for (int i = 0; i < graph->n; i++) {
+        if (!visited[i]) {
+            parent[i] = current;
+            if (DFS_target(graph, i, target, visited, parent)) {
+                return 1;
+            }
+        }
+    }
+}
+
+
+// printPath
+void printPath(char start, char target, int *parent) {
+    if (start == target) {
+        printf("%d", start);
+        return;
+    }   
+    printPath(start, parent[target], parent);
+    printf(" -> %d", target);
 }
