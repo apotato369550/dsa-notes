@@ -196,7 +196,7 @@ int removeEdge(GraphPointer graph, int from, int to) {
 // stuff i need to make:
 // hasVertex
 int hasVertex(GraphPointer graph, int vertex) {
-    return vertex >= graph->n ? 0 : vertex;
+    return vertex >= graph->n ? 0 : 1;
 }
 
 // isVisited
@@ -215,7 +215,7 @@ void resetVisited(int *visited, int n) {
 // DFS_explore
 void DFS_explore(GraphPointer graph, char current, int *visited) {
     if (isVisited(current, visited)) {
-        printf("Vertex %d has already been visited...\n", current);
+        // printf("Vertex %d has already been visited...\n", current);
         return;
     }
     visited[current] = 1;
@@ -225,7 +225,7 @@ void DFS_explore(GraphPointer graph, char current, int *visited) {
     }
     printf("Visiting vertex %d\n", current);
     for (int i = 0; i < graph->n; i++) {
-        if (i == current) {
+        if (i == current || graph->edges[i] == 0) {
             continue;
         }
         DFS_explore(graph, i, visited);
@@ -251,6 +251,9 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
     visited[current] = 1;
 
     for (int i = 0; i < graph->n; i++) {
+        if (i == current || graph->edges[i] == 0) {
+            continue;
+        }
         if (!visited[i]) {
             parent[i] = current;
             if (DFS_target(graph, i, target, visited, parent)) {
