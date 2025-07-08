@@ -26,14 +26,31 @@ void resetVisited(int *visited, int n);
 
 // dfs functions:
 // DFS_explore
-void DFS_explore(GraphPointer graph, char current, int *visited);
+// forgot to change current and target to int from char after transferring it from adj list implementation
+void DFS_explore(GraphPointer graph, int current, int *visited);
 
 // DFS_target
-int DFS_target(GraphPointer graph, char current, char target, int *visited, int *parent);
+int DFS_target(GraphPointer graph, int current, int target, int *visited, int *parent);
 
 // other functions
 // printPath
-void printPath(char start, char target, int *parent);
+void printPath(int start, int target, int *parent);
+
+/*
+
+    0
+   / \
+  1   2
+ /     \
+3       4
+ \     /
+   5 - 6
+       |
+       7
+
+8 - 9  (Disconnected component)
+
+*/
 
 int main() {
     Graph *graph = createGraph(10);
@@ -73,6 +90,8 @@ int main() {
     int *visited = calloc(graph->n, sizeof(int));
     int *parent = calloc(graph->n, sizeof(int));
 
+    printGraph(graph);
+
     DFS_explore(graph, 0, visited);
 
     resetVisited(visited, graph->n);
@@ -83,6 +102,7 @@ int main() {
     if (DFS_target(graph, 0, 7, visited, parent)) {
         printf("A path was found from A to H!!!\n");
         printPath(0, 7, parent);
+        printf("\n");
     } else {
         printf("Could not find path from A to H:((\n");
     } 
@@ -213,7 +233,7 @@ void resetVisited(int *visited, int n) {
 
 // dfs functions:
 // DFS_explore
-void DFS_explore(GraphPointer graph, char current, int *visited) {
+void DFS_explore(GraphPointer graph, int current, int *visited) {
     if (isVisited(current, visited)) {
         // printf("Vertex %d has already been visited...\n", current);
         return;
@@ -223,18 +243,22 @@ void DFS_explore(GraphPointer graph, char current, int *visited) {
         printf("Vertex %d not found in graph:(( Returning...\n", current);
         return;
     }
-    printf("Visiting vertex %d\n", current);
+    printf("Current vertex: %d\n", current);
     for (int i = 0; i < graph->n; i++) {
-        if (i == current || graph->edges[i] == 0) {
+        // fix: went from graph->edges[i] == 0 to:
+        // graph->edges[current][i] == 0
+        if (graph->edges[current][i] == 0) {
+            printf("Not visiting vertex %d\n", i);
             continue;
         }
+        printf("Visiting vertex %d\n", i);
         DFS_explore(graph, i, visited);
     }
 
 }
 
 // DFS_target
-int DFS_target(GraphPointer graph, char current, char target, int *visited, int *parent) {
+int DFS_target(GraphPointer graph, int current, int target, int *visited, int *parent) {
     if (current == target) {
         return 1;
     }
@@ -251,21 +275,24 @@ int DFS_target(GraphPointer graph, char current, char target, int *visited, int 
     visited[current] = 1;
 
     for (int i = 0; i < graph->n; i++) {
-        if (i == current || graph->edges[i] == 0) {
+        // fix: went from graph->edges[i] == 0 to:
+        // graph->edges[current][i] == 0
+        if (graph->edges[current][i] == 0) {
             continue;
         }
-        if (!visited[i]) {
+        if (visited[i] == 0) {
             parent[i] = current;
             if (DFS_target(graph, i, target, visited, parent)) {
                 return 1;
             }
         }
     }
+    return 0;
 }
 
 
 // printPath
-void printPath(char start, char target, int *parent) {
+void printPath(int start, int target, int *parent) {
     if (start == target) {
         printf("%d", start);
         return;
