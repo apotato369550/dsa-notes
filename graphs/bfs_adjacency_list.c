@@ -14,6 +14,19 @@ typedef struct Graph {
     GraphNodePointer adjacency_list;
 } Graph, *GraphPointer;
 
+// create queuenode
+typedef struct QueueNode {
+    GraphNode *node;
+    struct QueueNode *next;
+} QueueNode;
+
+// create queue
+typedef struct Queue {
+    QueueNode *head;
+    QueueNode *tail;
+} Queue;
+
+
 GraphPointer createGraph(int n);
 int hasVertex(GraphPointer graph, char vertex);
 int hasEdge(GraphPointer graph, char from, char to);
@@ -22,9 +35,14 @@ int isVisited(char vertex, int *visited);
 int getIndexOfVertex(char vertex);
 char getVertexOfIndex(int index);
 void printGraph(GraphPointer graph);
-GraphNode getVertexFromGraph(GraphPointer graph, char vertex);
+GraphNode *getVertexFromGraph(GraphPointer graph, char vertex);
 void resetArray(int *visited, int n);
 int destroyGraph(GraphPointer graph);
+
+void initializeQueue(Queue *queue);
+void enqueue(Queue *queue, GraphNode *graphNode);
+GraphNode *dequeue(Queue *queue);
+
 
 void BFS_explore(GraphPointer graph, char current, int *visited);
 int BFS_target(GraphPointer graph, char current, char target, int *visited, int *parent);
@@ -208,18 +226,14 @@ void printGraph(GraphPointer graph) {
     return;
 }
 
-GraphNode getVertexFromGraph(GraphPointer graph, char vertex) {
+GraphNode *getVertexFromGraph(GraphPointer graph, char vertex) {
     int found = 0;
     for (int i = 0; i < graph->n; i++) {
         if (graph->adjacency_list[i].vertex == vertex) {
-            return graph->adjacency_list[i];
+            return &(graph->adjacency_list[i]);
         }
     }
-    GraphNode dummy;
-    dummy.vertex = NO_VERTEX;
-    dummy.next = NULL;
-    dummy.weight = -1;
-    return dummy;
+    return NULL;
 }
 
 void resetArray(int *visited, int n) {
@@ -234,16 +248,85 @@ int destroyGraph(GraphPointer graph) {
 }
 
 
+// queue helper functions
+
+
+void initializeQueue(Queue *queue) {
+    queue->head = NULL;
+    queue->tail = NULL;
+}
+
+void enqueue(Queue *queue, GraphNode *graphNode) {
+    QueueNode *newQueueNode = malloc(sizeof(QueueNode));
+    newQueueNode->node = graphNode;
+    newQueueNode->next = NULL;
+
+    // if tail is not null, append to tail's next
+    if (queue->tail != NULL) {
+        queue->tail->next = newQueueNode;
+    }
+
+    // move tail pointer to point to tail
+    queue->tail = newQueueNode;
+
+    // if queue's head is null, set head to treenode
+    if (queue->head == NULL) {
+        queue->head = newQueueNode;
+    }
+}
+
+GraphNode *dequeue(Queue *queue) {
+    if (queue->head == NULL) {
+        // if null, return null, which is queue->head
+        GraphNode *nullNode = NULL;
+        return nullNode;
+    }
+
+    // set a temp pointing to head
+    QueueNode *temp = queue->head;
+    // move head pointer
+    queue->head = queue->head->next;
+    // set a treenode whose value is that of temp
+    GraphNode *dequeuedNode = temp->node;
+    // free temp
+    free(temp);
+
+    // if head is null, tail must equal null as well
+    if (queue->head == NULL) {
+        queue->tail = NULL;
+    }
+
+    // return treenode  
+    return dequeuedNode;
+}
+
+
+
 void BFS_explore(GraphPointer graph, char current, int *visited) {
     // create an empty queue
+    Queue queue;
+    initializeQueue(&queue);
     // mark start as visited
+    visited[getIndexOfVertex(current)] = 1;
     // add start to queue
+    enqueue(&queue, GetVertexFromGraph(graph, current));
     // while queue is not empty
+    printf("Exploring graph: \n");
+    while (queue.head != NULL) {
         // dequeue an item
-        // process said item
+        GraphNode *dequeued = dequeue(&queue);
+        // process said item 
+        print("%c", dequeued->vertex);
+        GraphNode *currentNeighbor = dequeued->next;
         // for each neighbor:
-            // enqueue its neighbors
-            // continue logic here :V
+        while (currentNeighbor != NULL) {
+            // if neighbor is not visited, enqueue the neighbor   
+            if (visited[getIndexOfVertex(currentNeighbor->vertex)] != 1) {
+                enqueue(&queue, currentNeighbor);
+            }
+            currentNeighbor = currentNeighbor->next;
+        }
+    }
 
     return;
 }
