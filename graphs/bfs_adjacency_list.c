@@ -99,7 +99,7 @@ int main() {
     int *visited = calloc(graph->n, sizeof(int));
     int *parent = calloc(graph->n, sizeof(int));
 
-    DFS_explore(graph, 'A', visited);
+    BFS_explore(graph, 'A', visited);
 
     resetArray(visited, graph->n);
     resetArray(parent, graph->n);
@@ -309,26 +309,29 @@ void BFS_explore(GraphPointer graph, char current, int *visited) {
     // mark start as visited
     visited[getIndexOfVertex(current)] = 1;
     // add start to queue
-    enqueue(&queue, GetVertexFromGraph(graph, current));
+    enqueue(&queue, getVertexFromGraph(graph, current));
     // while queue is not empty
     printf("Exploring graph: \n");
     while (queue.head != NULL) {
         // dequeue an item
         GraphNode *dequeued = dequeue(&queue);
         // process said item 
-        print("%c", dequeued->vertex);
+        printf("%c", dequeued->vertex);
         GraphNode *currentNeighbor = dequeued->next;
         // for each neighbor:
         while (currentNeighbor != NULL) {
             // if neighbor is not visited, enqueue the neighbor   
             if (visited[getIndexOfVertex(currentNeighbor->vertex)] != 1) {
-                enqueue(&queue, currentNeighbor);
+                // update index visited when not visited
+                visited[getIndexOfVertex(currentNeighbor->vertex)] = 1;
+                // printf("Enqueuing %c\n", currentNeighbor->vertex);
+                // enqueue the actual vertex from the graph using the helper function
+                enqueue(&queue, getVertexFromGraph(graph, currentNeighbor->vertex));
             }
             currentNeighbor = currentNeighbor->next;
         }
-    }
 
-    return;
+    }
 }
 
 int BFS_target(GraphPointer graph, char current, char target, int *visited, int *parent) {
