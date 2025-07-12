@@ -36,7 +36,7 @@ int getIndexOfVertex(char vertex);
 char getVertexOfIndex(int index);
 void printGraph(GraphPointer graph);
 GraphNode *getVertexFromGraph(GraphPointer graph, char vertex);
-void resetArray(int *visited, int n);
+void resetArray(int *array, int n);
 int destroyGraph(GraphPointer graph);
 
 void initializeQueue(Queue *queue);
@@ -242,9 +242,9 @@ GraphNode *getVertexFromGraph(GraphPointer graph, char vertex) {
     return NULL;
 }
 
-void resetArray(int *visited, int n) {
+void resetArray(int *array, int n) {
     for (int i = 0; i < n; i++) {
-        visited[i] = 0;
+        array[i] = 0;
     }
 }
 
