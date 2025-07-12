@@ -104,6 +104,12 @@ int main() {
     resetArray(visited, graph->n);
     resetArray(parent, graph->n);
 
+    BFS_target(graph, 'A', 'I', visited, parent);
+    printPath('A', 'I', parent);
+
+    resetArray(visited, graph->n);
+    resetArray(parent, graph->n);
+
     destroyGraph(graph);
     free(visited);
     free(parent);
@@ -332,9 +338,49 @@ void BFS_explore(GraphPointer graph, char current, int *visited) {
         }
 
     }
+    printf("\n");
 }
 
 int BFS_target(GraphPointer graph, char current, char target, int *visited, int *parent) {
+    // create an empty queue
+    Queue queue;
+    initializeQueue(&queue);
+    // mark start as visited
+    visited[getIndexOfVertex(current)] = 1;
+    // add start to queue
+    enqueue(&queue, getVertexFromGraph(graph, current));
+    // while queue is not empty
+    printf("Exploring graph: \n");
+    while (queue.head != NULL) {
+        // dequeue an item
+        GraphNode *dequeued = dequeue(&queue);
+        // process said item 
+        // printf("%c", dequeued->vertex);
+        if (dequeued->vertex == target) {
+            printf("Target found!!!\n");
+            return 1;
+        }
+
+        GraphNode *currentNeighbor = dequeued->next;
+        // for each neighbor:
+        while (currentNeighbor != NULL) {
+            // if neighbor is not visited, enqueue the neighbor   
+            if (visited[getIndexOfVertex(currentNeighbor->vertex)] != 1) {
+                // update index visited when not visited
+                visited[getIndexOfVertex(currentNeighbor->vertex)] = 1;
+                // setting parent for path reconstruction
+                parent[getIndexOfVertex(currentNeighbor->vertex)] = getIndexOfVertex(dequeued->vertex);
+
+                // printf("Enqueuing %c\n", currentNeighbor->vertex);
+                // enqueue the actual vertex from the graph using the helper function
+                enqueue(&queue, getVertexFromGraph(graph, currentNeighbor->vertex));
+            }
+            currentNeighbor = currentNeighbor->next;
+        }
+    }
+
+    printf("\n");
+    // not found
     return 0;
 }
 
