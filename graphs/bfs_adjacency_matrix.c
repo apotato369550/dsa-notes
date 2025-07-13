@@ -1,12 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <limits.h>
+
+#define QUEUE_EMPTY INT_MAX
+
 typedef struct Graph {
     int n;
     int **edges;
 } Graph, *GraphPointer;
 
-// re-implement queue to use indices instead of other stuff idk
+// create queuenode
+typedef struct QueueNode {
+    int node;
+    struct QueueNode *next;
+} QueueNode;
+
+// create queue
+typedef struct Queue {
+    QueueNode *head;
+    QueueNode *tail;
+} Queue;
 
 //  pre-built stuff
 GraphPointer createGraph(int n);
@@ -25,6 +39,10 @@ int isVisited(int vertex, int *visited);
 
 // resetVisited
 void resetArray(int *array, int n);
+
+void initializeQueue(Queue *queue);
+void enqueue(Queue *queue, int node);
+int dequeue(Queue *queue);
 
 // dfs functions:
 // DFS_explore
@@ -88,10 +106,16 @@ int main() {
 
     printGraph(graph);
 
-    DFS_explore(graph, 0, visited);
+    BFS_explore(graph, 0, visited);
 
     resetArray(visited, graph->n);
     resetArray(visited, graph->n);
+
+    BFS_target(graph, 0, 8, visited, parent);
+    printPath(0, 8, parent);
+
+    resetArray(visited, graph->n);
+    resetArray(parent, graph->n);
 
     destroyGraph(graph);
     free(visited);
@@ -214,16 +238,115 @@ void resetVisited(int *visited, int n) {
     }
 }
 
+
+void initializeQueue(Queue *queue) {
+    queue->head = NULL;
+    queue->tail = NULL;
+}
+
+void enqueue(Queue *queue, int node) {
+    QueueNode *newQueueNode = malloc(sizeof(QueueNode));
+    newQueueNode->node = node;
+    newQueueNode->next = NULL;
+
+    // if tail is not null, append to tail's next
+    if (queue->tail != NULL) {
+        queue->tail->next = newQueueNode;
+    }
+
+    // move tail pointer to point to tail
+    queue->tail = newQueueNode;
+
+    // if queue's head is null, set head to treenode
+    if (queue->head == NULL) {
+        queue->head = newQueueNode;
+    }
+}
+
+int dequeue(Queue *queue) {
+    if (queue->head == NULL) {
+        // if null, return null, which is queue->head
+        return QUEUE_EMPTY;
+    }
+
+    // set a temp pointing to head
+    QueueNode *temp = queue->head;
+    // move head pointer
+    queue->head = queue->head->next;
+    // set a treenode whose value is that of temp
+    int dequeuedNode = temp->node;
+    // free temp
+    free(temp);
+
+    // if head is null, tail must equal null as well
+    if (queue->head == NULL) {
+        queue->tail = NULL;
+    }
+
+    // return treenode  
+    return dequeuedNode;
+}
+
 // dfs functions:
 // DFS_explore
 void BFS_explore(GraphPointer graph, int current, int *visited) {
+    Queue queue;
 
-    return;
+    initializeQueue(&queue);
+    visited[current] = 1;
 
+    enqueue(&queue, current);
+
+    printf("Exploring graph: \n");
+
+    while (queue.head != NULL) {
+        int dequeued = dequeue(&queue);
+        printf("%d ", dequeued);
+
+        // visit each other neighbor...
+        // base it off of other adjacency_matrix implementation
+        for (int i = 0; i < graph->n; i++) {
+            if (graph->edges[dequeued][i] == 1 && visited[i] != 1) {
+                visited[i] = 1;
+                enqueue(&queue, i);
+            }
+        }
+    }
+
+    printf("\n");
 }
 
 // DFS_target
 int BFS_target(GraphPointer graph, int current, int target, int *visited, int *parent) {
+    
+    Queue queue;
+
+    initializeQueue(&queue);
+    visited[current] = 1;
+
+    enqueue(&queue, current);
+
+    printf("Exploring graph: \n");
+
+    while (queue.head != NULL) {
+        int dequeued = dequeue(&queue);
+
+        if (dequeued == target) {
+            printf("Target found!!!\n");
+            return 1;
+        }
+        // visit each other neighbor...
+        // base it off of other adjacency_matrix implementation
+        for (int i = 0; i < graph->n; i++) {
+            if (graph->edges[dequeued][i] == 1 && visited[i] != 1) {
+                visited[i] = 1;
+                parent[i] = dequeued;
+                enqueue(&queue, i);
+            }
+        }
+    }
+
+    printf("\n");
     return 0;
 }
 

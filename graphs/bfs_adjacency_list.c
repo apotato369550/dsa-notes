@@ -322,7 +322,7 @@ void BFS_explore(GraphPointer graph, char current, int *visited) {
         // dequeue an item
         GraphNode *dequeued = dequeue(&queue);
         // process said item 
-        printf("%c", dequeued->vertex);
+        printf("%c ", dequeued->vertex);
         GraphNode *currentNeighbor = dequeued->next;
         // for each neighbor:
         while (currentNeighbor != NULL) {
