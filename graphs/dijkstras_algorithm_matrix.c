@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
+#define HEAP_ERROR INT_MIN
+#define HEAP_EMPTY INT_MIN + 1
 
 typedef struct Graph {
     int n;
@@ -33,6 +37,24 @@ void destroyMinHeap(MinHeap **minHeap);
 void printMinHeapAsArray(MinHeap *minHeap);
 
 // minheap helper functions
+
+// insertion, extraction, and peeking
+int insertMinHeap(MinHeap *minHeap, int value);
+int extractMin(MinHeap *minHeap);
+int peekMin(MinHeap *minHeap);
+
+// heapify functions
+int heapifyUp(MinHeap *minHeap, int index);
+int heapifyDown(MinHeap *minHeap, int index);
+
+// getter functions
+int getParentIndex(int index);
+int getLeftChildIndex(int index);
+int getRightChildIndex(int index);
+
+// other functions
+int isEmpty(MinHeap *minHeap);
+int isFull(MinHeap *minHeap);
 
 // actual algorithms
 void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[]);
@@ -191,9 +213,207 @@ int removeEdge(GraphPointer graph, int from, int to) {
     return 1;
 }
 
-int hasVertex(GraphPointer graph, int vertex);
-int isVisited(int vertex, int *visited);
-void resetArray(int *array, int n);
+int hasVertex(GraphPointer graph, int vertex) {
+    return vertex >= graph->n ? 0 : 1;
+}
+
+int isVisited(int vertex, int *visited) {
+    return visited[vertex];
+}
+
+void resetArray(int *array, int n) {
+    for (int i = 0; i < n; i++) {
+        array[i] = 0;
+    }
+}
+
+// minheap builder
+MinHeap *createMinHeap(int size) {
+    MinHeap *newMinHeap = malloc(sizeof(MinHeap));
+    if (newMinHeap == NULL) {
+        printf("Failed to allocate memory for minheap...\n");
+        return NULL;
+    }
+    newMinHeap->count = 0;
+    newMinHeap->size = size;
+
+    // use calloc :V OR! SET IT TO EMPTY
+    newMinHeap->minHeap = malloc(sizeof(int) * newMinHeap->size);
+    for (int i = 0; i < newMinHeap->size; i++) {
+        newMinHeap->minHeap[i] = HEAP_EMPTY;
+    }
+    return newMinHeap;
+}
+
+void destroyMinHeap(MinHeap **minHeap) {
+    free((*minHeap)->minHeap);
+    free((*minHeap));
+    (*minHeap) = NULL;
+    return;
+}
+
+void printMinHeapAsArray(MinHeap *minHeap) {
+    for (int i = 0; i < minHeap->count; i++) {
+        if (minHeap->minHeap[i] != HEAP_EMPTY) {
+            // replace + with ,
+            printf("%d ", minHeap->minHeap[i]);
+        } else {
+            printf("(empty) ");
+        }
+    }
+    printf("\n");
+}
+
+// minheap helper functions
+
+// insertion, extraction, and peeking
+int insertMinHeap(MinHeap *minHeap, int value) {
+    if (isFull(minHeap)) {
+        printf("Minheap is full! Failed to insert...\n");
+        return HEAP_ERROR;
+    }
+    minHeap->minHeap[minHeap->count] = value;
+    if (heapifyUp(minHeap, minHeap->count)) {
+        printf("Successfully heapified up!\n");
+    } else {
+        printf("Failed to heapfiy up...");
+    }
+    minHeap->count++;
+
+    return value;
+}
+
+int extractMin(MinHeap *minHeap) {
+    if (isEmpty(minHeap)) {
+        printf("Minheap is empty! Failed to extract...\n");
+        return HEAP_ERROR;
+    }
+    int minimumValue = minHeap->minHeap[0];
+    int lastElement = minHeap->minHeap[minHeap->count - 1];
+    minHeap->minHeap[0] = lastElement;
+    minHeap->count -= 1;
+    if (heapifyDown(minHeap, 0)) {
+        printf("Successfully heapified down!\n");
+    } else {
+        printf("Failed to heapify down...\n");
+    }
+    return minimumValue;
+}
+
+int peekMin(MinHeap *minHeap) {
+    if (isEmpty(minHeap)) {
+        printf("Minheap is empty! Failed to peek...\n");
+        return HEAP_ERROR;
+    }
+    return minHeap->minHeap[0];
+}
+
+// heapify functions
+int heapifyUp(MinHeap *minHeap, int index) {
+    // start at index (ideally the last element inserted) = count - 1
+    // compare element at index vs parent element
+    int childIndex = index;
+    int parentIndex = getParentIndex(index);
+
+    // while we still have a valid parent index...
+    while (parentIndex >= 0) {
+        // check if we need to swap:
+        int parent = minHeap->minHeap[parentIndex];
+        int child = minHeap->minHeap[childIndex];
+    
+        if (child < parent) {
+            // perform the swap 
+            minHeap->minHeap[childIndex] = parent;
+            minHeap->minHeap[parentIndex] = child;
+
+            // move child to parent
+            childIndex = parentIndex;
+            parentIndex = getParentIndex(childIndex);
+        } else {
+            // the minheap should be alright
+            break;
+        }
+    }
+    return 1;
+}
+
+int heapifyDown(MinHeap *minHeap, int index) {
+    // when the current node has at least one child
+    
+    // parent = (i - 1) / 2
+    // left child = 2i + 1
+    // right child = 2i + 2
+
+    int parentIndex = index;
+    int leftChildIndex = getLeftChildIndex(index);
+    int rightChildIndex = getRightChildIndex(index);
+
+    while (leftChildIndex < minHeap->count || rightChildIndex < minHeap->count) {
+        // find the smaller child (or only child)
+        // if left and right are valid, compare left and right
+        // otherwise, isolate and check which is invalid, and assign that instead to childIndex
+        int childIndex = -1;
+        if (leftChildIndex < minHeap->count && rightChildIndex < minHeap->count) {
+            int leftChild = minHeap->minHeap[leftChildIndex];
+            int rightChild = minHeap->minHeap[rightChildIndex];
+
+            if (leftChild < rightChild) {
+                childIndex = leftChildIndex;
+            } else {
+                childIndex = rightChildIndex;
+            }
+        } else {
+            if (leftChildIndex < minHeap->count) {
+                // left must be valid, right must be invalid
+                childIndex = leftChildIndex;
+            } else {
+                // right must be valid.
+                childIndex = rightChildIndex;
+            }
+        }
+        int child = minHeap->minHeap[childIndex];
+        int parent = minHeap->minHeap[parentIndex];
+        // if the current node's value > smaller child, 
+        if (parent > child) {
+            // perform swap
+            int temp = child;
+            minHeap->minHeap[childIndex] = parent;
+            minHeap->minHeap[parentIndex] = temp;
+            // move index to child index
+            parentIndex = childIndex;
+
+            // recalculate left and right child indices
+            // replaced index with parentIndex
+            leftChildIndex = getLeftChildIndex(parentIndex);
+            rightChildIndex = getRightChildIndex(parentIndex);
+        } else {
+            break;
+        // otherwise, minheap property should be restored
+        }
+    }
+    return 1;
+}
+
+// getter functions
+int getParentIndex(int index) {
+    return (index - 1) / 2;
+}
+
+int getLeftChildIndex(int index) {
+    return (2 * index) + 1;
+}
+
+int getRightChildIndex(int index) {
+    return (2 * index) + 2;
+}
+
+int isEmpty(MinHeap *minHeap) {
+    return minHeap->count == 0 ? 1 : 0;
+}
+
+int isFull(MinHeap *minHeap) {
+    return minHeap->count >= minHeap->size - 1 ? 1 : 0;
+}
 
 
 void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[]) {
