@@ -29,7 +29,7 @@ int removeEdge(GraphPointer graph, int from, int to);
 // graph helper functions
 int hasVertex(GraphPointer graph, int vertex);
 int isVisited(int vertex, int *visited);
-void resetArray(int *array, int n);
+void resetArray(int *array, int n, int value);
 
 // minheap builder
 MinHeap *createMinHeap(int size);
@@ -57,8 +57,8 @@ int isEmpty(MinHeap *minHeap);
 int isFull(MinHeap *minHeap);
 
 // actual algorithms
-void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[]);
-int dijkstra_target(GraphPointer graph, int start, int target, int distances[], int parent[]);
+void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap minheap);
+int dijkstra_target(GraphPointer graph, int start, int target, int distances[], int parent[], MinHeap minheap);
 
 // path printer function
 void printPath(int start, int target, int *parent);
@@ -221,9 +221,9 @@ int isVisited(int vertex, int *visited) {
     return visited[vertex];
 }
 
-void resetArray(int *array, int n) {
+void resetArray(int *array, int n, int value) {
     for (int i = 0; i < n; i++) {
-        array[i] = 0;
+        array[i] = value;
     }
 }
 
@@ -416,12 +416,22 @@ int isFull(MinHeap *minHeap) {
 }
 
 
-void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[]) {
+
+void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap minheap) {
+    // initialize:
+    // distance as infinity for all nodes
+    // parent as -1 for all nodes
+    // visited as 0 for all nodes except start
+    // push start into minheap/minheap
+
+    // while the minheap is not empty:
+
+
 
     return;
 }
 
-int dijkstra_target(GraphPointer graph, int start, int target, int distances[], int parent[]) {
+void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap minheap) {
 
     return 0;
 }
