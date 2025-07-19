@@ -10,6 +10,11 @@ typedef struct Graph {
     int **edges;
 } Graph, *GraphPointer;
 
+typedef struct HeapNode {
+    int distance;
+    int vertex;
+} HeapNode;
+
 // we need a minheap to store the lowest value
 typedef struct {
     int *minHeap;
@@ -425,6 +430,14 @@ void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent
     // push start into minheap/minheap
 
     // while the minheap is not empty:
+        // extract min (distance and vertex pair)
+        // if min.current_distance > distance[current], continue [restart the loop and continue to extract min]
+        // for each neighbor of current,
+            // if there is an edge:
+                // temp = dist[current] + matrix[current][destination] 
+                // distances[destination] = temp
+                // parent[destination] = current
+                // push (temp, destination) to minheap
 
 
 
