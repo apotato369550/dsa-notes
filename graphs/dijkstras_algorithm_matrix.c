@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define HEAP_ERROR INT_MIN
-#define HEAP_EMPTY INT_MIN + 1
 
 typedef struct Graph {
     int n;
@@ -11,13 +9,13 @@ typedef struct Graph {
 } Graph, *GraphPointer;
 
 typedef struct HeapNode {
-    int distance;
     int vertex;
+    int distance;
 } HeapNode;
 
 // we need a minheap to store the lowest value
 typedef struct {
-    int *minHeap;
+    HeapNode *minHeap;
     int count;
     int size;
 } MinHeap;
@@ -44,13 +42,13 @@ void printMinHeapAsArray(MinHeap *minHeap);
 // minheap helper functions
 
 // insertion, extraction, and peeking
-int insertMinHeap(MinHeap *minHeap, int value);
-int extractMin(MinHeap *minHeap);
-int peekMin(MinHeap *minHeap);
+int insertMinHeap(MinHeap *minHeap, int vertex, int distance);
+HeapNode extractMin(MinHeap *minHeap);
+HeapNode peekMin(MinHeap *minHeap);
 
 // heapify functions
-int heapifyUp(MinHeap *minHeap, int index);
-int heapifyDown(MinHeap *minHeap, int index);
+void heapifyUp(MinHeap *minHeap, int index);
+void heapifyDown(MinHeap *minHeap, int index);
 
 // getter functions
 int getParentIndex(int index);
@@ -243,9 +241,10 @@ MinHeap *createMinHeap(int size) {
     newMinHeap->size = size;
 
     // use calloc :V OR! SET IT TO EMPTY
-    newMinHeap->minHeap = malloc(sizeof(int) * newMinHeap->size);
+    newMinHeap->minHeap = malloc(sizeof(MinHeap) * newMinHeap->size);
     for (int i = 0; i < newMinHeap->size; i++) {
-        newMinHeap->minHeap[i] = HEAP_EMPTY;
+        newMinHeap->minHeap[i].distance = INT_MAX;
+        newMinHeap->minHeap[i].vertex = -1;
     }
     return newMinHeap;
 }
@@ -259,9 +258,9 @@ void destroyMinHeap(MinHeap **minHeap) {
 
 void printMinHeapAsArray(MinHeap *minHeap) {
     for (int i = 0; i < minHeap->count; i++) {
-        if (minHeap->minHeap[i] != HEAP_EMPTY) {
+        if (minHeap->minHeap[i].vertex != -1) {
             // replace + with ,
-            printf("%d ", minHeap->minHeap[i]);
+            printf("Vertex: %d Distance: %d ", minHeap->minHeap[i].vertex, minHeap->minHeap[i].distance);
         } else {
             printf("(empty) ");
         }
@@ -272,49 +271,52 @@ void printMinHeapAsArray(MinHeap *minHeap) {
 // minheap helper functions
 
 // insertion, extraction, and peeking
-int insertMinHeap(MinHeap *minHeap, int value) {
+int insertMinHeap(MinHeap *minHeap, int vertex, int distance) {
     if (isFull(minHeap)) {
         printf("Minheap is full! Failed to insert...\n");
-        return HEAP_ERROR;
+        return 0;
     }
-    minHeap->minHeap[minHeap->count] = value;
-    if (heapifyUp(minHeap, minHeap->count)) {
-        printf("Successfully heapified up!\n");
-    } else {
-        printf("Failed to heapfiy up...");
-    }
+    minHeap->minHeap[minHeap->count].vertex = vertex;
+    minHeap->minHeap[minHeap->count].distance = distance;
+    heapifyUp(minHeap, minHeap->count);
+    printf("Successfully heapified up!\n");
+
     minHeap->count++;
 
-    return value;
+    return 1;
 }
 
-int extractMin(MinHeap *minHeap) {
+HeapNode extractMin(MinHeap *minHeap) {
     if (isEmpty(minHeap)) {
         printf("Minheap is empty! Failed to extract...\n");
-        return HEAP_ERROR;
+        HeapNode dummy;
+        dummy.vertex = -1;
+        dummy.distance = INT_MAX;
+        return dummy;
     }
-    int minimumValue = minHeap->minHeap[0];
-    int lastElement = minHeap->minHeap[minHeap->count - 1];
+    HeapNode minimumValue = minHeap->minHeap[0];
+    HeapNode lastElement = minHeap->minHeap[minHeap->count - 1];
     minHeap->minHeap[0] = lastElement;
     minHeap->count -= 1;
-    if (heapifyDown(minHeap, 0)) {
-        printf("Successfully heapified down!\n");
-    } else {
-        printf("Failed to heapify down...\n");
-    }
+    heapifyDown(minHeap, 0);
+    printf("Successfully heapified down!\n");
+
     return minimumValue;
 }
 
-int peekMin(MinHeap *minHeap) {
+HeapNode peekMin(MinHeap *minHeap) {
     if (isEmpty(minHeap)) {
         printf("Minheap is empty! Failed to peek...\n");
-        return HEAP_ERROR;
+        HeapNode dummy;
+        dummy.vertex = -1;
+        dummy.distance = INT_MAX;
+        return dummy;
     }
     return minHeap->minHeap[0];
 }
 
 // heapify functions
-int heapifyUp(MinHeap *minHeap, int index) {
+void heapifyUp(MinHeap *minHeap, int index) {
     // start at index (ideally the last element inserted) = count - 1
     // compare element at index vs parent element
     int childIndex = index;
@@ -323,10 +325,10 @@ int heapifyUp(MinHeap *minHeap, int index) {
     // while we still have a valid parent index...
     while (parentIndex >= 0) {
         // check if we need to swap:
-        int parent = minHeap->minHeap[parentIndex];
-        int child = minHeap->minHeap[childIndex];
+        HeapNode parent = minHeap->minHeap[parentIndex];
+        HeapNode child = minHeap->minHeap[childIndex];
     
-        if (child < parent) {
+        if (child.distance < parent.distance) {
             // perform the swap 
             minHeap->minHeap[childIndex] = parent;
             minHeap->minHeap[parentIndex] = child;
@@ -339,10 +341,9 @@ int heapifyUp(MinHeap *minHeap, int index) {
             break;
         }
     }
-    return 1;
 }
 
-int heapifyDown(MinHeap *minHeap, int index) {
+void heapifyDown(MinHeap *minHeap, int index) {
     // when the current node has at least one child
     
     // parent = (i - 1) / 2
@@ -359,10 +360,10 @@ int heapifyDown(MinHeap *minHeap, int index) {
         // otherwise, isolate and check which is invalid, and assign that instead to childIndex
         int childIndex = -1;
         if (leftChildIndex < minHeap->count && rightChildIndex < minHeap->count) {
-            int leftChild = minHeap->minHeap[leftChildIndex];
-            int rightChild = minHeap->minHeap[rightChildIndex];
+            HeapNode leftChild = minHeap->minHeap[leftChildIndex];
+            HeapNode rightChild = minHeap->minHeap[rightChildIndex];
 
-            if (leftChild < rightChild) {
+            if (leftChild.distance < rightChild.distance) {
                 childIndex = leftChildIndex;
             } else {
                 childIndex = rightChildIndex;
@@ -376,12 +377,12 @@ int heapifyDown(MinHeap *minHeap, int index) {
                 childIndex = rightChildIndex;
             }
         }
-        int child = minHeap->minHeap[childIndex];
-        int parent = minHeap->minHeap[parentIndex];
+        HeapNode child = minHeap->minHeap[childIndex];
+        HeapNode parent = minHeap->minHeap[parentIndex];
         // if the current node's value > smaller child, 
-        if (parent > child) {
+        if (parent.distance > child.distance) {
             // perform swap
-            int temp = child;
+            HeapNode temp = child;
             minHeap->minHeap[childIndex] = parent;
             minHeap->minHeap[parentIndex] = temp;
             // move index to child index
@@ -396,7 +397,6 @@ int heapifyDown(MinHeap *minHeap, int index) {
         // otherwise, minheap property should be restored
         }
     }
-    return 1;
 }
 
 // getter functions
