@@ -36,6 +36,7 @@ void resetArray(int *array, int n, int value);
 
 // minheap builder
 MinHeap *createMinHeap(int size);
+void resetMinHeap(MinHeap *minHeap);
 void destroyMinHeap(MinHeap **minHeap);
 void printMinHeapAsArray(MinHeap *minHeap);
 
@@ -60,8 +61,8 @@ int isEmpty(MinHeap *minHeap);
 int isFull(MinHeap *minHeap);
 
 // actual algorithms
-void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap minheap);
-int dijkstra_target(GraphPointer graph, int start, int target, int distances[], int parent[], MinHeap minheap);
+void dijkstra_explore(GraphPointer graph, int start, int *distances, int *parent, MinHeap *minheap);
+int dijkstra_target(GraphPointer graph, int start, int target, int *distances, int *parent, MinHeap minheap);
 
 // path printer function
 void printPath(int start, int target, int *parent);
@@ -119,6 +120,20 @@ int main() {
     addEdge(graph, 16, 17, 2); addEdge(graph, 17, 16, 2);
     addEdge(graph, 17, 18, 1); addEdge(graph, 18, 17, 1);
     addEdge(graph, 18, 19, 3); addEdge(graph, 19, 18, 3);
+
+    // perform dijkstra's here
+    int *distances = malloc(sizeof(int) * graph->n);
+    int *parent = malloc(sizeof(int) * graph->n);
+    MinHeap *minheap = createMinHeap(graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+
+    // 0 - 9
+
+    // 10 - 14
+
+    // 15 - 19
 
     printGraph(graph);
 
@@ -247,6 +262,10 @@ MinHeap *createMinHeap(int size) {
         newMinHeap->minHeap[i].vertex = -1;
     }
     return newMinHeap;
+}
+
+void resetMinHeap(MinHeap *minHeap) {
+    // build this other helper function
 }
 
 void destroyMinHeap(MinHeap **minHeap) {
@@ -422,24 +441,50 @@ int isFull(MinHeap *minHeap) {
 
 
 
-void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap minheap) {
+void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap *minheap) {
     // initialize:
     // distance as infinity for all nodes
     // parent as -1 for all nodes
-    // visited as 0 for all nodes except start
+    // distance to starting node as 0 for all nodes except start
+    for (int i = 0; i < graph->n; i++) {
+        distances[i] = INT_MAX;
+        parent[i] = -1;
+    }
+
+    distances[start] = 0;
+
     // push start into minheap/minheap
+    insertMinHeap(&minheap, start, 0);
 
     // while the minheap is not empty:
+    while (!isEmpty(minheap)) {
         // extract min (distance and vertex pair)
+        HeapNode min = extractMin(minheap);
         // if min.current_distance > distance[current], continue [restart the loop and continue to extract min]
+        if (min.distance > distances[min.vertex]) {
+            continue;
+        }
+
         // for each neighbor of current,
+        for (int i = 0; i < graph->n; i++) {
             // if there is an edge:
+            if (graph->edges[min.vertex][i] != 0) {
                 // temp = dist[current] + matrix[current][destination] 
-                // distances[destination] = temp
-                // parent[destination] = current
-                // push (temp, destination) to minheap
+                int tempDistance = distances[min.vertex] + graph->edges[min.vertex][i];
 
-
+                // if the current (temp) distance is better than the distance we've found so far, 
+                // update distances and parent array
+                if (tempDistance < distances[i]) {
+                    // distances[destination] = temp
+                    distances[i] = tempDistance;
+                    // parent[destination] = current
+                    parent[i] = min.vertex;
+                    // push (temp, destination) to minheap
+                    insertMinHeap(minheap, i, tempDistance);
+                }
+            }
+        }
+    }
 
     return;
 }
