@@ -67,6 +67,9 @@ int dijkstra_target(GraphPointer graph, int start, int target, int *distances, i
 // path printer function
 void printPath(int start, int target, int *parent);
 
+// distance printer function
+void printDistances(int start, int *distances, int n);
+
 /*
          0
        /   \
@@ -129,13 +132,18 @@ int main() {
     resetArray(distances, graph->n, INT_MAX);
     resetArray(parent, graph->n, -1);
 
+    printGraph(graph);
+
+    // dijkstra explore
+    dijkstra_explore(graph, 0, distances, parent, minheap);
+    printDistances(0, distances, graph->n);
+
     // 0 - 9
 
     // 10 - 14
 
     // 15 - 19
 
-    printGraph(graph);
 
     return 0;
 }
@@ -266,6 +274,10 @@ MinHeap *createMinHeap(int size) {
 
 void resetMinHeap(MinHeap *minHeap) {
     // build this other helper function
+    for (int i = 0; i < minHeap->size; i++) {
+        minHeap->minHeap[i].distance = INT_MAX;
+        minHeap->minHeap[i].vertex = -1;
+    }
 }
 
 void destroyMinHeap(MinHeap **minHeap) {
@@ -454,7 +466,7 @@ void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent
     distances[start] = 0;
 
     // push start into minheap/minheap
-    insertMinHeap(&minheap, start, 0);
+    insertMinHeap(minheap, start, 0);
 
     // while the minheap is not empty:
     while (!isEmpty(minheap)) {
@@ -489,8 +501,7 @@ void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent
     return;
 }
 
-void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent[], MinHeap minheap) {
-
+int dijkstra_target(GraphPointer graph, int start, int target, int *distances, int *parent, MinHeap minheap) {
     return 0;
 }
 
@@ -501,4 +512,17 @@ void printPath(int start, int target, int *parent) {
     }   
     printPath(start, parent[target], parent);
     printf(" -> %d", target);
+}
+
+void printDistances(int start, int *distances, int n) {
+    printf("Printing distances from: %d\n", start);
+    printf("Node\t\tDistance from %d\n", start);
+    for (int i = 0; i < n; i++) {
+        if (distances[i] == INT_MAX) {
+            printf("%d\t\t(infinity)", i);
+        } else {
+            printf("%d\t\t%d", i, distances[i]);
+        }
+        printf("\n");
+    }
 }
