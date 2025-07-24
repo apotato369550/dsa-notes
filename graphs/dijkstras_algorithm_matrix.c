@@ -62,7 +62,7 @@ int isFull(MinHeap *minHeap);
 
 // actual algorithms
 void dijkstra_explore(GraphPointer graph, int start, int *distances, int *parent, MinHeap *minheap);
-int dijkstra_target(GraphPointer graph, int start, int target, int *distances, int *parent, MinHeap minheap);
+int dijkstra_target(GraphPointer graph, int start, int target, int *distances, int *parent, MinHeap *minheap);
 
 // path printer function
 void printPath(int start, int target, int *parent);
@@ -135,8 +135,30 @@ int main() {
     printGraph(graph);
 
     // dijkstra explore
+
+    // 0
     dijkstra_explore(graph, 0, distances, parent, minheap);
     printDistances(0, distances, graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
+    // 14
+    dijkstra_explore(graph, 14, distances, parent, minheap);
+    printDistances(0, distances, graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
+    // 18
+    dijkstra_explore(graph, 18, distances, parent, minheap);
+    printDistances(0, distances, graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
 
     // 0 - 9
 
@@ -274,10 +296,7 @@ MinHeap *createMinHeap(int size) {
 
 void resetMinHeap(MinHeap *minHeap) {
     // build this other helper function
-    for (int i = 0; i < minHeap->size; i++) {
-        minHeap->minHeap[i].distance = INT_MAX;
-        minHeap->minHeap[i].vertex = -1;
-    }
+    minHeap->count = 0;
 }
 
 void destroyMinHeap(MinHeap **minHeap) {
@@ -458,10 +477,7 @@ void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent
     // distance as infinity for all nodes
     // parent as -1 for all nodes
     // distance to starting node as 0 for all nodes except start
-    for (int i = 0; i < graph->n; i++) {
-        distances[i] = INT_MAX;
-        parent[i] = -1;
-    }
+    // (done outside of function :V)
 
     distances[start] = 0;
 
@@ -501,8 +517,35 @@ void dijkstra_explore(GraphPointer graph, int start, int distances[], int parent
     return;
 }
 
-int dijkstra_target(GraphPointer graph, int start, int target, int *distances, int *parent, MinHeap minheap) {
-    return 0;
+int dijkstra_target(GraphPointer graph, int start, int target, int *distances, int *parent, MinHeap *minheap) {
+    // logic fordiswan
+
+    // initialize:
+    // distance as infinity for all nodes
+    // parent as -1 for all nodes
+    // distance to starting node as 0 for all nodes except start
+    // (done outside of function :V)
+
+    // use minheap passed as argument from main
+    // add start to minheap
+
+    distances[start] = 0;
+
+    // push start into minheap/minheap
+    insertMinHeap(minheap, start, 0);
+
+    // while the minheap is not empty:
+        // pop/extract min from minheap
+        // if the vertex is the target, break
+
+        // if the current distance (extracted) is greater than 
+        // the distance from start to that vertex distances[u]
+        // continue
+
+        
+
+    // return calculated distance to target from starting vertex after running through dijkstras
+    return distances[target];
 }
 
 void printPath(int start, int target, int *parent) {
