@@ -535,14 +535,40 @@ int dijkstra_target(GraphPointer graph, int start, int target, int *distances, i
     insertMinHeap(minheap, start, 0);
 
     // while the minheap is not empty:
+    while (!isEmpty(minheap)) {
         // pop/extract min from minheap
+        HeapNode min = extractMin(minheap);
         // if the vertex is the target, break
+
+        if (min.vertex == target) {
+            break;
+        }
 
         // if the current distance (extracted) is greater than 
         // the distance from start to that vertex distances[u]
         // continue
+        if (min.distance > distances[min.vertex]) {
+            continue;
+        }
 
-        
+        // loop through from i to n - 1 (number of vertices - 1)
+        // basically loop through each neighbor
+        for (int i = 0; i < graph->n; i++) {
+            if (graph->edges[min.vertex][i] != 0) {
+                int tempDistance = distances[min.vertex] + graph->edges[min.vertex][i];
+                
+            }
+        }
+            // if graph[current][i] != 0
+                // get temp distance = distances[current]
+                // distance = distances[current] + matrix[current][i]
+                // or -> distance from start to that vertex + distance from current vertex to that vertex
+                
+                // if temp < distances[destination]
+                    // distances[destination] = temp
+                    // parent[destination] = current
+                    // add to minheap: temp distance and neighbor/destination vertex
+    }
 
     // return calculated distance to target from starting vertex after running through dijkstras
     return distances[target];
