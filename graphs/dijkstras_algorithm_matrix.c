@@ -70,6 +70,9 @@ void printPath(int start, int target, int *parent);
 // distance printer function
 void printDistances(int start, int *distances, int n);
 
+// print weight given a path 
+void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent);
+
 /*
          0
        /   \
@@ -146,7 +149,7 @@ int main() {
 
     // 14
     dijkstra_explore(graph, 14, distances, parent, minheap);
-    printDistances(0, distances, graph->n);
+    printDistances(14, distances, graph->n);
 
     resetArray(distances, graph->n, INT_MAX);
     resetArray(parent, graph->n, -1);
@@ -154,17 +157,39 @@ int main() {
 
     // 18
     dijkstra_explore(graph, 18, distances, parent, minheap);
-    printDistances(0, distances, graph->n);
+    printDistances(18, distances, graph->n);
 
     resetArray(distances, graph->n, INT_MAX);
     resetArray(parent, graph->n, -1);
     resetMinHeap(minheap);
 
     // 0 - 9
+    dijkstra_target(graph, 0, 9, distances, parent, minheap);
+    printPath(0, 9, parent);
+    printWeightGivenPath(graph, 0, 9, parent);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
 
     // 10 - 14
+    
+    dijkstra_target(graph, 10, 14, distances, parent, minheap);
+    printPath(10, 14, parent);
+    printWeightGivenPath(graph, 10, 14, parent);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
 
     // 15 - 19
+    dijkstra_target(graph, 15, 19, distances, parent, minheap);
+    printPath(15, 19, parent);
+    printWeightGivenPath(graph, 15, 19, parent);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
 
 
     return 0;
@@ -323,13 +348,11 @@ void printMinHeapAsArray(MinHeap *minHeap) {
 // insertion, extraction, and peeking
 int insertMinHeap(MinHeap *minHeap, int vertex, int distance) {
     if (isFull(minHeap)) {
-        printf("Minheap is full! Failed to insert...\n");
         return 0;
     }
     minHeap->minHeap[minHeap->count].vertex = vertex;
     minHeap->minHeap[minHeap->count].distance = distance;
     heapifyUp(minHeap, minHeap->count);
-    printf("Successfully heapified up!\n");
 
     minHeap->count++;
 
@@ -349,7 +372,6 @@ HeapNode extractMin(MinHeap *minHeap) {
     minHeap->minHeap[0] = lastElement;
     minHeap->count -= 1;
     heapifyDown(minHeap, 0);
-    printf("Successfully heapified down!\n");
 
     return minimumValue;
 }
@@ -598,4 +620,23 @@ void printDistances(int start, int *distances, int n) {
         }
         printf("\n");
     }
+}
+
+void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent) {
+    if (parent[target] == -1 && target != start) {
+        printf("Total Weight: (infinity)\n");
+    }
+
+    int totalWeight = 0;
+    int currentVertex = target;
+
+    // go backwards
+    while (currentVertex != start) {
+        int previous = parent[currentVertex];
+        int currentEdgeWeight = graph->edges[previous][currentVertex];
+        totalWeight += currentEdgeWeight;
+        currentVertex = previous;
+    }
+
+    printf("Total Weight: %d\n", totalWeight);
 }
