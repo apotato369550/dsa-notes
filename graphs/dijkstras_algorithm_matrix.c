@@ -415,61 +415,6 @@ void heapifyUp(MinHeap *minHeap, int index) {
     }
 }
 
-void heapifyDown(MinHeap *minHeap, int index) {
-    // when the current node has at least one child
-    
-    // parent = (i - 1) / 2
-    // left child = 2i + 1
-    // right child = 2i + 2
-
-    int parentIndex = index;
-    int leftChildIndex = getLeftChildIndex(index);
-    int rightChildIndex = getRightChildIndex(index);
-
-    while (leftChildIndex < minHeap->count || rightChildIndex < minHeap->count) {
-        // find the smaller child (or only child)
-        // if left and right are valid, compare left and right
-        // otherwise, isolate and check which is invalid, and assign that instead to childIndex
-        int childIndex = -1;
-        if (leftChildIndex < minHeap->count && rightChildIndex < minHeap->count) {
-            HeapNode leftChild = minHeap->minHeap[leftChildIndex];
-            HeapNode rightChild = minHeap->minHeap[rightChildIndex];
-
-            if (leftChild.distance < rightChild.distance) {
-                childIndex = leftChildIndex;
-            } else {
-                childIndex = rightChildIndex;
-            }
-        } else {
-            if (leftChildIndex < minHeap->count) {
-                // left must be valid, right must be invalid
-                childIndex = leftChildIndex;
-            } else {
-                // right must be valid.
-                childIndex = rightChildIndex;
-            }
-        }
-        HeapNode child = minHeap->minHeap[childIndex];
-        HeapNode parent = minHeap->minHeap[parentIndex];
-        // if the current node's value > smaller child, 
-        if (parent.distance > child.distance) {
-            // perform swap
-            HeapNode temp = child;
-            minHeap->minHeap[childIndex] = parent;
-            minHeap->minHeap[parentIndex] = temp;
-            // move index to child index
-            parentIndex = childIndex;
-
-            // recalculate left and right child indices
-            // replaced index with parentIndex
-            leftChildIndex = getLeftChildIndex(parentIndex);
-            rightChildIndex = getRightChildIndex(parentIndex);
-        } else {
-            break;
-        // otherwise, minheap property should be restored
-        }
-    }
-}
 
 // getter functions
 int getParentIndex(int index) {
