@@ -71,10 +71,14 @@ void dijkstra_explore(GraphPointer graph, char start, int *distances, int *paren
 int dijkstra_target(GraphPointer graph, char start, char target, int *distances, int *parent, MinHeap *minheap);
 
 // path printer function
+void printPath(int start, int target, int *parent);
 
 // distance printer function
+void printDistances(char start, int *distances, int n);
 
-// print weight given a path
+// print weight given a path 
+void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent);
+
 
 /*
          A
@@ -452,9 +456,60 @@ int isFull(MinHeap *minHeap) {
 
 // actual algorithms
 void dijkstra_explore(GraphPointer graph, char start, int *distances, int *parent, MinHeap *minheap) {
+    // initialize distance -> infinity
+    // parent as -1 for all nodes
+    // distance to starting node as 0
+
+    distances[(int) start - 'A'] = 0;
+
+    insertMinHeap(minheap, start, 0);
+
+    while (!isEmpty(minheap)) {
+        HeapNode min = extractMin(minheap);
+
+        if (min.distance > distances[(int) min.vertex - 'A']) {
+            continue;
+        }
+
+        GraphNode currentVertex = getVertexFromGraph(graph, min.vertex);
+        GraphNode *currentNeighbor = currentVertex.next;
+
+        while (currentNeighbor != NULL) {
+            int tempDistance = distances[(int) min.vertex - 'A'] + currentNeighbor->weight;
+
+            if (tempDistance <= distances[(int) currentNeighbor->vertex - 'A']) {
+                distances[(int) currentNeighbor->vertex - 'A'] = tempDistance;
+                parent[(int) currentNeighbor->vertex - 'A'] = (int) min.vertex - 'A';
+                insertMinHeap(minheap, (int) currentNeighbor->vertex, tempDistance);
+            }
+
+            currentNeighbor = currentNeighbor->next;
+        }
+    }
+
     return;
 }
 
 int dijkstra_target(GraphPointer graph, char start, char target, int *distances, int *parent, MinHeap *minheap) {
     return;
 }
+
+// path printer function
+void printPath(int start, int target, int *parent);
+
+// distance printer function
+void printDistances(char start, int *distances, int n) {
+    printf("Printing distances from: %c\n", start);
+    printf("Node\t\tDistance from %c\n", start);
+    for (int i = 0; i < n; i++) {
+        if (distances[i] == INT_MAX) {
+            printf("%c\t\t(infinity)",'A' + i);
+        } else {
+            printf("%c\t\t%d", 'A' + i, distances[i]);
+        }
+        printf("\n");
+    }
+}
+
+// print weight given a path 
+void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent);
