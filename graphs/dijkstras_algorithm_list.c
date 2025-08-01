@@ -137,6 +137,39 @@ int main() {
 
     printGraph(graph);
 
+    // initializing helper data structs
+    int *distances = malloc(sizeof(int) * graph->n);
+    int *parent = malloc(sizeof(int) * graph->n);
+    MinHeap *minheap = createMinHeap(graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+
+    // A
+    dijkstra_explore(graph, 'A', distances, parent, minheap);
+    printDistances('A', distances, graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
+
+    // O
+    dijkstra_explore(graph, 'O', distances, parent, minheap);
+    printDistances('O', distances, graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
+    // A
+    dijkstra_explore(graph, 'Q', distances, parent, minheap);
+    printDistances('Q', distances, graph->n);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
     destroyGraph(graph);
 
     return 0;
@@ -491,7 +524,46 @@ void dijkstra_explore(GraphPointer graph, char start, int *distances, int *paren
 }
 
 int dijkstra_target(GraphPointer graph, char start, char target, int *distances, int *parent, MinHeap *minheap) {
-    return;
+    // initialize helper arrays (done in main)
+    // initialize distance to start as 0
+    // insert start to minheap
+
+    distances[(int) start - 'A'] = 0;
+
+    insertMinHeap(minheap, start, 0);
+
+    while (!isEmpty(minheap)) {
+        // extract min from minheap
+        HeapNode min = extractMin(minheap);
+
+        // if we hit the target, we break :V
+        if (min.vertex == target) {
+            break;
+        }
+
+        // if the extracted distance is greater than the current minimum distance,
+        // we can disregard it (continue)
+        if (min.distance > distances[min.vertex]) {
+            continue;
+        }
+
+        // loop through each neighbor
+        GraphNode currentVertex = getVertexFromGraph(graph, min.vertex);
+        GraphNode *currentNeighbor = currentVertex.next;
+
+        while (currentNeighbor != NULL) {
+            int tempDistance = distances[(int) min.vertex - 'A'] + currentNeighbor->weight;
+
+            if (tempDistance <= distances[(int) currentNeighbor->vertex - 'A']) {
+                distances[(int) currentNeighbor->vertex - 'A'] = tempDistance;
+                parent[(int) currentNeighbor->vertex - 'A'] = (int) min.vertex - 'A';
+                insertMinHeap(minheap, (int) currentNeighbor->vertex, tempDistance);
+            }
+            currentNeighbor = currentNeighbor->next;
+        }
+    }
+
+    return 0;
 }
 
 // path printer function
