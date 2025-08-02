@@ -570,6 +570,7 @@ void printDistances(int start, int *distances, int n) {
 void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent) {
     if (parent[target] == -1 && target != start) {
         printf("Total Weight: (infinity)\n");
+        return;
     }
 
     int totalWeight = 0;

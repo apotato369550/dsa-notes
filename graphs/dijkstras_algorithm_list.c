@@ -71,13 +71,13 @@ void dijkstra_explore(GraphPointer graph, char start, int *distances, int *paren
 int dijkstra_target(GraphPointer graph, char start, char target, int *distances, int *parent, MinHeap *minheap);
 
 // path printer function
-void printPath(int start, int target, int *parent);
+void printPath(char start, char target, int *parent);
 
 // distance printer function
 void printDistances(char start, int *distances, int n);
 
 // print weight given a path 
-void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent);
+void printWeightGivenPath(GraphPointer graph, char start, char target, int *parent);
 
 
 /*
@@ -162,7 +162,7 @@ int main() {
     resetArray(parent, graph->n, -1);
     resetMinHeap(minheap);
 
-    // A
+    // Q
     dijkstra_explore(graph, 'Q', distances, parent, minheap);
     printDistances('Q', distances, graph->n);
 
@@ -567,7 +567,14 @@ int dijkstra_target(GraphPointer graph, char start, char target, int *distances,
 }
 
 // path printer function
-void printPath(int start, int target, int *parent);
+void printPath(char start, char target, int *parent) {
+    if (start == target) {
+        printf("%c", start);
+        return;
+    }
+    printPath(start, (char) parent[(int) target - 'A'], parent);
+    printf(" -> %c", target);
+}
 
 // distance printer function
 void printDistances(char start, int *distances, int n) {
@@ -584,4 +591,40 @@ void printDistances(char start, int *distances, int n) {
 }
 
 // print weight given a path 
-void printWeightGivenPath(GraphPointer graph, int start, int target, int *parent);
+void printWeightGivenPath(GraphPointer graph, char start, char target, int *parent) {
+    if (parent[(int) target - 'A'] == -1 && target != start) {
+        printf("Total Weight: (infinity)\n");
+        return;
+    }
+
+    int totalWeight = 0;
+    char currentVertex = target;
+
+    while (currentVertex != start) {
+        char previous = 'A' + parent[(int) currentVertex - 'A'];
+        GraphNode previousNode = getVertexFromGraph(graph, previous);
+        GraphNode *currentNeighbor = previousNode.next;
+        int currentEdgeWeight = -1;
+
+        while (currentNeighbor != NULL) {
+            if (currentNeighbor->vertex == currentVertex) {
+                currentEdgeWeight = currentNeighbor->weight;
+                break;
+            }
+            currentNeighbor = currentNeighbor->next;
+        }
+
+        if (currentEdgeWeight == -1) {
+            totalWeight = -1;
+            break;
+        }
+        // do stuff here. increment total weight
+        totalWeight += currentEdgeWeight;
+        currentVertex = previous;
+    }
+
+    if (totalWeight == -1) {
+        printf("Total Weight: (infinity)\n");
+        return;
+    }
+}
