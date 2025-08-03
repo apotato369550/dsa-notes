@@ -170,6 +170,35 @@ int main() {
     resetArray(parent, graph->n, -1);
     resetMinHeap(minheap);
 
+    // A - J
+    dijkstra_target(graph, 'A', 'J', distances, parent, minheap);
+    printPath('A', 'J', parent);
+    // printWeightGivenPath(graph, 'A', 'J', parent);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
+    /*
+    // K - O
+    dijkstra_target(graph, 'K', 'O', distances, parent, minheap);
+    printPath('K', 'O', parent);
+    printWeightGivenPath(graph, 'K', 'O', parent);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+
+    // P - T
+    dijkstra_target(graph, 'P', 'T', distances, parent, minheap);
+    printPath('P', 'T', parent);
+    printWeightGivenPath(graph, 'P', 'T', parent);
+
+    resetArray(distances, graph->n, INT_MAX);
+    resetArray(parent, graph->n, -1);
+    resetMinHeap(minheap);
+    */
+
     destroyGraph(graph);
 
     return 0;
@@ -538,12 +567,13 @@ int dijkstra_target(GraphPointer graph, char start, char target, int *distances,
 
         // if we hit the target, we break :V
         if (min.vertex == target) {
+            printf("TARGET FOUND!!!\n");
             break;
         }
 
         // if the extracted distance is greater than the current minimum distance,
         // we can disregard it (continue)
-        if (min.distance > distances[min.vertex]) {
+        if (min.distance > distances[(int) min.vertex - 'A']) {
             continue;
         }
 
@@ -626,5 +656,7 @@ void printWeightGivenPath(GraphPointer graph, char start, char target, int *pare
     if (totalWeight == -1) {
         printf("Total Weight: (infinity)\n");
         return;
+    } else {  
+        printf("Total Weight: %d\n", totalWeight);
     }
 }
