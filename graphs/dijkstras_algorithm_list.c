@@ -173,13 +173,12 @@ int main() {
     // A - J
     dijkstra_target(graph, 'A', 'J', distances, parent, minheap);
     printPath('A', 'J', parent);
-    // printWeightGivenPath(graph, 'A', 'J', parent);
+    printWeightGivenPath(graph, 'A', 'J', parent);
 
     resetArray(distances, graph->n, INT_MAX);
     resetArray(parent, graph->n, -1);
     resetMinHeap(minheap);
 
-    /*
     // K - O
     dijkstra_target(graph, 'K', 'O', distances, parent, minheap);
     printPath('K', 'O', parent);
@@ -197,7 +196,6 @@ int main() {
     resetArray(distances, graph->n, INT_MAX);
     resetArray(parent, graph->n, -1);
     resetMinHeap(minheap);
-    */
 
     destroyGraph(graph);
 
@@ -598,11 +596,15 @@ int dijkstra_target(GraphPointer graph, char start, char target, int *distances,
 
 // path printer function
 void printPath(char start, char target, int *parent) {
+    if (parent[(int) target - 'A'] == -1 && target != start) {
+        printf("No path exists");
+        return;
+    }
     if (start == target) {
         printf("%c", start);
         return;
     }
-    printPath(start, (char) parent[(int) target - 'A'], parent);
+    printPath(start, (char) (parent[(int) target - 'A'] + 'A'), parent);
     printf(" -> %c", target);
 }
 
@@ -623,7 +625,7 @@ void printDistances(char start, int *distances, int n) {
 // print weight given a path 
 void printWeightGivenPath(GraphPointer graph, char start, char target, int *parent) {
     if (parent[(int) target - 'A'] == -1 && target != start) {
-        printf("Total Weight: (infinity)\n");
+        printf("\nTotal Weight: (infinity)\n");
         return;
     }
 
@@ -654,9 +656,9 @@ void printWeightGivenPath(GraphPointer graph, char start, char target, int *pare
     }
 
     if (totalWeight == -1) {
-        printf("Total Weight: (infinity)\n");
+        printf("\nTotal Weight: (infinity)\n");
         return;
     } else {  
-        printf("Total Weight: %d\n", totalWeight);
+        printf("\nTotal Weight: %d\n", totalWeight);
     }
 }
