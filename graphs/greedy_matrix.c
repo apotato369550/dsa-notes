@@ -27,7 +27,7 @@ void resetVisited(int *visited, int n);
 // complete and sparse graph maker functions 
 
 void createCompleteEdges(GraphPointer graph);
-void createSparseEdges(GraphPointer graph);
+void createModerateEdges(GraphPointer graph);
 
 int main () {
     Graph *complete_graph = createGraph(10);
@@ -45,7 +45,7 @@ int main () {
     }
 
     createCompleteEdges(complete_graph);
-    createSparseEdges(sparse_graph);
+    createModerateEdges(sparse_graph);
 
 
     return 0;
@@ -162,9 +162,16 @@ void resetVisited(int *visited, int n) {
 
 
 void createCompleteEdges(GraphPointer graph) {
-    return; 
+    for (int i = 0; i < graph->n; i++) {
+        for (int j = i + 1; j < graph->n; j++) {
+            int weight = rand() % 9 + 1;
+            addEdge(graph, i, j, weight);
+            addEdge(graph, j, i, weight);
+        }
+    }
 }
 
-void createSparseEdges(GraphPointer graph) {
+void createModerateEdges(GraphPointer graph) {
+    // work on this function
     return;
 }
