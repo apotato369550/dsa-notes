@@ -27,26 +27,31 @@ void resetVisited(int *visited, int n);
 // complete and sparse graph maker functions 
 
 void createCompleteEdges(GraphPointer graph);
-void createModerateEdges(GraphPointer graph);
+void createDenseEdges(GraphPointer graph);
 
 int main () {
-    Graph *complete_graph = createGraph(10);
+    Graph *completeGraph = createGraph(10);
 
-    if (complete_graph == NULL) {
+    if (completeGraph == NULL) {
         printf("Failed to allocate memory...\n");
         return 1;
     }
 
-    Graph *sparse_graph = createGraph(10);
+    Graph *denseGraph = createGraph(10);
 
-    if (sparse_graph == NULL) {
+    if (denseGraph == NULL) {
         printf("Failed to allocate memory...\n");
         return 1;
     }
 
-    createCompleteEdges(complete_graph);
-    createModerateEdges(sparse_graph);
+    createCompleteEdges(completeGraph);
+    createDenseEdges(denseGraph);
 
+    printf("Printing Complete Graph: \n\n");
+    printGraph(completeGraph);
+
+    printf("Printing Dense Graph: \n\n");
+    printGraph(denseGraph);
 
     return 0;
 }
@@ -171,10 +176,10 @@ void createCompleteEdges(GraphPointer graph) {
     }
 }
 
-void createModerateEdges(GraphPointer graph) {
+void createDenseEdges(GraphPointer graph) {
     // define density as the fraction of max edges
-    double density = 0.55; 
-int edgeCount = (int)(density * (graph->n * (graph->n - 1)) / 2);
+    double density = 0.75; 
+    int edgeCount = (int)(density * (graph->n * (graph->n - 1)) / 2);
 
     // while the number of edges currently
     // added is less than edgeCount
@@ -195,5 +200,6 @@ int edgeCount = (int)(density * (graph->n * (graph->n - 1)) / 2);
             addEdge(graph, from, to, weight);
             addEdge(graph, to, from, weight);
         }
+        addedEdges += 1;
     }
 }
