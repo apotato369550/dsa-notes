@@ -172,6 +172,28 @@ void createCompleteEdges(GraphPointer graph) {
 }
 
 void createModerateEdges(GraphPointer graph) {
-    // work on this function
-    return;
+    // define density as the fraction of max edges
+    double density = 0.55; 
+int edgeCount = (int)(density * (graph->n * (graph->n - 1)) / 2);
+
+    // while the number of edges currently
+    // added is less than edgeCount
+    int addedEdges = 0;
+    while (addedEdges < edgeCount) {
+        // create a to-edge and from-edge
+        int from = rand() % graph->n;
+        int to = rand() % graph->n;
+
+        // if they're the same, we skip it
+        // since it's just a loop :V
+        if (from == to) {   
+            continue;
+        }
+
+        if (!hasEdge(graph, from, to) && !hasEdge(graph, to, from)) {
+            int weight = rand() % 9 + 1;
+            addEdge(graph, from, to, weight);
+            addEdge(graph, to, from, weight);
+        }
+    }
 }
