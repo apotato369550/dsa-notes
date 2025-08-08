@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <limits.h>
 
 typedef struct Graph {
     int n;
@@ -28,6 +28,9 @@ void resetVisited(int *visited, int n);
 
 void createCompleteEdges(GraphPointer graph);
 void createDenseEdges(GraphPointer graph);
+
+// create hamiltonian cycle using greedy function
+void createHamiltonianCycle(GraphPointer graph, int start, int *visited);
 
 int main () {
     Graph *completeGraph = createGraph(10);
@@ -202,4 +205,47 @@ void createDenseEdges(GraphPointer graph) {
         }
         addedEdges += 1;
     }
+}
+
+void createHamiltonianCycle(GraphPointer graph, int start, int *visited) {
+    // so what we can do here is, 
+    // we can loop through n times, then after looping, 
+    int currentVertex = start;
+    int totalWeight = 0;
+
+    // mark start as visited
+    visited[start] = 1;
+    printf("%d->", start);
+    // since start is visited, we can loop n - 1 times instead
+    for (int i = 0; i < graph->n - 1; i++) {
+        // let's try mapping out the logic for getting the next vertex,
+        // then if possible, delegate the responsibility to a helper function
+        int lowestWeightEdgeIndex = -1;
+        int lowestWeightEdgeWeight = INT_MAX;
+
+        // the code segment below finds the least costly edge: its index and its weight
+        for (int j = 0; j < graph->n; j++) {
+            // if it's an edge that's been visited, continue
+            if (visited[j]) {
+                continue;
+            }
+            // otherwise, it hasn't been visited and is the candidate for being the smallest weight edge
+            // if it's lower than the ones we've found, 
+            // reassign the variables chuchu
+        }
+
+        // do stuff with index and weights and shit
+        printf("%d->", lowestWeightEdgeIndex);
+        visited[lowestWeightEdgeIndex] = 1;
+        totalWeight += lowestWeightEdgeWeight;
+
+        // we reassign currentvertex to be the next vertex
+        currentVertex = lowestWeightEdgeIndex;
+    }
+    // go from current vertex to start vertex, account for weight, then return weight
+    // for now, let's leave cycle storage and printing some other time. right now let's focus on getting the logic down
+    totalWeight += graph->edges[currentVertex][start];
+    printf("%d\n", start);
+
+    printf("Total cycle weight: %d", totalWeight);
 }
