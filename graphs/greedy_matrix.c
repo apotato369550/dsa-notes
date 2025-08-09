@@ -60,6 +60,8 @@ int main () {
     printGraph(denseGraph);
 
     createHamiltonianCycle(completeGraph, 0, visited);
+    resetVisited(visited, completeGraph->n);
+    createHamiltonianCycle(denseGraph, 0, visited);
 
     return 0;
 }
@@ -111,6 +113,9 @@ void printGraph(GraphPointer graph) {
     printf("----- START OF GRAPH -----\n");
     for (int from = 0; from < graph->n; from++) {
         for (int to = 0; to < graph->n; to++) {
+            if (graph->edges[from][to] == INT_MAX) {
+                printf("inf ");
+            }
             printf("%d ", graph->edges[from][to]);
         }
         printf("\n");
@@ -209,6 +214,14 @@ void createDenseEdges(GraphPointer graph) {
             addEdge(graph, to, from, weight);
         }
         addedEdges += 1;
+    }
+    
+    for (int i = 0; i < graph->n; i++) {
+        for (int j = i + 1; j < graph->n; j++) {
+            if (graph->edges[i][j] == 0) {
+                graph->edges[i][j] = INT_MAX;
+            }
+        }
     }
 }
 
