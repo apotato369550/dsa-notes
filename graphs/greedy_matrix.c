@@ -50,11 +50,16 @@ int main () {
     createCompleteEdges(completeGraph);
     createDenseEdges(denseGraph);
 
+    int *visited = calloc(completeGraph->n, sizeof(int));
+    resetVisited(visited, completeGraph->n);
+
     printf("Printing Complete Graph: \n\n");
     printGraph(completeGraph);
 
     printf("Printing Dense Graph: \n\n");
     printGraph(denseGraph);
+
+    createHamiltonianCycle(completeGraph, 0, visited);
 
     return 0;
 }
@@ -231,7 +236,11 @@ void createHamiltonianCycle(GraphPointer graph, int start, int *visited) {
             }
             // otherwise, it hasn't been visited and is the candidate for being the smallest weight edge
             // if it's lower than the ones we've found, 
-            // reassign the variables chuchu
+            if (graph->edges[i][j] < lowestWeightEdgeWeight) {
+                // reassign the variables chuchu
+                lowestWeightEdgeIndex = j;
+                lowestWeightEdgeWeight = graph->edges[i][j];
+            }
         }
 
         // do stuff with index and weights and shit
