@@ -56,10 +56,12 @@ int main () {
     printf("Printing Complete Graph: \n\n");
     printGraph(completeGraph);
 
+
     printf("Printing Dense Graph: \n\n");
     printGraph(denseGraph);
 
     createHamiltonianCycle(completeGraph, 0, visited);
+    printf("\n");
     resetVisited(visited, completeGraph->n);
     createHamiltonianCycle(denseGraph, 0, visited);
 
@@ -115,8 +117,9 @@ void printGraph(GraphPointer graph) {
         for (int to = 0; to < graph->n; to++) {
             if (graph->edges[from][to] == INT_MAX) {
                 printf("inf ");
+            } else {
+                printf("%d ", graph->edges[from][to]);
             }
-            printf("%d ", graph->edges[from][to]);
         }
         printf("\n");
     }
@@ -254,6 +257,12 @@ void createHamiltonianCycle(GraphPointer graph, int start, int *visited) {
                 lowestWeightEdgeIndex = j;
                 lowestWeightEdgeWeight = graph->edges[i][j];
             }
+        }
+
+        if (lowestWeightEdgeIndex == -1 && lowestWeightEdgeWeight == INT_MAX) {
+            printf("(infinity) \n");
+            printf("Unable to complete cycle...\n");
+            return;
         }
 
         // do stuff with index and weights and shit
