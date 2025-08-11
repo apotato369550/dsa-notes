@@ -232,10 +232,17 @@ void createDenseEdges(GraphPointer graph) {
 }
 
 void floydAndWarshalls(GraphPointer graph) {
-    for (int k = 0; k < graph->n - 1; k++) {
-        for (int i = 0; i < graph->n - 1; i++) {
-            for (int j = 0; j < graph->n - 1; j++) {
-                continue;
+    for (int k = 0; k < graph->n; k++) {
+        for (int i = 0; i < graph->n; i++) {
+            for (int j = 0; j < graph->n; j++) {
+                // if any of the values are infinite, stop checking for this iteration
+                if (graph->edges[i][k] == INT_MAX || graph->edges[k][j] == INT_MAX || graph->edges[i][j] == INT_MAX ) {
+                    continue;
+                }
+                // check floyd-warshall condition
+                if (graph->edges[i][k] + graph->edges[k][j] < graph->edges[i][j]) {
+                    graph->edges[i][j] = graph->edges[i][k] + graph->edges[k][j];
+                }
             }
         }
     }
