@@ -8,7 +8,7 @@ typedef struct node {
 } *charList; 
 
 charList createCharList(char a, char b, char c);
-void printList(charList L);
+void printCharList(charList L);
 bool findElem(charList L, char X);
 void deleteElem(charList *L, char X);
 void deleteAllOccur(charList *L, char X);
@@ -119,10 +119,10 @@ bool findElem(charList L, char X) {
 // dapat double pointer diay ni
 void deleteElem(charList *L, char X) {
     if (L == NULL || *L == NULL) {
-        return NULL;
+        return;
     }
     if ((*L)->elem == X) {
-        return (*L)->link;
+        return;
     }
     while ((*L)->link != NULL) {
         if ((*L)->link->elem == X) {
@@ -137,10 +137,10 @@ void deleteElem(charList *L, char X) {
 }
 void deleteAllOccur(charList *L, char X) {
     if (L == NULL || *L == NULL) {
-        return NULL;
+        return;
     }
     if ((*L)->elem == X) {
-        return (*L)->link;
+        return;
     }
     while ((*L)->link != NULL) {
         int flag = 0;
