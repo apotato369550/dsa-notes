@@ -9,7 +9,7 @@ typedef struct node {
 
 charList createCharList(char a, char b, char c);
 void printCharList(charList L);
-bool findElem(charList *L, char X);
+bool findElem(charList L, char X);
 void deleteElem(charList *L, char X);
 void deleteAllOccur(charList *L, char X);
 
@@ -31,18 +31,17 @@ int main () {
 
     printf("B.a '");
     printCharList(empty);
-    printf("'? %s\n", findElem(&empty, X) ? "True" : "False");
+    printf("'? %s\n", findElem(empty, X) ? "True" : "False");
 
     printf("B.b '");
     printCharList(notFound);
-    printf("'? %s\n", findElem(&notFound, X) ? "True" : "False");
+    printf("'? %s\n", findElem(notFound, X) ? "True" : "False");
 
     printf("B.c '");
     printCharList(first1);
-    printf("'? %s\n", findElem(&first1, X) ? "True" : "False");
+    printf("'? %s\n", findElem(first1, X) ? "True" : "False");
     
     // continue from here
-    /*
     deleteElem(&first1, X);
     printf("C.a.i ");
     printCharList(first1);
@@ -82,21 +81,29 @@ int main () {
     deleteAllOccur(&empty, X);
     printf("D.c ");
     printCharList(empty);
-    */
+
+    deleteAllOccur(&two, X);
+    printf("D.d ");
+    printCharList(two);
+
+    deleteAllOccur(&all, X);
+    printf("D.e ");
+    printCharList(all);
     return 0;
 }
 
 charList createCharList(char a, char b, char c) {
-    charList L = malloc(sizeof(charList));
+    // fix: instead of using sizeof(charList) (which is 8 bytes since pointer)
+    // use: malloc(sizeof(struct node))
+    charList L = malloc(sizeof(struct node));
     charList trav = L;
     trav->elem = a;
-    trav->link = malloc(sizeof(charList));
+    trav->link = malloc(sizeof(struct node));
     trav = trav->link;
     trav->elem = b;
-    trav->link = malloc(sizeof(charList));
+    trav->link = malloc(sizeof(struct node));
     trav = trav->link;
     trav->elem = c;
-    trav = trav->link;
     trav->link = NULL;
     return L;
 }
@@ -109,13 +116,14 @@ void printCharList(charList L) {
     printf("\n");
 }
 
-bool findElem(charList *L, char X) {
+bool findElem(charList L, char X) {
     bool flag = false;
-    while (*L != NULL && !flag) {
-        if ((*L)->elem == X) {
+    charList trav = L;
+    while (trav != NULL && !flag) {
+        if (trav->elem == X) {
             flag = true;
         }
-        L = &(*L)->link;
+        trav = trav->link;
     }
     return flag;
 }
@@ -125,7 +133,10 @@ void deleteElem(charList *L, char X) {
     if (L == NULL || *L == NULL) {
         return;
     }
-    if ((*L)->elem == X) {
+    if ((*L) != NULL && (*L)->elem == X) {
+        charList tmp = (*L);
+        free(tmp);
+        (*L) = (*L)->link;
         return;
     }
     while ((*L)->link != NULL) {
@@ -143,12 +154,14 @@ void deleteAllOccur(charList *L, char X) {
     if (L == NULL || *L == NULL) {
         return;
     }
-    if ((*L)->elem == X) {
-        return;
+    // fix: check if list is null first before dereferencing to prevent crash
+    while ((*L) != NULL && (*L)->elem == X) {
+        charList tmp = (*L);
+        free(tmp);
+        (*L) = (*L)->link;
     }
-    while ((*L)->link != NULL) {
-        int flag = 0;
-        while ((*L)->link->elem == X) {
+    while ((*L) != NULL && (*L)->link != NULL) {
+        if ((*L)->link->elem == X) {
             // perform magic
             charList del = (*L)->link;
             (*L)->link = del->link;
