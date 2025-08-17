@@ -10,8 +10,6 @@ typedef struct charList {
 } charList;
 
 bool findElem(charList L, char X);
-void deleteElem(charList *L, char X);
-void deleteAllOccur(charList *L, char X);
 
 int main() {
     charList s1;
