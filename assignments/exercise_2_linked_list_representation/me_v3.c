@@ -13,8 +13,8 @@ bool findElem(charList L, char X);
 
 int main () {
     charList s1 = NULL;
-    charList s2 = createCharList('a', 'b', 'b');
-    charList s3 = createCharList('c', 'a', 'b');
+    charList s2 = createCharList('c', 'a', 'b');
+    charList s3 = createCharList('a', 'b', 'b');
     char X = 'c';
     printf("Value of X = %c\n", X);
     printf("B.a X present in '");
