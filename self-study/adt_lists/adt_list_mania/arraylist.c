@@ -55,14 +55,27 @@ void deleteStudent(ArrayList *L, char ID[]) {
     if (isEmpty(*L) != true) {
         // 2 condition traversal
         int i;
-        for (i = 0; i < L->count, strcmp(ID, L->Elem->ID) != 0; i++) {}
-        if (i >= L->count) {
+        // fix: L->Elem->ID should be L->Elem[i].ID
+        for (i = 0; i < L->count, strcmp(ID, L->Elem[i].ID) != 0; i++) {}
+
+        // fix: change >= to <. my mistake. 
+        // it should delete if the for loop was stopped abruptly,
+        // hence i being less than count
+        if (i < L->count) {
             deletePos(L, i);
         }
     }
 }
 bool findElem(ArrayList *L, char ID[]) {
     int i;
-    for (i = 0; i < L->count, strcmp(ID, L->Elem->ID) != 0; i++) {}
-    return (i >= L->count) ? true : false;
+    for (i = 0; i < L->count, strcmp(ID, L->Elem[i].ID) != 0; i++) {}
+    return (i < L->count) ? true : false;
+}
+
+bool isEmpty(ArrayList L) {
+    return L.count == 0;
+}
+
+bool isFull(ArrayList L) {
+    return L.count >= MAX;
 }

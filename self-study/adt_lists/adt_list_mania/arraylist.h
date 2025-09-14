@@ -26,4 +26,10 @@ bool findElem(ArrayList *L, char ID[]);
 bool isEmpty(ArrayList L);
 bool isFull(ArrayList L);
 
+bool isEmpty(ArrayList L);
+bool isFull(ArrayList L);
+
+// MAKE DISPLAYLIST
+void displayList(ArrayList L);
+
 #endif

@@ -29,4 +29,7 @@ bool findElem(LinkedList *L, char ID[]);
 bool isEmpty(LinkedList L);
 bool isFull(LinkedList L);
 
+// make this lol
+void displayList(LinkedList *L);
+
 #endif

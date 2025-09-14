@@ -33,8 +33,8 @@ void insertPos(LinkedList *L, studtype student, int index) {
         for (trav, i; *trav != NULL, i < index; trav = &(*trav)->link, i++) {}
         if (i == index) {
             newNode->data = student;
-            newNode->link = *L;
-            *L = newNode;
+            newNode->link = *trav;
+            *trav = newNode;
         }
     }
 }
@@ -50,9 +50,8 @@ void deleteLast(LinkedList *L) {
     if (isEmpty(*L) != true) {
         LinkedList *trav = L;
         for (trav; (*trav)->link != NULL; trav = &(*trav)->link) {}
-        Node *temp = *trav;
-        *trav = temp->link;
-        free(temp);
+        free(*trav);
+        *trav = NULL;
     }
 }
 void deletePos(LinkedList *L, int index) {
@@ -82,7 +81,7 @@ void deleteStudent(LinkedList *L, char ID[]) {
 
 bool findElem(LinkedList *L, char ID[]) {
     LinkedList *trav = L;
-    for (trav; *trav != NULL && strcmp(ID, (*trav)->data.ID); trav = &(*trav)->link) {}
+    for (trav; *trav != NULL && strcmp(ID, (*trav)->data.ID) != 0; trav = &(*trav)->link) {}
     return (*trav == NULL) ? false : true;
 }
 
