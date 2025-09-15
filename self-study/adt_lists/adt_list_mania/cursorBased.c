@@ -37,11 +37,17 @@ void insertLast(VirtualHeap *L, studtype student) {
     if (isFull(*L) != true) {
         int newNode = allocSpace(L);
         if (newNode != -1) {
+            // bug. did not handle insert last when empty
             L->Elem[newNode].data = student;
-            // perform ppi (pointer to pointer to integer) traversal
-            int *trav = &(L->list);
-            for(trav; L->Elem[(*trav)].link != -1; trav = &(L->Elem[(*trav)].link)) {}
-            L->Elem[(*trav)].link = newNode;
+            L->Elem[newNode].link = -1;
+            if (L->list == -1) {
+                L->list = newNode;
+            } else {
+                // perform ppi (pointer to pointer to integer) traversal
+                int *trav = &(L->list);
+                for(trav; L->Elem[(*trav)].link != -1; trav = &(L->Elem[(*trav)].link)) {}
+                L->Elem[(*trav)].link = newNode;
+            }
         }
     }
 }
@@ -75,10 +81,16 @@ void deleteFirst(VirtualHeap *L) {
 
 void deleteLast(VirtualHeap *L) {
     if (isEmpty(*L) != true) {
-        int *trav = &(L->list);
-        for (trav; L->Elem[(*trav)].link != -1; trav = &(L->Elem[*trav].link)) {}
-        deallocSpace(L, *trav);
-        *trav = -1;
+        // bug: does not handle case if single node is left over :VVV
+        if (L->Elem[L->list].link == -1) {
+            deallocSpace(L, L->list);
+            L->list = -1;
+        } else {
+            int *trav = &(L->list);
+            for (trav; L->Elem[(*trav)].link != -1; trav = &(L->Elem[*trav].link)) {}
+            deallocSpace(L, *trav);
+            *trav = -1;
+        }
     }
 }
 
@@ -121,4 +133,19 @@ bool isEmpty(VirtualHeap L) {
 
 bool isFull(VirtualHeap L) {
     return (L.Avail == -1) ? true : false;
+}
+
+void displayList(VirtualHeap L) {
+    // forgot to check if list is empty lmaooo
+    if (isEmpty(L)) {
+        return;
+    }
+    int trav = L.list;
+    int i = 0;
+    for (trav, i; trav != -1; trav = L.Elem[trav].link, i++) {
+        printf("%d. %s %c %s - ID: %s, Year: %d, Course: %s\n", 
+               i+1, L.Elem[trav].data.name.firstName, L.Elem[trav].data.name.MI, 
+               L.Elem[trav].data.name.lastName, L.Elem[trav].data.ID, 
+               L.Elem[trav].data.year, L.Elem[trav].data.course);
+    }
 }

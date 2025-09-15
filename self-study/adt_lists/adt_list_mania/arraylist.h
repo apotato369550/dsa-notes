@@ -1,6 +1,7 @@
 #ifndef ARRAYLIST
 #define ARRAYLIST
 
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "studtype.h"
@@ -26,8 +27,7 @@ bool findElem(ArrayList *L, char ID[]);
 bool isEmpty(ArrayList L);
 bool isFull(ArrayList L);
 
-bool isEmpty(ArrayList L);
-bool isFull(ArrayList L);
+// bug: declared isEmpty and isFull twice lol
 
 // MAKE DISPLAYLIST
 void displayList(ArrayList L);

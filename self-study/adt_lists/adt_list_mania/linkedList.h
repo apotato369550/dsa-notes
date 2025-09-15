@@ -1,6 +1,7 @@
 #ifndef LINKEDLIST
 #define LINKEDLIST
 
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -30,6 +31,7 @@ bool isEmpty(LinkedList L);
 bool isFull(LinkedList L);
 
 // make this lol
-void displayList(LinkedList *L);
+// should be pass by value instead of pass by reference
+void displayList(LinkedList L);
 
 #endif

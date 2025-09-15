@@ -19,10 +19,15 @@ void insertLast(ArrayList *L, studtype student) {
 }
 
 void insertPos(ArrayList *L, studtype student, int index) {
-    if (isFull(*L) != true) {
+    // bug: didn't check if valid index
+    // fix: check if valid index
+    if (isFull(*L) != true && index >= 0 && index <= L->count) {
         int i;
         for (i = L->count; i > index; L->Elem[i] = L->Elem[i - 1], i--) {}
-        if (i < L->count) {
+
+        // bug: prevents insertion at end of list
+        // fix: replace i < L->count with i <= L->count 
+        if (i <= L->count) {
             L->Elem[index] = student;
             L->count++;
         }
@@ -44,7 +49,10 @@ void deleteLast(ArrayList *L) {
 }
 
 void deletePos(ArrayList *L, int index) {
-    if (isEmpty(*L) != true) {
+    // bug: failed to check bounds for index
+    // fix: check if index >= 0 and index < L->count
+    // < L->count and not <= because it's not insertion
+    if (isEmpty(*L) != true && index >= 0 && index < L->count) {
         int length = L->count - 1;
         for (int i = index; i < length; L->Elem[i] = L->Elem[i + 1], i++) {}
         L->count--;
@@ -78,4 +86,21 @@ bool isEmpty(ArrayList L) {
 
 bool isFull(ArrayList L) {
     return L.count >= MAX;
+}
+
+
+void displayList(ArrayList L) {
+    if (isEmpty(L)) {
+        printf("List is empty.\n");
+        return;
+    }
+    
+    printf("\nCurrent List:\n");
+    for (int i = 0; i < L.count; i++) {
+        printf("%d. %s %c %s - ID: %s, Year: %d, Course: %s\n", 
+               i+1, L.Elem[i].name.firstName, L.Elem[i].name.MI, 
+               L.Elem[i].name.lastName, L.Elem[i].ID, 
+               L.Elem[i].year, L.Elem[i].course);
+    }
+    printf("\n");
 }

@@ -1,6 +1,7 @@
 #ifndef CURSORBASED
 #define CURSORBASED
 
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "studtype.h"
@@ -37,6 +38,6 @@ bool isEmpty(VirtualHeap L);
 bool isFull(VirtualHeap L);
 
 // make this lol
-void displayList(VirtualHeap *L);
+void displayList(VirtualHeap L);
 
 #endif

@@ -32,7 +32,8 @@ void insertPos(LinkedList *L, studtype student, int index) {
         int i;
         for (trav, i; *trav != NULL, i < index; trav = &(*trav)->link, i++) {}
         if (i == index) {
-            newNode->data = student;
+            // bug: redundant data assignment line
+            // fix: delete da ting
             newNode->link = *trav;
             *trav = newNode;
         } else {
@@ -72,7 +73,9 @@ void deletePos(LinkedList *L, int index) {
 void deleteStudent(LinkedList *L, char ID[]) {
     if (isEmpty(*L) != true) {
         LinkedList *trav = L;
-        for (trav; (*trav)->link != NULL, strcmp(ID, (*trav)->data.ID) != 0; trav = &(*trav)->link) {}
+        // bug: use trav's link instead of trav when comparing to null
+        // fix: change condition to use *trav instead
+        for (trav; *trav != NULL, strcmp(ID, (*trav)->data.ID) != 0; trav = &(*trav)->link) {}
         if (*trav != NULL) {
             Node *temp = *trav;
             *trav = temp->link;
@@ -93,4 +96,18 @@ bool isEmpty(LinkedList L) {
 
 bool isFull(LinkedList L) {
     return false;
+}
+
+void displayList(LinkedList L) {
+    if (isEmpty(L)) {
+        printf("List is empty.\n");
+    }
+    Node *trav = L;
+    int i = 0;
+    for (trav, i; trav != NULL; trav = trav->link, i++) {
+        printf("%d. %s %c %s - ID: %s, Year: %d, Course: %s\n", 
+               i+1, trav->data.name.firstName, trav->data.name.MI, 
+               trav->data.name.lastName, trav->data.ID, 
+               trav->data.year, trav->data.course);
+    }
 }
