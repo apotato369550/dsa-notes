@@ -35,6 +35,8 @@ void insertPos(LinkedList *L, studtype student, int index) {
             newNode->data = student;
             newNode->link = *trav;
             *trav = newNode;
+        } else {
+            free(newNode);
         }
     }
 }

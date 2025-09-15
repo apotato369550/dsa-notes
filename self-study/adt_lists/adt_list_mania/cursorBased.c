@@ -58,6 +58,8 @@ void insertPos(VirtualHeap *L, studtype student, int index) {
             if (i == index) {
                 L->Elem[newNode].link = *trav;
                 *trav = newNode;
+            } else {
+                deallocSpace(L, newNode);
             }
         }
     }
