@@ -44,6 +44,11 @@ void pop(Stack *S) {
 studtype top(Stack S) {
     if (isEmpty(S) != true) {
         return S.Elem[S.Stack].data;
+    } else {
+        // bug: missing default return statement lol
+        // fix: add a dummy and return it
+        studtype dummy = {{"XXXXX", "XXXXX", 'X'}, -1, "XXXXX", "XXXXX"};
+        return dummy;
     }
 }
 

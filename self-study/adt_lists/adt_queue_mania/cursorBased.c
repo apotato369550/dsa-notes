@@ -28,9 +28,13 @@ void enqueue(Queue *Q, studtype student) {
     // enqueue when one item
     // enqueue when multiple item :VVV
     int newNode = allocSpace(Q);
-    if (newNode != NULL) {
+    // error: != NULL instead of != -1
+    // fix: turned NULL into -1
+    if (newNode != -1) {
         Q->Elem[newNode].data = student;
-        Q->Elem[newNode].link = NULL;
+        // error: != NULL instead of != -1
+        // fix: turned NULL into -1
+        Q->Elem[newNode].link = -1;
         // must check if empty :VV
         if (Q->rear == -1) {
             Q->rear = newNode;
@@ -54,7 +58,12 @@ void dequeue(Queue *Q) {
 }
 
 studtype front(Queue Q) {
-    return Q.Elem[Q.front].data;
+    if (isEmpty(Q) != true) {
+        return Q.Elem[Q.front].data;
+    } else {
+        studtype dummy = {{"XXXXX", "XXXXX", 'X'}, -1, "XXXXX", "XXXXX"};
+        return dummy;
+    }
 }
 
 bool isEmpty(Queue Q) {

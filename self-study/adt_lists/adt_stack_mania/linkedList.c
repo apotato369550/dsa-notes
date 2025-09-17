@@ -1,7 +1,9 @@
 #include "linkedList.h"
 
 void initList(Stack *S) {
-    S = NULL;
+    // bug: S, not *S
+    // fix: S to *S
+    *S = NULL;
 }
 
 void push(Stack *S, studtype student) {
@@ -22,7 +24,15 @@ void pop(Stack *S) {
 }
 
 studtype top(Stack S) {
-    return S->data;
+    // bug: returns null if empty:( must return a dummy variable
+    if (isEmpty(S) == true) {
+        return S->data;
+    } else {
+        // bug: missing default return statement lol
+        // fix: add a dummy and return it
+        studtype dummy = {{"XXXXX", "XXXXX", 'X'}, -1, "XXXXX", "XXXXX"};
+        return dummy;
+    }
 }
 
 bool isEmpty(Stack S) {

@@ -19,9 +19,11 @@ typedef struct {
     int Stack;
 } Stack;
 
-void initList(Stack S);
-void push(Stack S, studtype student);
-void pop(Stack S);
+// bug: S instead of *S for functions that require changing the stack
+// fix: changed S to *S
+void initList(Stack *S);
+void push(Stack *S, studtype student);
+void pop(Stack *S);
 studtype top(Stack S);
 bool isEmpty(Stack S);
 bool isFull(Stack S);

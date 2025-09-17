@@ -17,7 +17,7 @@ typedef struct Node {
 typedef struct {
     Node *front;
     Node *rear;
-} *Queue;
+} Queue;
 
 void initQueue(Queue *Q);
 void enqueue(Queue *Q, studtype student);

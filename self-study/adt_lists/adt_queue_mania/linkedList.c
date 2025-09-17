@@ -1,8 +1,8 @@
 #include "linkedList.h"
 
 void initQueue(Queue *Q) {
-    (*Q)->front = NULL;
-    (*Q)->rear = NULL;
+    Q->front = NULL;
+    Q->rear = NULL;
 }
 
 void enqueue(Queue *Q, studtype student) {
@@ -14,33 +14,39 @@ void enqueue(Queue *Q, studtype student) {
         newNode->data = student;
         newNode->link = NULL;
         // must check if empty :VV
-        if ((*Q)->rear == NULL) {
-            (*Q)->rear = newNode;
-            (*Q)->front = newNode;
+        if (Q->rear == NULL) {
+            Q->rear = newNode;
+            Q->front = newNode;
         } else {
-            (*Q)->rear->link = newNode;
-            (*Q)->rear = newNode;
+            Q->rear->link = newNode;
+            Q->rear = newNode;
         }
     }
 }
 
 void dequeue(Queue *Q) {
-    if (empty(*Q) != true) {
-        Node *temp = (*Q)->front;
-        (*Q)->front = temp->link;
+    if (isEmpty(*Q) != true) {
+        Node *temp = Q->front;
+        Q->front = temp->link;
         free(temp);
-        if ((*Q)->front == NULL) {
-            (*Q)->rear = NULL;
+        if (Q->front == NULL) {
+            Q->rear = NULL;
         }
     }
 }
 
 studtype front(Queue Q) {
-    return Q->front->data;
+    // needs dummy variable
+    if (isEmpty(Q) != true) {
+        return Q.front->data;
+    } else {
+        studtype dummy = {{"XXXXX", "XXXXX", 'X'}, -1, "XXXXX", "XXXXX"};
+        return dummy;
+    }
 }
 
 bool isEmpty(Queue Q) {
-    return Q->front == NULL && Q->rear == NULL;
+    return Q.front == NULL && Q.rear == NULL;
 }
 
 bool isFull(Queue Q) {
