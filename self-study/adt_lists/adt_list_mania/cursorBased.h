@@ -17,7 +17,7 @@ typedef struct {
     nodetype Elem[MAX];
     int Avail;
     int list;
-} VirtualHeap;
+} VirtualHeap, List;
 
 void initList(VirtualHeap *L);
 int allocSpace(VirtualHeap *L);

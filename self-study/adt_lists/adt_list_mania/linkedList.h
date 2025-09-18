@@ -12,7 +12,7 @@
 typedef struct Node {
     studtype data;
     struct Node *link;
-} *LinkedList, Node;
+} *LinkedList, Node, *List;
 
 void initList(LinkedList *L);
 

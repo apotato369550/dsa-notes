@@ -24,16 +24,18 @@ void insertLast(LinkedList *L, studtype student) {
     }
 }
 
+
 void insertPos(LinkedList *L, studtype student, int index) {
     Node *newNode = (Node*)malloc(sizeof(Node));
     if (newNode != NULL) {
         newNode->data = student;
         LinkedList *trav = L;
-        int i;
-        for (trav, i; *trav != NULL, i < index; trav = &(*trav)->link, i++) {}
+        // bug: did not initialize i to 0
+        // fix: initialize i to 0;
+        int i = 0;  // Initialize i to 0
+        // Fix: Change comma to && operator
+        for (trav; *trav != NULL && i < index; trav = &(*trav)->link, i++) {}
         if (i == index) {
-            // bug: redundant data assignment line
-            // fix: delete da ting
             newNode->link = *trav;
             *trav = newNode;
         } else {
@@ -75,7 +77,7 @@ void deleteStudent(LinkedList *L, char ID[]) {
         LinkedList *trav = L;
         // bug: use trav's link instead of trav when comparing to null
         // fix: change condition to use *trav instead
-        for (trav; *trav != NULL, strcmp(ID, (*trav)->data.ID) != 0; trav = &(*trav)->link) {}
+        for (trav; *trav != NULL && strcmp(ID, (*trav)->data.ID) != 0; trav = &(*trav)->link) {}
         if (*trav != NULL) {
             Node *temp = *trav;
             *trav = temp->link;

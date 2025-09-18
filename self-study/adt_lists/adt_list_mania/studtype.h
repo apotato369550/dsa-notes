@@ -10,7 +10,9 @@ typedef struct {
 typedef struct {
     nametype name;
     int year;
-    char ID[8];
+    // bug: made this too small. null terminator would not fit in
+    // fix: made it 16 instead
+    char ID[16];
     char course[8];
 } studtype;
 

@@ -60,7 +60,7 @@ void insertPos(VirtualHeap *L, studtype student, int index) {
             // perform ppi (pointer to pointer to integer) traversal
             int *trav = &(L->list);
             int i = 0;
-            for(trav, i; *trav != -1, i < index; trav = &(L->Elem[(*trav)].link), i++) {}
+            for(trav, i; *trav != -1 && i < index; trav = &(L->Elem[(*trav)].link), i++) {}
             if (i == index) {
                 L->Elem[newNode].link = *trav;
                 *trav = newNode;
@@ -98,7 +98,7 @@ void deletePos(VirtualHeap *L, int index) {
     if (isEmpty(*L) != true) {
         int *trav = &(L->list);
         int i = 0;
-        for (trav, i; *trav != -1, i < index; trav = &(L->Elem[*trav].link), i++) {}
+        for (trav, i; *trav != -1 && i < index; trav = &(L->Elem[*trav].link), i++) {}
         if (i == index) {
             // do stuff
             int temp = *trav;

@@ -10,7 +10,7 @@
 typedef struct {
     studtype Elem[MAX];
     int count;
-} ArrayList;
+} ArrayList, List;
 
 void initList(ArrayList *L);
 
