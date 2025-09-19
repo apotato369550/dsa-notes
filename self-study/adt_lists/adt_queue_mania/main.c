@@ -32,8 +32,7 @@ studtype inputStudent() {
 
 int main() {
     
-    
-    // write menu and interface (later)
+    // procrastinated on this lmao
     
     return 0;
 }
