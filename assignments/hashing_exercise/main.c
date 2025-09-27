@@ -25,6 +25,17 @@ void initializeDictionary(Dictionary D) {
 }
 
 int hash(char elem) {
+    if (elem == 'A') {
+        return 1;
+    } else if (elem == 'B' || elem == 'G') {
+        return 4;
+    } else if (elem == 'C' || elem == 'D') {
+        return 9;
+    } else if (elem == 'E') {
+        return 0;
+    } else if (elem == 'F' || elem == 'H') {
+        return 3;
+    } 
     return elem % MAX;
 }
 
