@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <limits.h>
+#include <stdbool.h>
 
 #define MAX 10
-#define EMPTY -1
-#define DELETED INT_MIN
+#define EMPTY '*'
+#define DELETED '?'
 
 typedef char Dictionary[MAX];
 
@@ -11,9 +12,28 @@ void initializeDictionary(Dictionary D);
 int hash(char elem);
 void insert(Dictionary D, char elem);
 void delete(Dictionary D, char elem);
-
+int getSearchLength(Dictionary D, char elem);
+void printDictionary(Dictionary D);
 
 int main() {
+    char elements[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+    int elementCount = 8;
+    Dictionary D;
+    initializeDictionary(D);
+    for (int i = 0; i < elementCount; i++) {
+        insert(D, elements[i]);
+    }
+    printDictionary(D);
+    int searchLengthSum = 0;
+    for (int i = 0; i < elementCount; i++) {
+        int searchLength = getSearchLength(D, elements[i]);
+        searchLengthSum += searchLength;
+        printf("Search length of %c: %d\n", elements[i], searchLength);
+    }
+    printf("Total search length: %d\n", searchLengthSum);
+
+    float meanSearchLength = (float) searchLengthSum / (float) elementCount;
+    printf("Mean search length: %.2f\n", meanSearchLength);
 
     return 0;
 }
@@ -39,11 +59,21 @@ int hash(char elem) {
     return elem % MAX;
 }
 
+bool search(Dictionary D, char elem) {
+    int i, searchCount;
+    bool foundFlag = false;
+    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY && foundFlag == false; i = (i + 1) % MAX, searchCount++) {
+        if (D[i] == elem) foundFlag = true;
+    }
+    return foundFlag;
+}
+
 void insert(Dictionary D, char elem) {
     int insertionCount;
     int i;
     // if the element exists and the list isn't full, we insert
-    for (i = 0, insertionCount = 0; insertionCount < MAX && D[i] != EMPTY && D[i] != DELETED && D[i] != elem; i = (i + 1) % MAX, insertionCount++) {}
+    if (search(D, elem)) return;
+    for (i = hash(elem), insertionCount = 0; insertionCount < MAX && D[i] != EMPTY && D[i] != DELETED; i = (i + 1) % MAX, insertionCount++) {}
     if (insertionCount != MAX) D[i] = elem;
 }
 
@@ -54,6 +84,26 @@ void delete(Dictionary D, char elem) {
     // gotta modify it for sure
     int i;
     int traverseCount;
-    for (i = 0, traverseCount = 0; traverseCount < MAX && D[i] != EMPTY && D[i] != elem; i = (i + 1) % MAX, traverseCount++) {}
+    if (!search(D, elem)) return;
+    for (i = hash(elem), traverseCount = 0; traverseCount < MAX && D[i] != EMPTY && D[i] != elem; i = (i + 1) % MAX, traverseCount++) {}
     if (traverseCount != MAX) D[i] = DELETED;
+}
+
+int getSearchLength(Dictionary D, char elem) {
+    int i;
+    int searchCount;
+    if (!search(D, elem)) {
+        // printf("Element cannot be found \n");
+        return 0;
+    }
+    for (i = hash(elem), searchCount = 0; D[i] != elem; i = (i + 1) % MAX, searchCount++) {}
+    return searchCount + 1;
+}
+
+void printDictionary(Dictionary D) {
+    printf("\n---PRINTING DICTIONARY---\n");
+    for (int i = 0; i < MAX; i++) {
+        printf("[%d] = %c\n", i, D[i]);
+    }
+    printf("\n---DICTIONARY END---\n");
 }
