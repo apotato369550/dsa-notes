@@ -7,13 +7,14 @@
 typedef unsigned char SET;
 
 void initSet(SET *A);
-void displaySet(SET A);
+// alter
+void displaySet(SET A, char *name);
 void insert(SET *A, int elem);
 bool member(SET A, int elem);
 void deleteElem(SET *A, int elem);
-SET *unionSet(SET A, SET B);
-SET *intersection(SET A, SET B);
-SET *difference(SET A, SET B);
+SET *unionSet(SET A, SET B, char set1Name[], char set2Name[]);
+SET *intersection(SET A, SET B, char set1Name[], char set2Name[]);
+SET *difference(SET A, SET B, char set1Name[], char set2Name[]);
 
 int main() {
 	SET U, A, B;
@@ -24,9 +25,9 @@ int main() {
 	
 	// display sets after initialization
 	printf("Sets after initializing: \n");
-	displaySet(U);
-	displaySet(A);
-	displaySet(B);
+	displaySet(U, "U");
+	displaySet(A, "A");
+	displaySet(B, "B");
 	
 	// universal set
 	for (int i = 0; i < N_BITS; i++) {
@@ -47,12 +48,10 @@ int main() {
 	insert(&B, 1);
 	
 	// display sets with inserted values and stuff
-	printf("Set U: ");
-	displaySet(U);
-	printf("Set A: ");
-	displaySet(A);
-	printf("Set B: ");
-	displaySet(B);
+	// edit set to include string that's the name of the set
+	displaySet(U, "U");
+	displaySet(A, "A");
+	displaySet(B, "B");
 	
 	
 	// is member of U
@@ -86,21 +85,10 @@ int main() {
 	initSet(E);
 	
 	
-	C = unionSet(A, B);
-	D = intersection(A, B);
-	E = difference(U, A);
+	C = unionSet(A, B, "A", "B");
+	D = intersection(A, B, "A", "B");
+	E = difference(U, A, "U", "A");
 	
-	// display resulting sets with set operations
-	printf("Set C: ");
-	displaySet(*C);
-	printf("Set D: ");
-	displaySet(*D);
-	printf("Set E: ");
-	displaySet(*E);
-	
-	// delete one from b, delete from a till empty, print both
-	
-	// delete 1 from b
 	deleteElem(&B, 1);
 	
 	// delete everything from a, and delete an element that doesn't exist from a to make sure
@@ -112,10 +100,8 @@ int main() {
 	// delete element that doesn't exist
 	deleteElem(&A, 3);
 	
-	printf("Set A: ");
-	displaySet(A);
-	printf("Set B: ");
-	displaySet(B);
+	displaySet(A, "A");
+	displaySet(B, "B");
 	
 	
     return 0;
@@ -125,15 +111,28 @@ void initSet(SET *A) {
 	*A = 0;
 }
 
-void displaySet(SET A) {
+void displaySet(SET A, char name[]) {
 	// i wanted to do left shift, but let's do right shift instead
 	SET mask = 1;
 	int i = 0;
-	printf("\nDisplaying set: {");
+	printf("%s = {", name);
 	for (i, mask; mask > 0; mask = mask << 1, i++) {
 		// CASTING
 		if ((int) (A & mask) != 0) {
-			printf("%d,", i);
+			printf("%d, ", i);
+		}
+	}
+	printf("}\n");
+}
+
+void displayOperation(SET A, char set1Name[], char set2Name[2], char operation) {
+	SET mask = 1;
+	int i = 0;
+	printf("%s %c %s = {", set1Name, operation, set2Name);
+	for (i, mask; mask > 0; mask = mask << 1, i++) {
+		// CASTING
+		if ((int) (A & mask) != 0) {
+			printf("%d, ", i);
 		}
 	}
 	printf("}\n");
@@ -157,18 +156,20 @@ void deleteElem(SET *A, int elem) {
 	*A = (*A) ^ mask;
 }
 
-SET *unionSet(SET A, SET B) {
+SET *unionSet(SET A, SET B, char set1Name[], char set2Name[]) {
 	SET *C = (SET*)malloc(sizeof(SET));
 	*C = A | B;
+	displayOperation(*C, set1Name, set2Name, 'u');
 	return C;
 }
-SET *intersection(SET A, SET B) {
+SET *intersection(SET A, SET B, char set1Name[], char set2Name[]) {
 	SET *C = (SET*)malloc(sizeof(SET));
 	*C = A & B;
+	displayOperation(*C, set1Name, set2Name, 'n');
 	return C;
 }
 
-SET *difference(SET A, SET B) {
+SET *difference(SET A, SET B, char set1Name[], char set2Name[]) {
 	// what's difference again??
 	// the elements in a, that are not in b
 	// remember the venn diagram
@@ -176,6 +177,7 @@ SET *difference(SET A, SET B) {
 	SET *C = (SET*)malloc(sizeof(SET));
 	SET complement = ~A;
 	*C = A ^ B;
+	displayOperation(*C, set1Name, set2Name, '-');
 	return C;
 }
 
