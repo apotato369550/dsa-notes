@@ -63,17 +63,17 @@ int main() {
 	}
 	
 	// is member of A
-	if (member(U, 2)) {
+	if (member(A, 2)) {
 		printf("%d is member of A\n", 2);
 	} else {
 		printf("%d is not a member of A\n", 2);
 	}
 	
 	// is member of B
-	if (member(U, 2)) {
-		printf("%d is member of U\n", 2);
+	if (member(B, 2)) {
+		printf("%d is member of B\n", 2);
 	} else {
-		printf("%d is not a member of U\n", 2);
+		printf("%d is not a member of B\n", 2);
 	}
 	
 	SET *C, *D, *E;
@@ -123,7 +123,6 @@ int main() {
 
 void initSet(SET *A) {
 	*A = 0;
-	printf("Set initialized to: %d\n", *A);
 }
 
 void displaySet(SET A) {
@@ -134,7 +133,6 @@ void displaySet(SET A) {
 	for (i, mask; mask > 0; mask = mask << 1, i++) {
 		// CASTING
 		if ((int) (A & mask) != 0) {
-			// printf("%d", (A & mask));
 			printf("%d,", i);
 		}
 	}
@@ -142,12 +140,8 @@ void displaySet(SET A) {
 }
 
 void insert(SET *A, int elem) {
-	// displaySet(*A);
-	SET mask = (char) ((int) (1 << elem));
-	printf("MASK: %d\n", mask);
+	SET mask = 1 << elem;
 	*A = (*A) | (char) mask;
-	// printf("After insertion: \n");
-	// displaySet(*A);
 }
 
 bool member(SET A, int elem) {
@@ -157,6 +151,7 @@ bool member(SET A, int elem) {
 } 
 
 void deleteElem(SET *A, int elem) {
+	// guard clause lol
 	if (member(*A, elem) != true) return;
 	SET mask = 1 << elem;
 	*A = (*A) ^ mask;
