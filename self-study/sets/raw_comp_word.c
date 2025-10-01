@@ -173,7 +173,7 @@ SET *difference(SET A, SET B, char set1Name[], char set2Name[]) {
 	// what's difference again??
 	// the elements in a, that are not in b
 	// remember the venn diagram
-	// 
+	// WRONG MANI LMAO
 	SET *C = (SET*)malloc(sizeof(SET));
 	SET complement = ~A;
 	*C = A ^ B;
