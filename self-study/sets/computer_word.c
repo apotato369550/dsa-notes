@@ -11,13 +11,14 @@ void displaySet(SET A, char *name) {
     for (int i = 0; i < N_BITS; i++) {
         SET mask = 1 << i;
         if ((int) A & (int) mask != 0) {
-            printf("%d", i + 1);
+            printf("%d", i);
         }
     }
     printf("}");
 }
 
 void insert(SET *A, int elem) {
+    if (elem >= N_BITS) return;
     SET mask = 1 << elem;
     *A = (*A) | mask;
 }
