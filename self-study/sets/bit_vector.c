@@ -33,6 +33,13 @@ void deleteElem(SET A, int elem) {
 }
 
 // do these next
-SET *unionSet(SET A, SET B);
+SET *unionSet(SET A, SET B) {
+    SET *C = (SET*)sizeof(SET);
+    for (int i = 0; i < N_ELEM; i++) {
+        C[i] = A || B;
+    }
+    return C;
+}
+
 SET *intersectionSet(SET A, SET B);
 SET *differenceSet(SET A, SET B);
