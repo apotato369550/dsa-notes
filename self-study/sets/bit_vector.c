@@ -36,7 +36,7 @@ void deleteElem(SET A, int elem) {
 SET *unionSet(SET A, SET B) {
     SET *C = (SET*)sizeof(SET);
     for (int i = 0; i < N_ELEM; i++) {
-        C[i] = A || B;
+        (*C)[i] = A || B;
     }
     return C;
 }
@@ -44,7 +44,7 @@ SET *unionSet(SET A, SET B) {
 SET *intersectionSet(SET A, SET B) {
     SET *C = (SET*)sizeof(SET);
     for (int i = 0; i < N_ELEM; i++) {
-        C[i] = A && B;
+        (*C)[i] = A && B;
     }
     return C;
 }
