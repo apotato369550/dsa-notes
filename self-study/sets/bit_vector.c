@@ -48,4 +48,10 @@ SET *intersectionSet(SET A, SET B) {
     }
     return C;
 }
-SET *differenceSet(SET A, SET B);
+SET *differenceSet(SET A, SET B) {
+    SET *C = (SET*)sizeof(SET);
+    for (int i = 0; i < N_ELEM; i++) {
+        (*C)[i] = (A[i] == true) && (B[i] == false);
+    }
+    return C;
+}
