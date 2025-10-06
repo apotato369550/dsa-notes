@@ -9,9 +9,13 @@ void initSet(SET A) {
 
 void displaySet(SET A, char *name) {
     printf("%s = {");
+    bool first = true;
     for (int i = 0; i < N_ELEM; i++) {
+        // minor fix: fixed set printing
         if (A[i] == true) {
+            if (!first) printf(", ");
             printf("%d", i);
+            first = false;
         }
     }
     printf("}");
@@ -34,7 +38,8 @@ void deleteElem(SET A, int elem) {
 
 // do these next
 SET *unionSet(SET A, SET B) {
-    SET *C = (SET*)sizeof(SET);
+    // fix: forgot the 'malloc' keyword T_T
+    SET *C = (SET*)malloc(sizeof(SET));
     for (int i = 0; i < N_ELEM; i++) {
         (*C)[i] = A || B;
     }
@@ -42,14 +47,14 @@ SET *unionSet(SET A, SET B) {
 }
 
 SET *intersectionSet(SET A, SET B) {
-    SET *C = (SET*)sizeof(SET);
+    SET *C = (SET*)malloc(sizeof(SET));
     for (int i = 0; i < N_ELEM; i++) {
         (*C)[i] = A && B;
     }
     return C;
 }
 SET *differenceSet(SET A, SET B) {
-    SET *C = (SET*)sizeof(SET);
+    SET *C = (SET*)malloc(sizeof(SET));
     for (int i = 0; i < N_ELEM; i++) {
         (*C)[i] = (A[i] == true) && (B[i] == false);
     }

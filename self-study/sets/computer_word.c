@@ -8,10 +8,17 @@ void initSet(SET *A) {
 
 void displaySet(SET A, char *name) {
     printf("%s = {");
+    bool first = true;
     for (int i = 0; i < N_BITS; i++) {
         SET mask = 1 << i;
-        if ((int) A & (int) mask != 0) {
+        // fix: condition for printing:
+        // from: (int) A & (int) mask != 0
+        // to: A & mask != 0
+        // removed integer casting
+        if (A & mask != 0) {
+            if (!first) printf(", ");
             printf("%d", i);
+            first = false;
         }
     }
     printf("}");
