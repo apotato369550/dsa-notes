@@ -36,12 +36,10 @@ void deleteElem(SET A, int elem) {
     A[elem] = false;
 }
 
-// do these next
 SET *unionSet(SET A, SET B) {
-    // fix: forgot the 'malloc' keyword T_T
     SET *C = (SET*)malloc(sizeof(SET));
     for (int i = 0; i < N_ELEM; i++) {
-        (*C)[i] = A || B;
+        (*C)[i] = A[i] || B[i];
     }
     return C;
 }
@@ -49,14 +47,14 @@ SET *unionSet(SET A, SET B) {
 SET *intersectionSet(SET A, SET B) {
     SET *C = (SET*)malloc(sizeof(SET));
     for (int i = 0; i < N_ELEM; i++) {
-        (*C)[i] = A && B;
+        (*C)[i] = A[i] && B[i];
     }
     return C;
 }
 SET *differenceSet(SET A, SET B) {
     SET *C = (SET*)malloc(sizeof(SET));
     for (int i = 0; i < N_ELEM; i++) {
-        (*C)[i] = (A[i] == true) && (B[i] == false);
+        (*C)[i] = A[i] && !B[i];
     }
     return C;
 }
