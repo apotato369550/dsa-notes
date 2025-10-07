@@ -15,7 +15,7 @@ void displaySet(SET A, char *name) {
         // from: (int) A & (int) mask != 0
         // to: A & mask != 0
         // removed integer casting
-        if (A & mask != 0) {
+        if ((A & mask) != 0) {
             if (!first) printf(", ");
             printf("%d", i);
             first = false;

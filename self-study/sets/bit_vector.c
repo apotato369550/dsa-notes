@@ -1,4 +1,5 @@
 #include "bit_vector.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 void initSet(SET A) {

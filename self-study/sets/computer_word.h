@@ -1,9 +1,9 @@
-#ifndef COMPUTER_WORD
-#define COMPUTER_WORD
+#ifndef COMPUTER_WORD_H
+#define COMPUTER_WORD_H
 
 #include <stdbool.h>
 
-#define N_BITS sizeof(char)
+#define N_BITS 8
 
 typedef unsigned char SET;
 

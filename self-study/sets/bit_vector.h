@@ -1,5 +1,5 @@
-#ifndef BIT_VECTOR
-#define BIT_VECTOR
+#ifndef BIT_VECTOR_H
+#define BIT_VECTOR_H
 
 #include <stdbool.h>
 

@@ -4,8 +4,8 @@
 #include <stdbool.h>
 
 // Choose implementation: uncomment one
-#define BIT_VECTOR
-// #define COMPUTER_WORD
+// #define BIT_VECTOR
+#define COMPUTER_WORD
 
 #ifdef BIT_VECTOR
 #include "bit_vector.h"
@@ -38,10 +38,19 @@
 void populateRandom(SET_TYPE *set, int numElements) {
     srand((unsigned int)time(NULL));
     printf("Populating with %d random elements...\n", numElements);
-    for (int i = 0; i < numElements; i++) {
+    int inserted = 0;
+    int attempts = 0;
+    while (inserted < numElements && attempts < MAX_ELEM * 10) {
         int elem = rand() % MAX_ELEM;
-        INSERT(*set, elem);
-        printf("Inserted %d\n", elem);
+        if (!IS_MEMBER(*set, elem)) {
+            INSERT(*set, elem);
+            printf("Inserted %d\n", elem);
+            inserted++;
+        }
+        attempts++;
+    }
+    if (inserted < numElements) {
+        printf("Could not insert all %d elements; set may be full.\n", numElements);
     }
 }
 
@@ -268,11 +277,11 @@ int main() {
             }
         }
 
-        if (choice != 0) {
-            printf("\nPress Enter to continue...");
-            getchar(); // consume newline
-            getchar(); // wait for Enter
-        }
+        // if (choice != 0) {
+        //     printf("\nPress Enter to continue...");
+        //     getchar(); // consume newline
+        //     getchar(); // wait for Enter
+        // }
     }
 
     return 0;
