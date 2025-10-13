@@ -16,7 +16,13 @@ void insert(Dictionary D, char elem) {
 }
 
 // continue here haha
-void deleteElem(Dictionary D, char elem);
+void deleteElem(Dictionary D, char elem) {
+    int i, traverseCount;
+    if (!search(D, elem)) return;
+    for (i = hash(elem), traverseCount = 0; traverseCount < MAX && D[i] != EMPTY && D[i] != elem; i = (i + 1) % MAX, traverseCount++) {}
+    if (traverseCount != MAX) D[i] = DELETED;
+}
+
 bool search(Dictionary D, char elem);
 int getIndex(Dictionary D, char elem);
 int getSearchLength(Dictionary D, char elem);
