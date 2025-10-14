@@ -23,7 +23,15 @@ void deleteElem(Dictionary D, char elem) {
     if (traverseCount != MAX) D[i] = DELETED;
 }
 
-bool search(Dictionary D, char elem);
+bool search(Dictionary D, char elem) {
+    int i, searchCount;
+    bool foundFlag = false;
+    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY && foundFlag == false; i = (i + 1) % MAX, searchCount++) {
+        if (D[i] == elem) foundFlag = true;
+    }
+    return foundFlag;
+}
+
 int getIndex(Dictionary D, char elem);
 int getSearchLength(Dictionary D, char elem);
 void printDictionary(Dictionary D);
