@@ -32,6 +32,14 @@ bool search(Dictionary D, char elem) {
     return foundFlag;
 }
 
-int getIndex(Dictionary D, char elem);
+int getIndex(Dictionary D, char elem) {
+    int i, searchCount;
+    bool foundFlag = false;
+    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY && foundFlag == false; i = (i + 1) % MAX, searchCount++) {
+        if (D[i] == elem) foundFlag = true;
+    }
+    return i;
+
+}
 int getSearchLength(Dictionary D, char elem);
 void printDictionary(Dictionary D);
