@@ -7,7 +7,7 @@ void initSet(SET *A) {
 }
 
 void displaySet(SET A, char *name) {
-    printf("%s = {");
+    printf("%s = {", name);
     bool first = true;
     for (int i = 0; i < N_BITS; i++) {
         SET mask = 1 << i;
