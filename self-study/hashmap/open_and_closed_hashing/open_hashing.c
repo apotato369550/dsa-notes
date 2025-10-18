@@ -25,7 +25,18 @@ void insert(Dictionary D, char elem) {
     }
 }
 
-void deleteElem(Dictionary D, char elem);
+void deleteElem(Dictionary D, char elem) {
+    int hashed_index = hash(elem);
+    if (D[elem] == NULL) return;
+    NodePointer *trav;
+    for (trav = &(D[hashed_index]); *trav != NULL && (*trav)->data != elem; trav = &(*trav)->link) {}
+
+    if (*trav != NULL) {
+        Node *temp = *trav;
+        *trav = temp->link;
+        free(temp);
+    }
+}
 bool search(Dictionary D, char elem);
 int getIndex(Dictionary D, char elem);
 int getSearchLength(Dictionary D, char elem);
