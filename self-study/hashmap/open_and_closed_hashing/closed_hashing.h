@@ -15,7 +15,6 @@ void insert(Dictionary D, char elem);
 void deleteElem(Dictionary D, char elem);
 bool search(Dictionary D, char elem);
 int getIndex(Dictionary D, char elem);
-int getSearchLength(Dictionary D, char elem);
 void printDictionary(Dictionary D);
 
 #endif

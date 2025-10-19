@@ -37,7 +37,35 @@ void deleteElem(Dictionary D, char elem) {
         free(temp);
     }
 }
-bool search(Dictionary D, char elem);
-int getIndex(Dictionary D, char elem);
-int getSearchLength(Dictionary D, char elem);
-void printDictionary(Dictionary D);
+bool search(Dictionary D, char elem) {
+    int hashed_index = hash(elem);
+    if (D[elem] == NULL) return;
+    NodePointer *trav;
+    for (trav = &(D[hashed_index]); *trav != NULL && (*trav)->data != elem; trav = &(*trav)->link) {}
+
+    if (*trav != NULL) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+int getIndex(Dictionary D, char elem) {
+    return hash(elem);
+}
+
+void printDictionary(Dictionary D) {
+    printf("\n---PRINTING DICTIONARY---\n");
+    for (int i = 0; i < MAX_ENTRIES; i++) {
+        printf("[%d] = ", i);
+        NodePointer *trav;
+        for (trav = &(D[i]); *trav != NULL && (*trav); trav = &(*trav)->link) {
+            printf("%c ", (*trav)->data);
+            if ((*trav)->link != NULL) {
+                printf("-> ");
+            }
+        }
+        printf("\n");
+    }
+    printf("\n---DICTIONARY END---\n");
+}
