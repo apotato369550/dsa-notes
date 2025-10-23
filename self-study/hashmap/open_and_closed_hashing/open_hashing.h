@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+// fix: forgot to include stdlib.h
+#include <stdlib.h>
+
 #define MAX_ENTRIES 11
 
 typedef struct Node{

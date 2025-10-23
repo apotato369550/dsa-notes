@@ -1,7 +1,8 @@
 #include "closed_hashing.h"
 
 void initializeDictionary(Dictionary D) {
-    for (int i = 0; i < MAX; i++, D[i] == EMPTY) {}
+    // fix: change '==' into '='
+    for (int i = 0; i < MAX; i++, D[i] = EMPTY) {}
 }
 
 int hash(char elem) {
@@ -34,11 +35,15 @@ bool search(Dictionary D, char elem) {
 
 int getIndex(Dictionary D, char elem) {
     int i, searchCount;
-    bool foundFlag = false;
-    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY && foundFlag == false; i = (i + 1) % MAX, searchCount++) {
-        if (D[i] == elem) foundFlag = true;
+    // hmmmm
+    // no need for foundflag. return i right away as it is found
+    // dumb me lol
+    // fix: removed redundant 'foundFlag' bool variable
+    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY == false; i = (i + 1) % MAX, searchCount++) {
+        // fix: instead of relying on a flag, return 'i' right away after it's found
+        if (D[i] == elem) return i;
     }
-    return i;
+    return -1;
 
 }
 

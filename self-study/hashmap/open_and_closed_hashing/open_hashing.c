@@ -1,4 +1,5 @@
 #include "open_hashing.h"
+// fix: forgot to import stdlib.h lmao
 
 void initializeDictionary(Dictionary D) {
     for (int i = 0; i < MAX_ENTRIES; i++) {
@@ -12,6 +13,7 @@ int hash(char elem) {
 }
 
 void insert(Dictionary D, char elem) {
+    if (search(D, elem) == true) return;
     int hashed_index = hash(elem);
     Node *newNode = (Node*)malloc(sizeof(Node));
     newNode->data = elem;
@@ -27,7 +29,8 @@ void insert(Dictionary D, char elem) {
 
 void deleteElem(Dictionary D, char elem) {
     int hashed_index = hash(elem);
-    if (D[elem] == NULL) return;
+    // changed 'D[elem]' to 'D[hashed_index]' 
+    if (D[hashed_index] == NULL) return;
     NodePointer *trav;
     for (trav = &(D[hashed_index]); *trav != NULL && (*trav)->data != elem; trav = &(*trav)->link) {}
 
@@ -39,7 +42,8 @@ void deleteElem(Dictionary D, char elem) {
 }
 bool search(Dictionary D, char elem) {
     int hashed_index = hash(elem);
-    if (D[elem] == NULL) return;
+    // changed 'D[elem]' to 'D[hashed_index]' 
+    if (D[hashed_index] == NULL) return;
     NodePointer *trav;
     for (trav = &(D[hashed_index]); *trav != NULL && (*trav)->data != elem; trav = &(*trav)->link) {}
 
