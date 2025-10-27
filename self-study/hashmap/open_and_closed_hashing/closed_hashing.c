@@ -26,11 +26,10 @@ void deleteElem(Dictionary D, char elem) {
 
 bool search(Dictionary D, char elem) {
     int i, searchCount;
-    bool foundFlag = false;
-    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY && foundFlag == false; i = (i + 1) % MAX, searchCount++) {
-        if (D[i] == elem) foundFlag = true;
+    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY; i = (i + 1) % MAX, searchCount++) {
+        if (D[i] == elem) return true;
     }
-    return foundFlag;
+    return false;
 }
 
 int getIndex(Dictionary D, char elem) {
