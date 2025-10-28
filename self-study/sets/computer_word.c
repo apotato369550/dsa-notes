@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "computer_word.h"
+#include <math.h>
 
 void initSet(SET *A) {
     *A = 0;

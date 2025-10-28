@@ -75,7 +75,7 @@ int getIndex(Dictionary D, char elem) {
 void printDictionary(Dictionary D) {
     printf("\n---PRINTING DICTIONARY---\n");
     for (int i = 0; i < MAX; i++) {
-        printf("[%d] = %c\n", i, D[i]);
+        printf("[%d] = %c\n", i, D.Elem[i]);
     }
     printf("\n---DICTIONARY END---\n");
 }

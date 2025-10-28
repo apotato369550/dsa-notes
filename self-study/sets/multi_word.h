@@ -10,13 +10,13 @@
 typedef unsigned int WORD;
 typedef WORD SET[N_WORDS];
 
-void initSet(SET *A);
+void initSet(SET A);
 void displaySet(SET A, char *name);
-void insert(SET *A, int elem);
+void insert(SET A, int elem);
 bool isMember(SET A, int elem);
-void deleteElem(SET *A, int elem);
-void unionSet(SET A, SET B);
-void intersectionSet(SET A, SET B);
-void differenceSet(SET A, SET B);
+void deleteElem(SET A, int elem);
+SET *unionSet(SET A, SET B);
+SET *intersectionSet(SET A, SET B);
+SET *differenceSet(SET A, SET B);
 
 #endif
