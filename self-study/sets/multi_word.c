@@ -11,7 +11,9 @@ void displaySet(SET A, char *name) {
     for (int i = 0; i < N_WORDS; i++) {
         WORD currentWord = A[i];
         for (int j = 0; j < N_BITS; j++) {
-            WORD mask = 1 << i;
+            // bug: used i instead of j for moving the bits in the mask
+            // fix: replace i with j
+            WORD mask = 1 << j;
             if ((currentWord & mask) != 0) {
                 printf("%d, ", (j + (i * N_BITS)));
             }
@@ -21,21 +23,31 @@ void displaySet(SET A, char *name) {
 }
 
 void insert(SET A, int elem) {
-    int word = A[floor(elem / N_WORDS)];
-    WORD mask = 1 << (elem % N_WORDS);
+    // bug: dividing using N_WORDS instead of N_BITS
+    // fix: replacing N_WORDS with N_BITS
+    int word = A[floor(elem / N_BITS)];
+    WORD mask = 1 << (elem % N_BITS);
     A[floor(elem / N_WORDS)] = word | mask;
 }
 
 bool isMember(SET A, int elem) {
-    int word = A[floor(elem / N_WORDS)];
-    WORD mask = 1 << (elem % N_WORDS);
+    // bug: dividing using N_WORDS instead of N_BITS
+    // fix: replacing N_WORDS with N_BITS
+    int word = A[floor(elem / N_BITS)];
+    WORD mask = 1 << (elem % N_BITS);
     return word & mask;
 }
 
 void deleteElem(SET A, int elem) {
-    int word = A[floor(elem / N_WORDS)];
-    WORD mask = 1 << (elem % N_WORDS);
-    A[floor(elem / N_WORDS)] = word & mask;
+    // bug: dividing using N_WORDS instead of N_BITS
+    // fix: replacing N_WORDS with N_BITS
+    int word = A[floor(elem / N_BITS)];
+    WORD mask = 1 << (elem % N_BITS);
+
+    // bug: using hte wrong bitwise operations.
+    // deletion should be done by word & ~mask, not word & mask
+    // fix: changed (word & mask) to (word & ~mask)
+    A[floor(elem / N_BITS)] = word & mask;
 }
 
 SET *unionSet(SET A, SET B) {

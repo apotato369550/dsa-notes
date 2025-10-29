@@ -73,8 +73,13 @@ void deleteElem(Dictionary *D, char elem) {
 }
 
 int getIndex(Dictionary D, char elem) {
-    if (!search(D, elem)) return;
+    // fix: missing return value when getIndex fails. 
+    // modified to return -1
+    if (!search(D, elem)) return -1;
     int hashed = hash(elem);
+    // bug. this traversal does not chec if the current element that is hashed is the element we need to search
+    // fix: initial conditional check that returns true if current index is what we're looking for
+    if (D.Elem[hashed].data == elem) return hashed;
     int *trav = &(D.Elem[hashed].link);
     for (trav; D.Elem[(*trav)].link != -1 && D.Elem[(*trav)].data != elem; trav = &(D.Elem[(*trav)].link)) {}
     return *trav;
@@ -82,6 +87,9 @@ int getIndex(Dictionary D, char elem) {
 
 bool search(Dictionary D, char elem) {
     int hashed = hash(elem);
+    // bug. this traversal does not chec if the current element that is hashed is the element we need to search
+    // fix: initial conditional check that returns true if current index is what we're looking for
+    if (D.Elem[hashed].data == elem) return true;
     int *trav = &(D.Elem[hashed].link);
     for (trav; D.Elem[(*trav)].link != -1 && D.Elem[(*trav)].data != elem; trav = &(D.Elem[(*trav)].link)) {}
     return *trav != -1;

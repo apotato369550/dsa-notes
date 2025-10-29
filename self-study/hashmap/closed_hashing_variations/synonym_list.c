@@ -14,7 +14,9 @@ void insert(Dictionary *D, char elem) {
     if (search((*D), elem)) return;
     int hashed = hash(elem);
     if ((*D).Elem[hashed] != EMPTY) {
-        if ((*D).last < MAX) {
+        // bug: MAX instead of MAX * 2, when MAX * 2 is the true size of the list and is the max capacity for the extended list
+        // fix: changed 'MAX' into 'MAX * 2'
+        if ((*D).last < MAX * 2) {
             (*D).Elem[(*D).last] = elem;
             (*D).last += 1;
         } else {

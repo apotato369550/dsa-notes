@@ -37,7 +37,8 @@ int getIndex(Dictionary D, char elem) {
     // no need for foundflag. return i right away as it is found
     // dumb me lol
     // fix: removed redundant 'foundFlag' bool variable
-    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY == false; i = (i + 1) % MAX, searchCount++) {
+    // fix: removed redundant '== false'
+    for (i = hash(elem), searchCount = 0; searchCount < MAX && D[i] != EMPTY; i = (i + 1) % MAX, searchCount++) {
         // fix: instead of relying on a flag, return 'i' right away after it's found
         if (D[i] == elem) return i;
     }
