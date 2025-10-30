@@ -47,7 +47,7 @@ void deleteElem(SET A, int elem) {
     // bug: using hte wrong bitwise operations.
     // deletion should be done by word & ~mask, not word & mask
     // fix: changed (word & mask) to (word & ~mask)
-    A[floor(elem / N_BITS)] = word & mask;
+    A[floor(elem / N_BITS)] = word & ~mask;
 }
 
 SET *unionSet(SET A, SET B) {
