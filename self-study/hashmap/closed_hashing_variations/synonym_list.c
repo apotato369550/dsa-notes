@@ -32,7 +32,9 @@ void deleteElem(Dictionary *D, char elem) {
     if (!search((*D), elem)) return;
     int hashed = hash(elem);
     if ((*D).Elem[hashed] == elem) {
-        (*D).Elem[hashed] = EMPTY;
+        // bug (but not really): deleted marked as EMPTY instead of DELETED
+        // fix: changed 'EMPTY' to 'DELETED'
+        (*D).Elem[hashed] = DELETED;
     } else {
         // linear search over adt
         // 2 cond traversal

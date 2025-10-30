@@ -9,6 +9,9 @@ void initializeDictionary(Dictionary *D) {
 
 // cursor-based helper functions
 int allocSpace(Dictionary *D) {
+    // new cell is basically avail
+    // if it's a valid cell, move avail by one space
+    // return the newCell
     int newCell = D->avail;
     if (newCell != -1) {
         D->avail = D->Elem[D->avail].link;
@@ -17,6 +20,8 @@ int allocSpace(Dictionary *D) {
 }
 
 void deallocSpace(Dictionary *D, int pointer) {
+    // let the cell at pointer point to avail
+    // then let that pointer be the new avail
     D->Elem[pointer].link = D->avail;
     D->avail = pointer;
 }
