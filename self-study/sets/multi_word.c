@@ -8,6 +8,7 @@ void initSet(SET A) {
 
 void displaySet(SET A, char *name) {
     printf("%s = {");
+    bool first = true;
     for (int i = 0; i < N_WORDS; i++) {
         WORD currentWord = A[i];
         for (int j = 0; j < N_BITS; j++) {
@@ -15,7 +16,9 @@ void displaySet(SET A, char *name) {
             // fix: replace i with j
             WORD mask = 1 << j;
             if ((currentWord & mask) != 0) {
-                printf("%d, ", (j + (i * N_BITS)));
+                if (!first) printf(", ");
+                printf("%d", (j + (i * N_BITS)));
+                first = false;
             }
         }
     }
