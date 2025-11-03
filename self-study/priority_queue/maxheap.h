@@ -1,14 +1,22 @@
 #ifndef MAXHEAP
 #define MAXHEAP
 
-#define MAX 11
+#include <limits.h>
 
-typedef int Maxheap[23];
+#define MAX 21
+#define EMPTY INT_MIN
 
-void initialize(Maxheap M);
-void insert(Maxheap M, int x);
-int deleteMax(Maxheap M);
-void makeNull(Maxheap M);
+typedef struct {
+    int elem[MAX];
+    int lastElem;
+} Maxheap;
+
+void initialize(Maxheap *M);
+void insert(Maxheap *M, int x);
+int deleteMax(Maxheap *M);
+void makeNull(Maxheap *M);
+void heapifyUp(Maxheap *M, int i);
+void heapifyDown(Maxheap *M, int i);
 
 
 #endif
