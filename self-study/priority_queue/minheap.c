@@ -12,7 +12,7 @@ void insert(Minheap *M, int x) {
 }
 
 
-int deleteMax(Minheap *M) {
+int deleteMin(Minheap *M) {
     if (M->lastElem < 0 ) return;
     int max = M->elem[0];
     M->elem[0] = M->elem[M->lastElem--];
