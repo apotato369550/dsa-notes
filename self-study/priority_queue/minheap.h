@@ -2,6 +2,7 @@
 #define MINHEAP
 
 #include <limits.h>
+#include <math.h>
 
 #define MAX 23
 #define EMPTY INT_MIN

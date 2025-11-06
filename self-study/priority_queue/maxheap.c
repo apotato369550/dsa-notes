@@ -25,5 +25,17 @@ void makeNull(Maxheap *M) {
 }
 
 // helpers
-void heapifyUp(Maxheap *M, int i);
-void heapifyDown(Maxheap *M, int i);
+void heapifyUp(Maxheap *M, int i) {
+    if (i == 0) return;
+    int child = i;
+    int parent = floor((child - 1) / 2);
+    while (i != 0 && M->elem[child] > M->elem[parent]) {
+        int temp = M->elem[child];
+        M->elem[child] = M->elem[parent];
+        M->elem[parent] = temp;
+    }
+}
+
+void heapifyDown(Maxheap *M, int i) {
+    return;
+}

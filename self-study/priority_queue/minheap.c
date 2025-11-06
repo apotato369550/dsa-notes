@@ -25,5 +25,16 @@ void makeNull(Minheap *M) {
     M->lastElem = -1;
 }
 
-void heapifyUp(Minheap *M, int i);
+void heapifyUp(Minheap *M, int i) {
+    if (i == 0) return;
+    int child = i;
+    int parent = floor((child - 1) / 2);
+    while (i != 0 && M->elem[child] < M->elem[parent]) {
+        int temp = M->elem[child];
+        M->elem[child] = M->elem[parent];
+        M->elem[parent] = temp;
+    }
+}
+
+
 void heapifyDown(Minheap *M, int i);

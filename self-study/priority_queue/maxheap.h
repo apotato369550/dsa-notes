@@ -2,6 +2,7 @@
 #define MAXHEAP
 
 #include <limits.h>
+#include <math.h>
 
 #define MAX 21
 #define EMPTY INT_MIN
