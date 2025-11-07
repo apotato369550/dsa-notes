@@ -37,5 +37,17 @@ void heapifyUp(Maxheap *M, int i) {
 }
 
 void heapifyDown(Maxheap *M, int i) {
+    // while i is not a leaf node, meaning:
+    // it has left and right children
+    int leftChildIndex = (i * 2) + 1;
+    bool hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+    
+    int rightChildIndex = (i * 2) + 2;
+    bool hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+    
+    while (hasLeftChild || hasRightChild) {
+        int leftChild = hasLeftChild ? M->elem[leftChildIndex] : EMPTY;
+        int rightChild = hasRightChild ? M->elem[rightChildIndex] : EMPTY;
+    }
     return;
 }

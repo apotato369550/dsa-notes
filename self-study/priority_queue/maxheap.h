@@ -3,6 +3,7 @@
 
 #include <limits.h>
 #include <math.h>
+#include <stdbool.h>
 
 #define MAX 21
 #define EMPTY INT_MIN
