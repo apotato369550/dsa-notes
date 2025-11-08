@@ -45,9 +45,18 @@ void heapifyDown(Maxheap *M, int i) {
     int rightChildIndex = (i * 2) + 2;
     bool hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
     
+    // update this condition to check if parent is still smaller than child
     while (hasLeftChild || hasRightChild) {
         int leftChild = hasLeftChild ? M->elem[leftChildIndex] : EMPTY;
         int rightChild = hasRightChild ? M->elem[rightChildIndex] : EMPTY;
+        int smallerChild = EMPTY;
+        if (hasLeftChild && hasRightChild) {
+            // compare the two
+        } else if (hasLeftChild) {
+            // 
+        } else if (hasRightChild) {
+
+        }
     }
     return;
 }
