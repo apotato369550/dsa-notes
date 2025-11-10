@@ -37,4 +37,58 @@ void heapifyUp(Minheap *M, int i) {
 }
 
 
-void heapifyDown(Minheap *M, int i);
+void heapifyDown(Minheap *M, int i) {
+
+    // while i is not a leaf node, meaning:
+    // it has left and right children
+    int leftChildIndex = (i * 2) + 1;
+    bool hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+    
+    int rightChildIndex = (i * 2) + 2;
+    bool hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+    int temp = 0;
+    
+    // update this condition to check if parent is still smaller than child
+    while (hasLeftChild || hasRightChild) {
+        int leftChild = hasLeftChild ? M->elem[leftChildIndex] : EMPTY;
+        int rightChild = hasRightChild ? M->elem[rightChildIndex] : EMPTY;
+        int smallerChild = EMPTY;
+        if (hasLeftChild && hasRightChild) {
+            // compare the two
+            if (M->elem[i] > M->elem[leftChildIndex]) {
+                temp = M->elem[i];
+                M->elem[i] = M->elem[leftChildIndex];
+                M->elem[leftChildIndex] = temp;
+                i = leftChildIndex;
+                leftChildIndex = (i * 2) + 1;
+                hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+            } else if (M->elem[i] > M->elem[rightChildIndex]) {
+                temp = M->elem[i];
+                M->elem[i] = M->elem[rightChildIndex];
+                M->elem[rightChildIndex] = temp;
+                i = rightChildIndex;
+                rightChildIndex = (i * 2) + 2;
+                hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+            }
+        } else if (hasLeftChild) {
+            if (M->elem[i] > M->elem[leftChildIndex]) {
+                temp = M->elem[i];
+                M->elem[i] = M->elem[leftChildIndex];
+                M->elem[leftChildIndex] = temp;
+                i = leftChildIndex;
+                leftChildIndex = (i * 2) + 1;
+                hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+            }  
+        } else if (hasRightChild) {
+            if (M->elem[i] > M->elem[rightChildIndex]) {
+                temp = M->elem[i];
+                M->elem[i] = M->elem[rightChildIndex];
+                M->elem[rightChildIndex] = temp;
+                i = rightChildIndex;
+                rightChildIndex = (i * 2) + 2;
+                hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+            }
+        } 
+    }
+    // i think this logic is sound, but it's very redundant HAHAHAHAHA
+}

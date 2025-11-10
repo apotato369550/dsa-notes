@@ -89,5 +89,4 @@ void heapifyDown(Maxheap *M, int i) {
         } 
     }
     // i think this logic is sound, but it's very redundant HAHAHAHAHA
-    return;
 }
