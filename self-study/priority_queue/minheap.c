@@ -6,6 +6,8 @@ void initialize(Minheap *M) {
 }
 
 void insert(Minheap *M, int x) {
+    // bug: off by one error on M->lastElem >= MAX
+    // fix: M->lastElem >= MAX - 1
     if (M->lastElem >= MAX) return;
     M->elem[++M->lastElem] = x;
     heapifyUp(M, M->lastElem);
@@ -13,11 +15,14 @@ void insert(Minheap *M, int x) {
 
 
 int deleteMin(Minheap *M) {
-    if (M->lastElem < 0 ) return;
-    int max = M->elem[0];
+    // bug: no return type for int function
+    // fix: return EMPTY instead
+    if (M->lastElem < 0 ) return EMPTY;
+    // bug: semantic error. variable named 'max' instead of 'min'
+    int min = M->elem[0];
     M->elem[0] = M->elem[M->lastElem--];
     heapifyDown(M, 0);
-    return max;
+    return min;
 }
 
 void makeNull(Minheap *M) {
@@ -33,6 +38,11 @@ void heapifyUp(Minheap *M, int i) {
         int temp = M->elem[child];
         M->elem[child] = M->elem[parent];
         M->elem[parent] = temp;
+
+        // bug: forgot to reassign values for child and parent :((
+        // fix: reassign child with parent, and parent using the parent formula
+        child = parent;
+        parent = floor((child - 1) / 2);
     }
 }
 

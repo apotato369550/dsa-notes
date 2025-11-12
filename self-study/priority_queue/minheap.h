@@ -15,7 +15,9 @@ typedef struct {
 
 void initialize(Minheap *M);
 void insert(Minheap *M, int x);
-int deleteMax(Minheap *M);
+// bug: wrong header 'deleteMax' instead of 'deleteMin'
+// fix: changed 'deleteMax' to 'deleteMin'
+int deleteMin(Minheap *M);
 void makeNull(Minheap *M);
 void heapifyUp(Minheap *M, int i);
 void heapifyDown(Minheap *M, int i);
