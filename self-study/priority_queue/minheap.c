@@ -52,33 +52,31 @@ void heapifyDown(Minheap *M, int i) {
     // while i is not a leaf node, meaning:
     // it has left and right children
     int leftChildIndex = (i * 2) + 1;
-    bool hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+    bool hasLeftChild = leftChildIndex < M->lastElem && M->elem[leftChildIndex] != EMPTY;
     
     int rightChildIndex = (i * 2) + 2;
-    bool hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+    bool hasRightChild = rightChildIndex < M->lastElem  && M->elem[rightChildIndex] != EMPTY;
     int temp = 0;
     
     // update this condition to check if parent is still smaller than child
     while (hasLeftChild || hasRightChild) {
+        // how do we do this without a break statement??
+        // maybe delegate checking if pot to another function??
+        // i wanna do this right
         int leftChild = hasLeftChild ? M->elem[leftChildIndex] : EMPTY;
         int rightChild = hasRightChild ? M->elem[rightChildIndex] : EMPTY;
         int smallerChild = EMPTY;
         if (hasLeftChild && hasRightChild) {
-            // compare the two
-            if (M->elem[i] > M->elem[leftChildIndex]) {
+            // bug: apparently, when both children exist, we need to find the smaller child
+            // if the parent is bigger than the child, swap, otherwise, break.
+            int smallerChildIndex = (M->elem[leftChildIndex] > M->elem[rightChildIndex]) ? rightChildIndex : leftChildIndex;
+            if (M->elem[i] > M->elem[smallerChildIndex]) {
                 temp = M->elem[i];
-                M->elem[i] = M->elem[leftChildIndex];
-                M->elem[leftChildIndex] = temp;
-                i = leftChildIndex;
-                leftChildIndex = (i * 2) + 1;
-                hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
-            } else if (M->elem[i] > M->elem[rightChildIndex]) {
-                temp = M->elem[i];
-                M->elem[i] = M->elem[rightChildIndex];
-                M->elem[rightChildIndex] = temp;
-                i = rightChildIndex;
-                rightChildIndex = (i * 2) + 2;
-                hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+                M->elem[i] = M->elem[smallerChildIndex];
+                M->elem[smallerChildIndex] = temp;
+                i = smallerChildIndex;
+            } else {
+                break;
             }
         } else if (hasLeftChild) {
             if (M->elem[i] > M->elem[leftChildIndex]) {
@@ -88,7 +86,11 @@ void heapifyDown(Minheap *M, int i) {
                 i = leftChildIndex;
                 leftChildIndex = (i * 2) + 1;
                 hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
-            }  
+            } else {
+                // bug: forgot to break if POT is satisfied
+                // fix: break statement
+                break;
+            }
         } else if (hasRightChild) {
             if (M->elem[i] > M->elem[rightChildIndex]) {
                 temp = M->elem[i];
@@ -97,8 +99,19 @@ void heapifyDown(Minheap *M, int i) {
                 i = rightChildIndex;
                 rightChildIndex = (i * 2) + 2;
                 hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+            } else {
+                // bug: forgot to break if POT is satisfied
+                // fix: break statement
+                break;
             }
         } 
+        // bug: forgot to update for next iteration:((
+        // fix: update next iteration
+        leftChildIndex = (i * 2) + 1;
+        hasLeftChild = leftChildIndex < M->lastElem;
+        
+        int rightChildIndex = (i * 2) + 2;
+        hasRightChild = rightChildIndex < M->lastElem;
     }
     // i think this logic is sound, but it's very redundant HAHAHAHAHA
 }
