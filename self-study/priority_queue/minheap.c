@@ -51,6 +51,9 @@ void heapifyDown(Minheap *M, int i) {
 
     // while i is not a leaf node, meaning:
     // it has left and right children
+
+    // bug: wrong boundary check. compared with MAX instead of M->lastElem
+    // fix: changed MAX to M->lastElem;
     int leftChildIndex = (i * 2) + 1;
     bool hasLeftChild = leftChildIndex < M->lastElem && M->elem[leftChildIndex] != EMPTY;
     

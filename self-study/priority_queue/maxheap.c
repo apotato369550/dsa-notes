@@ -6,13 +6,17 @@ void initialize(Maxheap *M) {
 }
 
 void insert(Maxheap *M, int x) {
-    if (M->lastElem >= MAX) return;
+    // bug: off by one error
+    // fix: M->lastElem >= MAX - 1
+    if (M->lastElem >= MAX - 1) return;
     M->elem[++M->lastElem] = x;
     heapifyUp(M, M->lastElem);
 }
 
 int deleteMax(Maxheap *M) {
-    if (M->lastElem < 0 ) return;
+    // bug: no return value
+    // fix: return EMPTY
+    if (M->lastElem < 0 ) return EMPTY;
     int max = M->elem[0];
     M->elem[0] = M->elem[M->lastElem--];
     heapifyDown(M, 0);
@@ -33,17 +37,25 @@ void heapifyUp(Maxheap *M, int i) {
         int temp = M->elem[child];
         M->elem[child] = M->elem[parent];
         M->elem[parent] = temp;
+
+        // bug: no variable update
+        // fix: update child and parent
+        child = parent;
+        parent = floor((child - 1) / 2);
     }
 }
 
 void heapifyDown(Maxheap *M, int i) {
     // while i is not a leaf node, meaning:
     // it has left and right children
+
+    // bug: wrong boundary check
+    // fix: replace MAX with M->lastElem
     int leftChildIndex = (i * 2) + 1;
-    bool hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+    bool hasLeftChild = leftChildIndex < M->lastElem && M->elem[leftChildIndex] != EMPTY;
     
     int rightChildIndex = (i * 2) + 2;
-    bool hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+    bool hasRightChild = rightChildIndex < M->lastElem && M->elem[rightChildIndex] != EMPTY;
     int temp = 0;
     
     // update this condition to check if parent is still smaller than child
@@ -67,6 +79,10 @@ void heapifyDown(Maxheap *M, int i) {
                 i = rightChildIndex;
                 rightChildIndex = (i * 2) + 2;
                 hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+            } else {
+                // bug: missing break statement
+                // fix: add break statement
+                break;
             }
         } else if (hasLeftChild) {
             if (M->elem[i] < M->elem[leftChildIndex]) {
@@ -76,6 +92,10 @@ void heapifyDown(Maxheap *M, int i) {
                 i = leftChildIndex;
                 leftChildIndex = (i * 2) + 1;
                 hasLeftChild = leftChildIndex < MAX && M->elem[leftChildIndex] != EMPTY;
+            } else {
+                // bug: missing break statement
+                // fix: add break statement
+                break;
             }  
         } else if (hasRightChild) {
             if (M->elem[i] < M->elem[rightChildIndex]) {
@@ -85,6 +105,10 @@ void heapifyDown(Maxheap *M, int i) {
                 i = rightChildIndex;
                 rightChildIndex = (i * 2) + 2;
                 hasRightChild = rightChildIndex < MAX && M->elem[rightChildIndex] != EMPTY;
+            } else {
+                // bug: missing break statement
+                // fix: add break statement
+                break;
             }
         } 
     }
