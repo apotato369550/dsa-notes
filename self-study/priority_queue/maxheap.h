@@ -13,6 +13,8 @@ typedef struct {
     int lastElem;
 } Maxheap;
 
+// todo: modify to include is_POT() for maxheap
+
 void initialize(Maxheap *M);
 void insert(Maxheap *M, int x);
 int deleteMax(Maxheap *M);

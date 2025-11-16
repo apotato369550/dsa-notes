@@ -1,8 +1,14 @@
 #ifndef HEAPSORT
 #define HEAPSORT
 
-#define MAX 21
+#include <limits.h>
+#include <math.h>
+#include <stdbool.h>
 
+#define MAX 21
+#define EMPTY INT_MIN
+
+// ASSUMPTION: Maxheap :VVV
 typedef struct {
     int elem[MAX];
     int lastElem;
@@ -11,7 +17,7 @@ typedef struct {
 // i wonder if we can replace heapify up/down with regular heapfiy
 void initialize(Heap *M);
 void insert(Heap *M, int x);
-int deleteMin(Heap *M);
+int deleteMax(Heap *M);
 void makeNull(Heap *M);
 void heapify(Heap *M, int i);
 

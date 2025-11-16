@@ -13,6 +13,8 @@ typedef struct {
     int lastElem;
 } Minheap;
 
+// todo: modify to include is_POT() for minheap
+
 void initialize(Minheap *M);
 void insert(Minheap *M, int x);
 // bug: wrong header 'deleteMax' instead of 'deleteMin'
