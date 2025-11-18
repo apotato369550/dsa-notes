@@ -4,14 +4,8 @@
 #include <limits.h>
 #include <math.h>
 #include <stdbool.h>
-
-#define MAX 23
-#define EMPTY INT_MIN
-
-typedef struct {
-    int elem[MAX];
-    int lastElem;
-} Minheap;
+// ???
+#include <<heap.h>
 
 // todo: modify to include is_POT() for minheap
 

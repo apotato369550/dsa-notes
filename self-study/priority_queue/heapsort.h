@@ -4,15 +4,7 @@
 #include <limits.h>
 #include <math.h>
 #include <stdbool.h>
-
-#define MAX 21
-#define EMPTY INT_MIN
-
-// ASSUMPTION: Maxheap :VVV
-typedef struct {
-    int elem[MAX];
-    int lastElem;
-} Heap;
+#include <heap.h>
 
 // i wonder if we can replace heapify up/down with regular heapfiy
 void initialize(Heap *M);

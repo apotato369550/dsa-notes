@@ -1,11 +1,7 @@
 #ifndef BINARY_SEARCH_TREE
 #define BINARY_SEARCH_TREE
 
-typedef struct node {
-    int data;
-    struct node* left;
-    struct node* right;
-} *TreeNodePointer, TreedNode;
+#include <tree.h>
 
 void insertNode(TreeNodePointer root, int data);
 void deleteNode(TreeNodePointer root, int data);
