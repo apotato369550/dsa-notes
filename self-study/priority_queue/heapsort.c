@@ -25,7 +25,8 @@ void heapSortV1(List *L) {
     // free old list, reassign with new list
     // i think this warrants a memcpy
     // last left off here :VVV
-    free(temp);
+
+    // fix logi chere :VV
 }
 
 void heapSortV2(List *L);

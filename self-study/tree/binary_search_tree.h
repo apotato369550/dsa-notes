@@ -1,7 +1,8 @@
 #ifndef BINARY_SEARCH_TREE
 #define BINARY_SEARCH_TREE
 
-#include <tree.h>
+#include "tree.h"
+#include <stdbool.h>
 
 void insertNode(TreeNodePointer root, int data);
 void deleteNode(TreeNodePointer root, int data);

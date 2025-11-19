@@ -1,10 +1,15 @@
 #ifndef TREE
 #define TREE
 
-typedef struct node {
+typedef struct TreeNode {
     int data;
-    struct node* left;
-    struct node* right;
-} *TreeNodePointer, *Tree, TredNode;
+    struct TreeNode** children;
+} *TreeNodePointer, *Tree, TreeNode;
+
+typedef struct BinaryTreeNode {
+    int data;
+    struct BinaryTreeNode* left;
+    struct BinaryTreeNode* right;
+} *BinaryTreeNodePointer, *BinaryTree, BinaryTreeNode;
 
 #endif
