@@ -7,6 +7,6 @@
 typedef struct {
     int elem[MAX];
     int lastElem;
-} Heap, Minheap, MaxHeap;
+} Heap, Minheap, Maxheap, List;
 
 #endif

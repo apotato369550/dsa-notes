@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <math.h>
 #include <stdbool.h>
-#include <heap.h>
+#include "heap.h"
 
 
 // todo: modify to include is_POT() for maxheap
