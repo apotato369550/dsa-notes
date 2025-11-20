@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+
+void initialize(Tree *root);
 void printPreOrder(Tree root);
 void printPostOrder(Tree root);
 void printInOrder(Tree root);

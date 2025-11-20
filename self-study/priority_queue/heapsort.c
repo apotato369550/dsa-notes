@@ -7,29 +7,48 @@ void initialize(List *M)  {
 
 
 void heapSortV1(List *L) {
-    List *newList = (List*)malloc(sizeof(List));
-    if (newList == NULL) return;
-    newList->lastElem = -1;
+    List newList;
+    newList.lastElem = -1;
 
     // new list is full of elements before, and is POT
     for (int i = 0; i <= L->lastElem; i++) {
-        insert(newList, L->elem[i]);
+        insert(&newList, L->elem[i]);
     }
 
     // convert POT into regular list
-    for (int i = 0; i <= newList->lastElem; i++) {
-        int deleted = deleteMin(newList);
-        newList->elem[newList->lastElem + 1] = deleted; 
+    for (int i = 0; i <= L->lastElem; i++) {
+        int deleted = deleteMin(L);
+        newList.elem[newList.lastElem + 1] = deleted; 
+        newList.lastElem++;
     }
 
     // free old list, reassign with new list
     // i think this warrants a memcpy
     // last left off here :VVV
-
     // fix logi chere :VV
+    *L = newList;
 }
 
-void heapSortV2(List *L);
+void heapSortV2(List *L) {
+    // formula for leftmost interior node is:
+    // floor(n / 2) - 1
+    // so in a complete tree with 11 nodes, the interior node nearest to root is at index 4
+    // in this case, we must heapify up from the 
+    // rightmost leaf node, to the leftmost leaf node,
+    // denoted by the range [floor(n/2), n)
+    // okurks
+    // lets do this
+    for (int i = L->lastElem; i >= floor((L->lastElem + 1) / 2); i--) {
+        heapifyUp(L, i);
+    }
+
+    int oldLastElem = L->lastElem;
+    for (int i = 0; i <= L->lastElem; i++) {
+        int deleted = deleteMin(&L);
+        L->elem[L->lastElem + 1] = deleted; 
+    }
+    L->lastElem = oldLastElem;
+}
 
 void insert(List *M, int x)  {
     if (M->lastElem >= MAX - 1) return;
