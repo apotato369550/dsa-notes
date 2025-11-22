@@ -1,6 +1,7 @@
 #include "binary_search_tree.h"
 
 void insertNode(TreeNodePointer root, int data) {
+    // do this :((
     return; 
 }
 

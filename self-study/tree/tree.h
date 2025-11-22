@@ -2,6 +2,7 @@
 #define TREE
 
 #define MAX_CHILDREN
+#define NO_LABEL '?'
 
 typedef struct TreeNode {
     int data;

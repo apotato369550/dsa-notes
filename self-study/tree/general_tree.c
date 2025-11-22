@@ -40,7 +40,39 @@ bool isMember(Tree root, int data) {
 }
 
 void insertNode(Tree *root, int data) {
-    return; 
+    // find child/node with less than max children
+    // insert node there
+
+    if (root == NULL) {
+        // insert a node and have it be root
+        TreeNode *newTreeNode = (TreeNode*) malloc(sizeof(TreeNode));
+        if (newTreeNode != NULL) {
+            newTreeNode->data = data;
+            newTreeNode->label = NO_LABEL;
+            newTreeNode->childCount = 0;
+            for (int i = 0; i < MAX_CHILDREN; newTreeNode->children[i] = NULL, i++) {}
+            *root = newTreeNode;
+        }
+    } else {
+        // this means a root exists
+        if ((*root)->childCount < MAX_CHILDREN) {
+            TreeNode *newTreeNode = (TreeNode*) malloc(sizeof(TreeNode));
+            if (newTreeNode != NULL) {
+                newTreeNode->data = data;
+                newTreeNode->label = NO_LABEL;
+                newTreeNode->childCount = 0;
+                for (int i = 0; i < MAX_CHILDREN; newTreeNode->children[i] = NULL, i++) {}
+            }
+            (*root)->children[(*root)->childCount++] = newTreeNode;
+        } else {
+            // perform bfs traversal
+            // MYEH! mag queue nasab ta :((
+            // todo
+            return;
+        }
+        // either root has missing children, or we find a root w/ missing children
+        // i think bfs is a better way to go here instead of dfs
+    }
 }
 
 void deleteNode(Tree *root, int data) {

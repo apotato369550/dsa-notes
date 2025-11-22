@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define MAX_CHILDREN 3
+
 
 void initialize(Tree *root);
 void printPreOrder(Tree root);
