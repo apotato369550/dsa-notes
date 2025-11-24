@@ -12,5 +12,8 @@ typedef struct {
 
 typedef GraphNode ListGraph[MAX_GRAPH_SIZE];
 
+void addEdgeMatrixGraph(MatrixGraph graph);
+void addEdgeListGraph(ListGraph graph);
+
 
 #endif
