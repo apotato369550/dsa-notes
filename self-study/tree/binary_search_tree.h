@@ -3,11 +3,12 @@
 
 #include "tree.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
-void insertNode(TreeNodePointer root, int data);
-void deleteNode(TreeNodePointer root, int data);
-bool isMember(TreeNodePointer root, int data);
-int getMin(TreeNodePointer root);
-int getMax(TreeNodePointer root);
+void insertNode(BinaryTreeNodePointer *root, int data);
+void deleteNode(BinaryTreeNodePointer *root, int data);
+bool isMember(BinaryTreeNodePointer *root, int data);
+int getMin(BinaryTreeNodePointer root);
+int getMax(BinaryTreeNodePointer root);
 
 #endif
