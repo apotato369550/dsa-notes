@@ -39,6 +39,7 @@ bool isMember(Tree root, int data) {
     return root->data == data;
 }
 
+// how do we insert into a general tree??
 void insertNode(Tree *root, int data) {
     // find child/node with less than max children
     // insert node there
@@ -75,10 +76,12 @@ void insertNode(Tree *root, int data) {
     }
 }
 
+// how do we select what node to delete in a general tree??
 void deleteNode(Tree *root, int data) {
     return;
 }
 
+// there's no property to anchor values blablabalba
 int getMin(Tree root) {
     return; 
 }

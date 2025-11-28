@@ -53,9 +53,11 @@ bool isMember(BinaryTreeNodePointer *root, int data) {
 }
 
 int getMin(BinaryTreeNodePointer root) {
+    // trav left till you can't no mo
     return;
 }
 
 int getMax(BinaryTreeNodePointer root) {
+    // trav right till you can't no mo
     return;
 }
