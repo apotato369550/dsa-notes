@@ -6,12 +6,14 @@
 
 void initBST(BST *T) {
     /* TODO: Initialize BST to NULL */
+    (*T) = NULL;
 }
 
 void makeNullBST(BST *T) {
     /* TODO: Free all nodes and set T to NULL
      * Use freeBST helper function
      */
+    // pass lol
 }
 
 bool member(BST T, int x) {
@@ -22,6 +24,14 @@ bool member(BST T, int x) {
      * 3. If x < current node's data, search left subtree
      * 4. If x > current node's data, search right subtree
      */
+    if (T == NULL) return false;
+    if (x == T->data) return true;
+    if (x < T->data) {
+        member(T->left, x);
+    }
+    if (x < T->data) {
+        member(T->right, x);
+    }
     return false;
 }
 
@@ -35,6 +45,26 @@ void insert(BST *T, int x) {
      *    - If x == current, do nothing (element already exists)
      * 3. When reaching NULL position, insert new node there
      */
+    BinaryTreeNode *newNode = (BinaryTreeNode*)malloc(sizeof(BinaryTreeNode));
+    if (newNode == NULL) return false;
+    newNode->data = x;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    newNode->label = '?';
+    if ((*T) == NULL) {
+        (*T) = newNode;
+    } else {
+        BinaryTree *trav = &(*T);
+        // single line ternary butterfly!
+        // trav = ((*trav)->data < x ? &(*trav)->left : &(*trav)->right)
+        for (trav; (*trav) != NULL && (*trav)->data != x; trav = ((*trav)->data < x ? &(*trav)->left : &(*trav)->right)) {}
+        if (*trav == NULL) {
+            free(newNode);
+            return;
+        } else {
+            (*trav) = newNode;
+        }
+    }
 }
 
 void deleteElement(BST *T, int x) {
@@ -52,6 +82,50 @@ void deleteElement(BST *T, int x) {
      *   - Replace with maximum element from left subtree
      *   - Then delete that replacement node (which falls into case 1 or 2)
      */
+    if (!member(*T, x)) return;
+    BinaryTree *trav = &(*T);
+    for (trav; (*trav) != NULL && (*trav)->data != x; trav = ((*trav)->data < x ? &(*trav)->left : &(*trav)->right)) {}
+    if ((*trav)->left == NULL && (*trav)->right == NULL) {
+        free(*trav);
+        (*trav) = NULL;
+    } else if ((*trav)->left == NULL || (*trav)->right == NULL) {
+        BinaryTree temp = (*trav);
+        if ((*trav)->left == NULL) {
+            (*trav) = temp->right;
+            free(temp);
+        } else {
+            (*trav) = temp->left;
+            free(temp);
+        }
+    } else {
+        // how do we determine if left or right??
+        // if current node's value is greater than or less than the value
+        // of root!
+        // either way, we must go towards the center of the tree!!
+        BinaryTree *trav2 = trav;
+        if ((*trav)->data > (*T)->data) {
+            // if current node data is less than root,
+            // we must be in the left subtree!
+            // so we must delete via teh immediate predecessor
+            for (trav2; (*trav2)->right != NULL; trav2 = &(*trav2)->right) {}
+            // replace the value at trav with the value at right
+            (*trav)->data = (*trav2)->right->data;
+            (*trav)->label = (*trav2)->right->label;
+            // we just delete it!
+            // we free it, and we set it as null
+            free((*trav2)->right);
+            (*trav2)->right = NULL;
+        } else {
+            // if greater than, we're in the right subtrree!
+            // immediate successor!
+            for (trav2; (*trav2)->left != NULL; trav2 = &(*trav2)->left) {}
+            (*trav)->data = (*trav2)->left->data;
+            (*trav)->label = (*trav2)->left->label;
+            free((*trav2)->left);
+            (*trav2)->left = NULL;
+        }
+    }
+
 }
 
 int min(BST T) {
@@ -60,7 +134,10 @@ int min(BST T) {
      * Follow left child pointers until reaching node with no left child
      * That node contains the minimum
      */
-    return -1; // Return appropriate error value
+    if (T == NULL) return -1;
+    BinaryTree trav = T;
+    for (trav; trav->left != NULL; trav = trav->left) {}
+    return trav->data; 
 }
 
 int max(BST T) {
@@ -69,7 +146,10 @@ int max(BST T) {
      * Follow right child pointers until reaching node with no right child
      * That node contains the maximum
      */
-    return -1; // Return appropriate error value
+    if (T == NULL) return -1;
+    BinaryTree trav = T;
+    for (trav; trav->right != NULL; trav = trav->right) {}
+    return trav->data; 
 }
 
 int deleteMin(BST *T) {
