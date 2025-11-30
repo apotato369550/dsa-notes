@@ -6,35 +6,76 @@
 
 void initTree(GeneralTree *T) {
     /* TODO: Initialize tree to NULL */
+    (*T) = NULL;
 }
 
 GeneralTreeNode* root(GeneralTree T) {
     /* TODO: Return root of tree T */
-    return NULL;
+    if (T->parent == NULL) return T;
+    GeneralTreeNode *trav = T;
+    for (trav; trav->parent != NULL; trav = trav->parent) {}
+    return trav;
 }
 
 GeneralTreeNode* parent(GeneralTreeNode *n) {
     /* TODO: Return parent of node n, or NULL if n is root */
-    return NULL;
+    return n->parent == NULL ? NULL : n->parent;
 }
 
 GeneralTreeNode* leftmostChild(GeneralTreeNode *n) {
     /* TODO: Return leftmost child of node n, or NULL if n is a leaf */
-    return NULL;
+    return n->leftmostChild == NULL ? NULL : n->leftmostChild;
 }
 
 GeneralTreeNode* rightSibling(GeneralTreeNode *n) {
     /* TODO: Return right sibling of node n, or NULL if n is rightmost sibling */
-    return NULL;
+    return n->rightSibling == NULL ? NULL : n->rightSibling;
 }
 
 char getLabel(GeneralTreeNode *n) {
     /* TODO: Return the label stored at node n */
-    return NO_LABEL;
+    return n->label == NO_LABEL ? NO_LABEL : n->label;
 }
 
 void makeNull(GeneralTree *T) {
-    /* TODO: Free all nodes in tree and set T to NULL */
+    /* Algorithm: Postorder traversal using leftmost-child, right-sibling
+    * 
+    * Base case: If tree is NULL, nothing to free
+    * 
+    * Recursive case:
+    * 1. Recursively free leftmost child subtree
+    * 2. Recursively free right sibling subtree  
+    * 3. Free current node
+    * 4. Set *T to NULL
+    * 
+    * Why this order?
+    * - Must free all children before freeing parent
+    * - Must process all siblings (they form a linked list)
+    * 
+    * Example tree:
+    *       A
+    *      /|\
+    *     B C D
+    *    /|
+    *   E F
+    * 
+    * Free order: E, F, B, C, D, A
+    * 
+    * Implementation:
+    */
+    if (*T == NULL) return;
+
+    // Free entire leftmost child subtree (recursively frees all children)
+    makeNull(&((*T)->leftmostChild));
+
+    // Free all right siblings (they form a list)
+    makeNull(&((*T)->rightSibling));
+
+    // Now safe to free current node (all children/siblings are freed)
+    free(*T);
+
+    // Set pointer to NULL
+    *T = NULL;
 }
 
 // ============================================================================

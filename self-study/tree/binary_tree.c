@@ -241,4 +241,26 @@ void freeBinaryTree(BinaryTree *T) {
      * 3. Free current node
      * 4. Set T to NULL
      */
+
+    /* Algorithm: Same as BST - postorder traversal
+    * 
+    * Binary tree uses same structure as BST, just no ordering constraint
+    * 
+    * Base case: If tree is NULL, nothing to free
+    * 
+    * Recursive case:
+    * 1. Free left subtree
+    * 2. Free right subtree  
+    * 3. Free current node
+    * 4. Set *T to NULL
+    * 
+    * Implementation:
+    */
+    if (*T == NULL) return;
+
+    freeBinaryTree(&((*T)->left));
+    freeBinaryTree(&((*T)->right));
+
+    free(*T);
+    *T = NULL;
 }

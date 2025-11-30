@@ -349,8 +349,42 @@ int sumBST(BST T) {
 }
 
 void freeBST(BST *T) {
-    /* TODO: Free all nodes in BST using postorder traversal
-     * Must free children before parent
-     * Set T to NULL after freeing
-     */
+    /* Algorithm: Postorder traversal (Left -> Right -> Node)
+    * 
+    * Base case: If tree is NULL, nothing to free
+    * 
+    * Recursive case:
+    * 1. Recursively free left subtree
+    * 2. Recursively free right subtree
+    * 3. Free current node
+    * 4. Set *T to NULL
+    * 
+    * Why postorder?
+    * - Must free children before parent
+    * - If you free parent first, you lose pointers to children (memory leak!)
+    * 
+    * Example BST:
+    *        5
+    *       / \
+    *      3   7
+    *     / \
+    *    1   4
+    * 
+    * Free order: 1, 4, 3, 7, 5
+    * 
+    * Implementation:
+    */
+    if (*T == NULL) return;
+
+    // Free left subtree first
+    freeBST(&((*T)->left));
+
+    // Free right subtree second
+    freeBST(&((*T)->right));
+
+    // Now safe to free current node
+    free(*T);
+
+    // Set pointer to NULL (prevents dangling pointer)
+    *T = NULL;
 }
